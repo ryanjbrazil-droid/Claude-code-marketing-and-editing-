@@ -63,8 +63,9 @@ export default function TodayScreen() {
         </View>
       </FadeSlideIn>
 
-      {/* 2 — Identity: level, rank, XP. The anchor of the screen. */}
+      {/* 2 — Identity: level, rank, XP. Taps through to the Character. */}
       <FadeSlideIn delay={40}>
+        <ScalePress onPress={() => router.push('/character')} accessibilityLabel="Open your character" haptic={false}>
         <Card style={{ overflow: 'hidden', padding: Spacing.xl }}>
           <LinearGradient
             colors={['rgba(76, 184, 255, 0.07)', 'rgba(20, 24, 33, 0)']}
@@ -94,6 +95,7 @@ export default function TodayScreen() {
             </View>
           </View>
         </Card>
+        </ScalePress>
       </FadeSlideIn>
 
       {/* 3 — Today's condition: streak + readiness, side by side. */}

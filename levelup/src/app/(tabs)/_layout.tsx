@@ -32,11 +32,12 @@ export default function TabLayout() {
         tabBarLabelStyle: { fontSize: 10, fontWeight: '600', letterSpacing: 0.1 },
         sceneStyle: { backgroundColor: Colors.bg },
       }}>
+      {/* Character holds the center slot — it is the product; the other four feed it. */}
       <Tabs.Screen name="index" options={{ title: 'Today', tabBarIcon: tabIcon('flash', 'flash-outline') }} />
       <Tabs.Screen name="fitness" options={{ title: 'Train', tabBarIcon: tabIcon('barbell', 'barbell-outline') }} />
+      <Tabs.Screen name="character" options={{ title: 'Character', tabBarIcon: tabIcon('shield', 'shield-outline') }} />
       <Tabs.Screen name="nutrition" options={{ title: 'Fuel', tabBarIcon: tabIcon('restaurant', 'restaurant-outline') }} />
       <Tabs.Screen name="coach" options={{ title: 'Coach', tabBarIcon: tabIcon('chatbubbles', 'chatbubbles-outline') }} />
-      <Tabs.Screen name="character" options={{ title: 'You', tabBarIcon: tabIcon('person', 'person-outline') }} />
     </Tabs>
   );
 }

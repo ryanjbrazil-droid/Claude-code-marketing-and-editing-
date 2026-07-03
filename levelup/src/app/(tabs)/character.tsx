@@ -13,6 +13,7 @@ import { XPBar } from '@/components/ui/xp-bar';
 import { Colors, Radius, Shadow, Spacing, Type } from '@/constants/theme';
 import { ACHIEVEMENTS } from '@/lib/data';
 import { RANKS, nextRank, rankForLevel, xpForLevel } from '@/lib/game';
+import { LEGACY_CATEGORY_COLOR, latestChange, titlesFor, TRAIT_SOURCES } from '@/lib/identity';
 import type { StatKey } from '@/lib/types';
 import { useApp, useBadges } from '@/state/app-context';
 
@@ -38,10 +39,12 @@ export default function CharacterScreen() {
     .join('')
     .slice(0, 2)
     .toUpperCase();
+  const titles = titlesFor(state);
+  const recentLegacy = [...state.legacy].reverse().slice(0, 3);
 
   return (
     <Screen
-      title="You"
+      title="Character"
       right={
         <Pressable
           onPress={() => router.push('/profile')}
@@ -63,7 +66,10 @@ export default function CharacterScreen() {
 
         <View style={{ alignItems: 'center', gap: 2 }}>
           <Text style={Type.title}>{state.profile.name}</Text>
-          <Text style={[Type.secondary, { fontWeight: '700' }]}>
+          <View style={styles.titlePill}>
+            <Text style={[Type.small, { color: Colors.purple, fontWeight: '700' }]}>“{titles[0].name}”</Text>
+          </View>
+          <Text style={[Type.secondary, { fontWeight: '700', marginTop: 4 }]}>
             Level {state.level} · <Text style={{ color: Colors.xp }}>{rank}</Text>
           </Text>
           <Text style={Type.small}>
@@ -75,6 +81,30 @@ export default function CharacterScreen() {
           <XPBar value={state.xp} max={xpMax} />
         </View>
       </Card>
+
+      {/* Legacy — the reason this screen exists */}
+      <SectionHeader
+        title="Legacy"
+        right={
+          <Pressable onPress={() => router.push('/legacy')} hitSlop={8} accessibilityRole="button" accessibilityLabel="View full legacy">
+            <Text style={[Type.small, { color: Colors.primary }]}>View all {state.legacy.length} →</Text>
+          </Pressable>
+        }
+      />
+      <ScalePress onPress={() => router.push('/legacy')} accessibilityLabel="Open legacy timeline" haptic={false}>
+        <Card style={{ gap: Spacing.md }}>
+          {recentLegacy.map((e) => (
+            <View key={e.id} style={styles.legacyRow}>
+              <IconBubble icon={e.icon} color={LEGACY_CATEGORY_COLOR[e.category]} size={34} />
+              <View style={{ flex: 1 }}>
+                <Text style={[Type.body, { fontWeight: '700' }]}>{e.title}</Text>
+                <Text style={Type.small}>{e.date}</Text>
+              </View>
+            </View>
+          ))}
+          <Text style={[Type.small, { fontSize: 11 }]}>Permanent record · nothing here can ever be lost</Text>
+        </Card>
+      </ScalePress>
 
       {/* Rank ladder */}
       <SectionHeader title="Rank ladder" />
@@ -107,13 +137,24 @@ export default function CharacterScreen() {
         </Card>
       </ScalePress>
 
-      {/* Stats */}
-      <SectionHeader title="Character stats" />
+      {/* Traits — earned, never edited */}
+      <SectionHeader title="Traits" />
       <Card style={{ gap: Spacing.md }}>
-        <Text style={Type.small}>Stats grow as you complete matching quests and habits.</Text>
-        {(Object.keys(state.stats) as StatKey[]).map((k) => (
-          <StatRow key={k} label={k} value={state.stats[k]} color={STAT_COLORS[k]} />
-        ))}
+        <Text style={Type.small}>
+          Traits are earned through sustained action — capped daily, impossible to grind, never editable.
+        </Text>
+        {(Object.keys(state.stats) as StatKey[]).map((k) => {
+          const change = latestChange(state.traitLog, k);
+          return (
+            <StatRow
+              key={k}
+              label={k}
+              value={state.stats[k]}
+              color={STAT_COLORS[k]}
+              note={change ? `Last gain: ${change.reason.toLowerCase()}` : TRAIT_SOURCES[k]}
+            />
+          );
+        })}
       </Card>
 
       {/* Next unlock — anticipation beats reflection */}
@@ -207,6 +248,16 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   habitsLink: { flexDirection: 'row', alignItems: 'center', gap: Spacing.md },
+  legacyRow: { flexDirection: 'row', alignItems: 'center', gap: Spacing.md },
+  titlePill: {
+    marginTop: 6,
+    backgroundColor: Colors.purpleSoft,
+    borderRadius: Radius.full,
+    borderWidth: 1,
+    borderColor: 'rgba(167, 139, 250, 0.3)',
+    paddingVertical: 4,
+    paddingHorizontal: 12,
+  },
   nextUnlock: {
     flexDirection: 'row',
     alignItems: 'center',

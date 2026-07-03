@@ -21,8 +21,8 @@ export default function GoalScreen() {
   return (
     <OnboardingShell
       step={2}
-      title="What's your main goal?"
-      subtitle="Your quests, plan, and coach are built around this."
+      title="Who are you becoming?"
+      subtitle="This shapes your character, your quests, and how your coach pushes you."
       ctaDisabled={!goal}
       onNext={() => {
         if (goal) patchDraft({ goal });

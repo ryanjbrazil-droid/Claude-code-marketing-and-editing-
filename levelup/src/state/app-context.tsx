@@ -9,11 +9,13 @@ import {
   DEFAULT_PROFILE,
   DEFAULT_STATS,
   HABITS,
+  LEGACY_SEED,
   LOGGED_MEALS,
   MACRO_TARGETS,
 } from '@/lib/data';
 import { applyXp, computeReadiness, dayIsComplete, rankForLevel } from '@/lib/game';
-import type { ChatMessage, Habit, LoggedMeal, Quest, StatKey, UserProfile } from '@/lib/types';
+import { formatLegacyDate, LEGACY_STREAK_MILESTONES, todayKey, traitRoomToday } from '@/lib/identity';
+import type { ChatMessage, Habit, LegacyEvent, LoggedMeal, Quest, StatKey, TraitChange, UserProfile } from '@/lib/types';
 
 // ---------- State ----------
 
@@ -41,6 +43,10 @@ export interface AppState {
   workoutFinished: boolean;
   chat: ChatMessage[];
   reward: RewardToast | null;
+  /** Permanent life timeline. Append-only — nothing here is ever removed. */
+  legacy: LegacyEvent[];
+  /** Identity Engine ledger: every trait change with its reason. */
+  traitLog: TraitChange[];
 }
 
 const INITIAL_STATE: AppState = {
@@ -61,6 +67,8 @@ const INITIAL_STATE: AppState = {
   workoutFinished: false,
   chat: [],
   reward: null,
+  legacy: LEGACY_SEED,
+  traitLog: [],
 };
 
 // ---------- Actions ----------
@@ -81,38 +89,91 @@ type Action =
 
 let rewardKey = 1;
 
-/** Grant XP + stat gains and produce the reward toast. */
+/**
+ * The Identity Engine's single write path.
+ *
+ * Every earn: applies XP, grows matching traits (capped per day so identity
+ * can't be ground out in one sitting), records each trait change with its
+ * reason, and writes rank-ups into the permanent Legacy.
+ */
 function earn(state: AppState, amount: number, label: string, category?: string): Partial<AppState> {
   const { level, xp, leveledUp } = applyXp(state.level, state.xp, amount);
   const stats = { ...state.stats };
+  const traitLog = [...state.traitLog];
+  const gained: StatKey[] = [];
+
   if (category) {
-    for (const stat of CATEGORY_STAT_GAINS[category] ?? []) {
-      stats[stat] = stats[stat] + 1;
+    for (const trait of CATEGORY_STAT_GAINS[category] ?? []) {
+      if (traitRoomToday(traitLog, trait) > 0) {
+        stats[trait] = stats[trait] + 1;
+        gained.push(trait);
+        traitLog.push({ trait, delta: 1, reason: label, day: todayKey() });
+      }
     }
   }
+
+  // Rank-ups are legacy moments; level-ups are toasts.
+  const oldRank = rankForLevel(state.level);
+  const newRank = rankForLevel(level);
+  let legacy = state.legacy;
+  if (newRank !== oldRank) {
+    legacy = [
+      ...legacy,
+      {
+        id: `l-rank-${newRank.toLowerCase()}-${Date.now()}`,
+        date: formatLegacyDate(new Date()),
+        title: `Reached ${newRank} Rank`,
+        detail: `Level ${level} · earned through ${state.currentStreak} days of showing up.`,
+        icon: 'shield',
+        category: 'rank',
+      },
+    ];
+  }
+
+  const sub = leveledUp
+    ? `LEVEL UP! You reached Level ${level} · ${newRank}`
+    : gained.length > 0
+      ? gained.map((t) => `${t} +1`).join(' · ')
+      : undefined;
+
   return {
     level,
     xp,
     stats,
-    reward: {
-      key: rewardKey++,
-      text: `+${amount.toLocaleString()} XP — ${label}`,
-      sub: leveledUp ? `LEVEL UP! You reached Level ${level} · ${rankForLevel(level)}` : undefined,
-    },
+    traitLog,
+    legacy,
+    reward: { key: rewardKey++, text: `+${amount.toLocaleString()} XP — ${label}`, sub },
   };
 }
 
-/** Re-evaluate the daily streak after quest changes. */
+/**
+ * Re-evaluate the daily streak after quest changes. Milestone streaks
+ * (7, 30, 50, 100, 365) are written into the Legacy permanently.
+ */
 function reconcileStreak(state: AppState, quests: Quest[]): Partial<AppState> {
   const done = quests.filter((q) => q.done).length;
   const complete = dayIsComplete(done, quests.length);
   if (complete && !state.streakCountedToday) {
     const currentStreak = state.currentStreak + 1;
-    return {
+    const patch: Partial<AppState> = {
       currentStreak,
       longestStreak: Math.max(state.longestStreak, currentStreak),
       streakCountedToday: true,
     };
+    if (LEGACY_STREAK_MILESTONES.includes(currentStreak)) {
+      patch.legacy = [
+        ...state.legacy,
+        {
+          id: `l-streak-${currentStreak}-${Date.now()}`,
+          date: formatLegacyDate(new Date()),
+          title: `${currentStreak}-Day Streak`,
+          detail: `${currentStreak} consecutive days of keeping the promise.`,
+          icon: 'flame',
+          category: 'discipline',
+        },
+      ];
+    }
+    return patch;
   }
   if (!complete && state.streakCountedToday) {
     return { currentStreak: state.currentStreak - 1, streakCountedToday: false };
@@ -148,12 +209,9 @@ function reducer(state: AppState, action: Action): AppState {
         const { level, xp } = applyXp(state.level, state.xp, -quest.xp);
         return { ...state, quests, level, xp, ...reconcileStreak(state, quests) };
       }
-      return {
-        ...state,
-        quests,
-        ...earn(state, quest.xp, `${quest.title} Complete`, quest.category),
-        ...reconcileStreak(state, quests),
-      };
+      const earned = earn(state, quest.xp, `${quest.title} Complete`, quest.category);
+      const afterEarn = { ...state, ...earned };
+      return { ...afterEarn, quests, ...reconcileStreak(afterEarn, quests) };
     }
 
     case 'ADD_WATER': {
@@ -164,13 +222,9 @@ function reducer(state: AppState, action: Action): AppState {
         q.category === 'water' ? { ...q, progress: waterOz, done: q.done || hitGoal } : q,
       );
       if (hitGoal && water) {
-        return {
-          ...state,
-          waterOz,
-          quests,
-          ...earn(state, water.xp, 'Water Goal Hit', 'water'),
-          ...reconcileStreak(state, quests),
-        };
+        const earned = earn(state, water.xp, 'Water Goal Hit', 'water');
+        const afterEarn = { ...state, ...earned };
+        return { ...afterEarn, waterOz, quests, ...reconcileStreak(afterEarn, quests) };
       }
       return { ...state, waterOz, quests };
     }
@@ -195,13 +249,9 @@ function reducer(state: AppState, action: Action): AppState {
         q.category === 'nutrition' ? { ...q, progress: protein, done: q.done || hitGoal } : q,
       );
       if (hitGoal && proteinQuest) {
-        return {
-          ...state,
-          meals,
-          quests,
-          ...earn(state, proteinQuest.xp, 'Protein Goal Hit', 'nutrition'),
-          ...reconcileStreak(state, quests),
-        };
+        const earned = earn(state, proteinQuest.xp, 'Protein Goal Hit', 'nutrition');
+        const afterEarn = { ...state, ...earned };
+        return { ...afterEarn, meals, quests, ...reconcileStreak(afterEarn, quests) };
       }
       return { ...state, meals, quests };
     }
@@ -210,13 +260,9 @@ function reducer(state: AppState, action: Action): AppState {
       const workout = state.quests.find((q) => q.category === 'workout');
       if (!workout || workout.done) return { ...state, workoutFinished: true };
       const quests = state.quests.map((q) => (q.category === 'workout' ? { ...q, done: true } : q));
-      return {
-        ...state,
-        workoutFinished: true,
-        quests,
-        ...earn(state, workout.xp, 'Workout Complete', 'workout'),
-        ...reconcileStreak(state, quests),
-      };
+      const earned = earn(state, workout.xp, 'Workout Complete', 'workout');
+      const afterEarn = { ...state, ...earned };
+      return { ...afterEarn, workoutFinished: true, quests, ...reconcileStreak(afterEarn, quests) };
     }
 
     case 'USER_CHAT': {

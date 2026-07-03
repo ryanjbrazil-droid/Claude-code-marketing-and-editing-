@@ -93,7 +93,20 @@ export function Segmented<T extends string>({
 
 // ---------- Stat row (character stats) — value animates on change ----------
 
-export function StatRow({ label, value, max = 100, color }: { label: string; value: number; max?: number; color: string }) {
+export function StatRow({
+  label,
+  value,
+  max = 100,
+  color,
+  note,
+}: {
+  label: string;
+  value: number;
+  max?: number;
+  color: string;
+  /** Why this trait moved — the Identity Engine's transparency line. */
+  note?: string;
+}) {
   const anim = useRef(new Animated.Value(value / max)).current;
 
   useEffect(() => {
@@ -101,7 +114,7 @@ export function StatRow({ label, value, max = 100, color }: { label: string; val
   }, [value, max, anim]);
 
   return (
-    <View style={{ gap: 7 }} accessibilityLabel={`${label} ${value}`}>
+    <View style={{ gap: 7 }} accessibilityLabel={note ? `${label} ${value}. ${note}` : `${label} ${value}`}>
       <View style={styles.statRowTop}>
         <Text style={Type.secondary}>{label}</Text>
         <Text style={[Type.cardTitle, { fontVariant: ['tabular-nums'] }]}>{value}</Text>
@@ -117,6 +130,7 @@ export function StatRow({ label, value, max = 100, color }: { label: string; val
           ]}
         />
       </View>
+      {note ? <Text style={[Type.small, { fontSize: 11 }]}>{note}</Text> : null}
     </View>
   );
 }

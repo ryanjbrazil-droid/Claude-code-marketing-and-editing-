@@ -192,3 +192,28 @@ export interface BadgeItem {
   earned: boolean;
   description: string;
 }
+
+// ---------- Legacy (permanent life timeline) ----------
+
+export type LegacyCategory = 'origin' | 'body' | 'strength' | 'discipline' | 'mind' | 'rank';
+
+export interface LegacyEvent {
+  id: string;
+  /** Display date, e.g. "Apr 2, 2026". Legacy events are never deleted. */
+  date: string;
+  title: string;
+  detail: string;
+  icon: IconName;
+  category: LegacyCategory;
+}
+
+// ---------- Identity Engine ----------
+
+/** One earned change to a trait, with the reason it happened. */
+export interface TraitChange {
+  trait: StatKey;
+  delta: number;
+  reason: string;
+  /** YYYY-MM-DD — used to cap how much a trait can move per day. */
+  day: string;
+}

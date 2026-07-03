@@ -4,6 +4,7 @@ import type {
   BadgeItem,
   Exercise,
   Habit,
+  LegacyEvent,
   LoggedMeal,
   MacroTargets,
   MacroTotals,
@@ -278,6 +279,20 @@ export const BADGES: BadgeItem[] = [
   { id: 'b6', title: 'Bookworm', icon: 'book', color: Colors.purple, earned: false, description: 'Read 500 pages total' },
   { id: 'b7', title: '30-Day Streak', icon: 'flame', color: Colors.flameDeep, earned: false, description: 'Complete 30 days in a row' },
   { id: 'b8', title: 'Centurion', icon: 'barbell', color: Colors.primary, earned: false, description: 'Complete 100 workouts' },
+];
+
+/**
+ * Legacy seed — the permanent timeline this user has already written.
+ * Real users start with only "Started Journey"; everything else is earned.
+ */
+export const LEGACY_SEED: LegacyEvent[] = [
+  { id: 'l-origin', date: 'Apr 2, 2026', title: 'Started the Journey', detail: 'Day one. Chose "Build muscle" and never looked back.', icon: 'flag', category: 'origin' },
+  { id: 'l-first-workout', date: 'Apr 3, 2026', title: 'First Workout Logged', detail: 'Push day. It all starts with one session.', icon: 'barbell', category: 'strength' },
+  { id: 'l-streak-7', date: 'Apr 9, 2026', title: '7-Day Streak', detail: 'One full week without breaking the chain.', icon: 'flame', category: 'discipline' },
+  { id: 'l-first-5', date: 'May 1, 2026', title: 'Lost First 5 Pounds', detail: '196.2 → 191.0. The scale finally moved.', icon: 'trending-down', category: 'body' },
+  { id: 'l-workouts-50', date: 'Jun 8, 2026', title: '50 Workouts Completed', detail: 'Fifty sessions of showing up.', icon: 'trophy', category: 'strength' },
+  { id: 'l-bench-225', date: 'Jun 24, 2026', title: 'Bench Press 225', detail: 'Two plates. A lifetime first.', icon: 'medal', category: 'strength' },
+  { id: 'l-rank-bronze', date: 'Jun 28, 2026', title: 'Reached Bronze Rank', detail: 'Level 10 · the first rank earned, not given.', icon: 'shield', category: 'rank' },
 ];
 
 export const ACHIEVEMENTS = [
