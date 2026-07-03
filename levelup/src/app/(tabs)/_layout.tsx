@@ -33,12 +33,10 @@ export default function TabLayout() {
         sceneStyle: { backgroundColor: Colors.bg },
       }}>
       <Tabs.Screen name="index" options={{ title: 'Today', tabBarIcon: tabIcon('flash', 'flash-outline') }} />
-      <Tabs.Screen name="fitness" options={{ title: 'Fitness', tabBarIcon: tabIcon('barbell', 'barbell-outline') }} />
-      <Tabs.Screen name="nutrition" options={{ title: 'Nutrition', tabBarIcon: tabIcon('restaurant', 'restaurant-outline') }} />
-      <Tabs.Screen name="habits" options={{ title: 'Habits', tabBarIcon: tabIcon('checkmark-circle', 'checkmark-circle-outline') }} />
-      <Tabs.Screen name="character" options={{ title: 'Character', tabBarIcon: tabIcon('shield', 'shield-outline') }} />
+      <Tabs.Screen name="fitness" options={{ title: 'Train', tabBarIcon: tabIcon('barbell', 'barbell-outline') }} />
+      <Tabs.Screen name="nutrition" options={{ title: 'Fuel', tabBarIcon: tabIcon('restaurant', 'restaurant-outline') }} />
       <Tabs.Screen name="coach" options={{ title: 'Coach', tabBarIcon: tabIcon('chatbubbles', 'chatbubbles-outline') }} />
-      <Tabs.Screen name="profile" options={{ title: 'Profile', tabBarIcon: tabIcon('person', 'person-outline') }} />
+      <Tabs.Screen name="character" options={{ title: 'You', tabBarIcon: tabIcon('person', 'person-outline') }} />
     </Tabs>
   );
 }

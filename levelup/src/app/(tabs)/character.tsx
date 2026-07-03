@@ -1,9 +1,11 @@
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
+import { router } from 'expo-router';
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { Card } from '@/components/ui/card';
+import { ScalePress } from '@/components/ui/motion';
 import { IconBubble, SectionHeader, StatRow } from '@/components/ui/misc';
 import { ProgressRing } from '@/components/ui/progress-ring';
 import { Screen } from '@/components/ui/screen';
@@ -38,7 +40,18 @@ export default function CharacterScreen() {
     .toUpperCase();
 
   return (
-    <Screen title="Character" subtitle="The player you're building in real life.">
+    <Screen
+      title="You"
+      right={
+        <Pressable
+          onPress={() => router.push('/profile')}
+          accessibilityRole="button"
+          accessibilityLabel="Profile and settings"
+          hitSlop={10}
+          style={styles.gearBtn}>
+          <Ionicons name="settings-outline" size={20} color={Colors.textSecondary} />
+        </Pressable>
+      }>
       {/* Hero card */}
       <Card style={{ overflow: 'hidden', alignItems: 'center', gap: Spacing.md }}>
         <LinearGradient colors={['rgba(167, 139, 250, 0.12)', 'rgba(17, 26, 43, 0)']} style={StyleSheet.absoluteFill} />
@@ -51,7 +64,7 @@ export default function CharacterScreen() {
         <View style={{ alignItems: 'center', gap: 2 }}>
           <Text style={Type.title}>{state.profile.name}</Text>
           <Text style={[Type.secondary, { fontWeight: '700' }]}>
-            Level {state.level} · <Text style={{ color: Colors.xp }}>Rank: {rank}</Text>
+            Level {state.level} · <Text style={{ color: Colors.xp }}>{rank}</Text>
           </Text>
           <Text style={Type.small}>
             {state.xp.toLocaleString()} / {xpMax.toLocaleString()} XP
@@ -78,13 +91,44 @@ export default function CharacterScreen() {
         </View>
       </Card>
 
+      {/* Habits entry — habits live under You now */}
+      <SectionHeader title="Habits" />
+      <ScalePress onPress={() => router.push('/habits')} accessibilityLabel="Open habits">
+        <Card style={styles.habitsLink}>
+          <IconBubble icon="checkmark-done" color={Colors.purple} size={38} />
+          <View style={{ flex: 1 }}>
+            <Text style={Type.cardTitle}>Daily habits</Text>
+            <Text style={[Type.small, { marginTop: 2 }]}>
+              {state.habits.filter((h) => h.doneToday).length} of {state.habits.length} done today ·{' '}
+              {Math.max(...state.habits.map((h) => h.streak))}-day best streak
+            </Text>
+          </View>
+          <Ionicons name="chevron-forward" size={16} color={Colors.textMuted} />
+        </Card>
+      </ScalePress>
+
       {/* Stats */}
       <SectionHeader title="Character stats" />
       <Card style={{ gap: Spacing.md }}>
+        <Text style={Type.small}>Stats grow as you complete matching quests and habits.</Text>
         {(Object.keys(state.stats) as StatKey[]).map((k) => (
           <StatRow key={k} label={k} value={state.stats[k]} color={STAT_COLORS[k]} />
         ))}
       </Card>
+
+      {/* Next unlock — anticipation beats reflection */}
+      {state.currentStreak < 30 ? (
+        <Card style={styles.nextUnlock}>
+          <IconBubble icon="flame" color={Colors.flame} size={38} />
+          <View style={{ flex: 1 }}>
+            <Text style={[Type.label, { color: Colors.flame }]}>Next unlock</Text>
+            <Text style={[Type.cardTitle, { marginTop: 2 }]}>30-Day Streak badge</Text>
+            <Text style={[Type.small, { marginTop: 2 }]}>
+              {30 - state.currentStreak} {30 - state.currentStreak === 1 ? 'day' : 'days'} away — protect the streak and it's yours.
+            </Text>
+          </View>
+        </Card>
+      ) : null}
 
       {/* Badges */}
       <SectionHeader title="Badges" />
@@ -152,4 +196,22 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.sm,
   },
   achieveRow: { flexDirection: 'row', alignItems: 'center', gap: Spacing.md },
+  gearBtn: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: Colors.card,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: Colors.borderStrong,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  habitsLink: { flexDirection: 'row', alignItems: 'center', gap: Spacing.md },
+  nextUnlock: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.md,
+    marginTop: Spacing.md,
+    borderColor: 'rgba(255, 158, 87, 0.3)',
+  },
 });

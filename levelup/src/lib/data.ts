@@ -105,17 +105,22 @@ export const DAILY_QUESTS: Quest[] = [
 
 // ---------- Habits ----------
 
+/**
+ * Habits are deliberately distinct from daily quests — no action earns XP
+ * twice. Quests cover the core loop (workout, protein, water, steps,
+ * reading, sleep); habits cover everything else that builds the person.
+ */
 export const HABITS: Habit[] = [
-  { id: 'h-reading', title: 'Reading', icon: 'book', color: Colors.purple, xp: 100, difficulty: 'Easy', streak: 12, doneToday: false, week: [true, true, false, true, true, true, false] },
   { id: 'h-meditation', title: 'Meditation', icon: 'leaf', color: Colors.success, xp: 100, difficulty: 'Easy', streak: 5, doneToday: false, week: [false, true, true, false, true, true, false] },
   { id: 'h-journaling', title: 'Journaling', icon: 'create', color: Colors.cyan, xp: 100, difficulty: 'Easy', streak: 8, doneToday: false, week: [true, true, true, false, true, true, false] },
   { id: 'h-wake', title: 'Wake up by 6:30 AM', icon: 'sunny', color: Colors.xp, xp: 150, difficulty: 'Medium', streak: 17, doneToday: true, week: [true, true, true, true, true, true, true] },
-  { id: 'h-sleep', title: 'Sleep by 10:30 PM', icon: 'moon', color: Colors.pink, xp: 150, difficulty: 'Medium', streak: 3, doneToday: false, week: [false, false, true, true, false, true, false] },
+  { id: 'h-mobility', title: 'Stretch 10 minutes', icon: 'body', color: Colors.primary, xp: 100, difficulty: 'Easy', streak: 12, doneToday: false, week: [true, true, false, true, true, true, false] },
   { id: 'h-nojunk', title: 'No junk food', icon: 'close-circle', color: Colors.danger, xp: 200, difficulty: 'Hard', streak: 6, doneToday: false, week: [true, false, true, true, true, true, false] },
-  { id: 'h-steps', title: '10,000 steps', icon: 'footsteps', color: Colors.flame, xp: 150, difficulty: 'Medium', streak: 9, doneToday: false, week: [true, true, true, false, true, true, false] },
-  { id: 'h-water', title: '100 oz water', icon: 'water', color: Colors.cyan, xp: 100, difficulty: 'Easy', streak: 21, doneToday: false, week: [true, true, true, true, true, true, false] },
+  { id: 'h-nophone', title: 'No phone in bed', icon: 'phone-portrait', color: Colors.pink, xp: 150, difficulty: 'Medium', streak: 3, doneToday: false, week: [false, false, true, true, false, true, false] },
+  { id: 'h-coldshower', title: 'Cold shower finish', icon: 'snow', color: Colors.cyan, xp: 150, difficulty: 'Hard', streak: 9, doneToday: false, week: [true, true, true, false, true, true, false] },
+  { id: 'h-plan', title: 'Plan tomorrow tonight', icon: 'calendar', color: Colors.flame, xp: 100, difficulty: 'Easy', streak: 21, doneToday: false, week: [true, true, true, true, true, true, false] },
   { id: 'h-budget', title: 'Budget check', icon: 'wallet', color: Colors.success, xp: 100, difficulty: 'Easy', streak: 4, doneToday: false, week: [false, true, false, true, true, true, false] },
-  { id: 'h-learning', title: '30 min learning', icon: 'school', color: Colors.primary, xp: 150, difficulty: 'Medium', streak: 11, doneToday: false, week: [true, true, true, true, false, true, false] },
+  { id: 'h-learning', title: '30 min learning', icon: 'school', color: Colors.purple, xp: 150, difficulty: 'Medium', streak: 11, doneToday: false, week: [true, true, true, true, false, true, false] },
 ];
 
 // ---------- Fitness ----------

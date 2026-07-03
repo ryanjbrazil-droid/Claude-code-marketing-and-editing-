@@ -181,7 +181,7 @@ function ProgressView() {
 export default function FitnessScreen() {
   const [view, setView] = useState<(typeof VIEWS)[number]>('Plan');
   return (
-    <Screen title="Fitness" subtitle="Train with intent. Recover on purpose.">
+    <Screen title="Train">
       <Segmented options={VIEWS} value={view} onChange={setView} />
       {view === 'Plan' ? <PlanView /> : <ProgressView />}
     </Screen>

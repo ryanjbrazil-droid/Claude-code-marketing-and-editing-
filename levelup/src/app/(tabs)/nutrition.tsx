@@ -192,7 +192,7 @@ function PlannerView() {
 export default function NutritionScreen() {
   const [view, setView] = useState<(typeof VIEWS)[number]>('Macros');
   return (
-    <Screen title="Nutrition" subtitle="Fuel decides how the game goes.">
+    <Screen title="Fuel">
       <Segmented options={VIEWS} value={view} onChange={setView} />
       {view === 'Macros' ? <MacrosView /> : view === 'Meals' ? <MealsView /> : <PlannerView />}
     </Screen>

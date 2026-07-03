@@ -149,8 +149,15 @@ export default function WorkoutSessionScreen() {
 
       <View style={[styles.footer, { paddingBottom: insets.bottom + Spacing.md }]}>
         <PillButton
-          label={doneSets === totalSets ? 'Finish Workout · Claim XP' : `Finish Workout (${doneSets}/${totalSets} sets)`}
-          icon="checkmark-circle"
+          label={
+            doneSets === 0
+              ? 'Complete a set to finish'
+              : doneSets === totalSets
+                ? 'Finish Workout · Claim XP'
+                : `Finish Workout (${doneSets}/${totalSets} sets)`
+          }
+          icon={doneSets === 0 ? 'lock-closed' : 'checkmark-circle'}
+          disabled={doneSets === 0}
           onPress={finish}
         />
       </View>

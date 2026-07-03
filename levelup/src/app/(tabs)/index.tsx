@@ -41,7 +41,10 @@ export default function TodayScreen() {
 
   const questsDone = state.quests.filter((q) => q.done).length;
   const questPct = questsDone / state.quests.length;
+  const thresholdCount = Math.ceil(state.quests.length * 0.7);
+  const thresholdPct = (thresholdCount / state.quests.length) * 100;
   const nextQuest = [...state.quests].filter((q) => !q.done).sort((a, b) => b.xp - a.xp)[0];
+  const xpAvailable = state.quests.filter((q) => !q.done).reduce((s, q) => s + q.xp, 0);
   const xpMax = xpForLevel(state.level);
 
   return (
@@ -82,6 +85,11 @@ export default function TodayScreen() {
               <XPBar value={state.xp} max={xpMax} height={8} />
               <Text style={Type.small}>
                 {(xpMax - state.xp).toLocaleString()} XP to level {state.level + 1}
+                {xpAvailable > 0 ? (
+                  <Text style={{ color: Colors.textSecondary }}>
+                    {' '}· +{xpAvailable.toLocaleString()} still on the board today
+                  </Text>
+                ) : null}
               </Text>
             </View>
           </View>
@@ -171,17 +179,33 @@ export default function TodayScreen() {
         </FadeSlideIn>
       ) : null}
 
-      {/* 6 — The quest list. */}
+      {/* 6 — The quest list, with the streak threshold as a visible goal. */}
       <FadeSlideIn delay={200}>
         <SectionHeader
           title="Today's quests"
           right={
             <Text style={[Type.small, questPct >= 0.7 && { color: Colors.success }]}>
               {questsDone} of {state.quests.length}
-              {questPct >= 0.7 ? ' · streak safe' : ''}
             </Text>
           }
         />
+        <View style={styles.streakMeter} accessibilityLabel={`Daily progress ${Math.round(questPct * 100)} percent, streak protected at 70 percent`}>
+          <View style={styles.streakMeterTrack}>
+            <View
+              style={[
+                styles.streakMeterFill,
+                { width: `${Math.min(100, questPct * 100)}%` },
+                questsDone >= thresholdCount && { backgroundColor: Colors.success },
+              ]}
+            />
+            <View style={[styles.streakMeterMark, { left: `${thresholdPct}%` }]} />
+          </View>
+          <Text style={[Type.small, questsDone >= thresholdCount && { color: Colors.success }]}>
+            {questsDone >= thresholdCount
+              ? 'Streak protected — everything else is bonus XP'
+              : `${thresholdCount - questsDone} more to protect your ${state.currentStreak}-day streak`}
+          </Text>
+        </View>
         <View style={{ gap: Spacing.sm, marginTop: Spacing.sm }}>
           {state.quests.map((q) => (
             <QuestCard key={q.id} quest={q} onToggle={(id) => dispatch({ type: 'TOGGLE_QUEST', id })} />
@@ -253,6 +277,26 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.primary,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  streakMeter: { gap: 6, marginTop: Spacing.sm },
+  streakMeterTrack: {
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: 'rgba(255, 255, 255, 0.07)',
+    overflow: 'hidden',
+  },
+  streakMeterFill: {
+    height: '100%',
+    borderRadius: 3,
+    backgroundColor: Colors.flame,
+  },
+  streakMeterMark: {
+    position: 'absolute',
+    top: -1,
+    bottom: -1,
+    width: 2,
+    borderRadius: 1,
+    backgroundColor: Colors.textSecondary,
   },
   quickRow: { flexDirection: 'row', gap: Spacing.sm },
   quickAction: {

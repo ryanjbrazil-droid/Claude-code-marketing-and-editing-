@@ -20,7 +20,7 @@ export const Colors = {
   // Text — AA contrast on card surfaces.
   text: '#F5F7FA',
   textSecondary: '#9BA6B7',
-  textMuted: '#6C7686',
+  textMuted: '#7C8698',
 
   // Primary action — a single confident blue.
   primary: '#4CB8FF',

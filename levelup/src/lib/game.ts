@@ -3,9 +3,15 @@
  * Pure functions so a real backend can reuse or replace them later.
  */
 
-/** XP required to clear a given level (level 12 -> 1,200 XP). */
+/**
+ * XP required to clear a given level.
+ *
+ * Balanced against the daily economy (~1,350 XP from quests + ~1,200 from
+ * habits): early levels land in a day or two, mid-game levels take two to
+ * four perfect days, so a level-up is always earned, never automatic.
+ */
 export function xpForLevel(level: number): number {
-  return level * 100;
+  return level * 400;
 }
 
 /** Apply earned XP to (level, xp), rolling over level-ups. */

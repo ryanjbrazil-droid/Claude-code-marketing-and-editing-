@@ -63,7 +63,7 @@ export default function HabitsScreen() {
   const bestStreak = Math.max(...state.habits.map((h) => h.streak));
 
   return (
-    <Screen title="Habits" subtitle="Small reps. Compounding character.">
+    <Screen title="Habits" back>
       <View style={styles.statsRow}>
         <Card style={styles.statCard}>
           <Text style={Type.stat}>{doneCount}/{state.habits.length}</Text>

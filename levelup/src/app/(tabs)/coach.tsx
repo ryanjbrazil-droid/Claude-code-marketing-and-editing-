@@ -1,6 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import React, { useEffect, useRef, useState } from 'react';
 import {
+  Animated,
   KeyboardAvoidingView,
   Platform,
   Pressable,
@@ -17,23 +18,67 @@ import { Colors, Radius, Spacing, Type } from '@/constants/theme';
 import { QUICK_PROMPTS } from '@/lib/coach';
 import { useApp } from '@/state/app-context';
 
+/** Three-dot typing indicator — the pause is what makes the coach feel present. */
+function TypingDots() {
+  const anims = useRef([new Animated.Value(0.3), new Animated.Value(0.3), new Animated.Value(0.3)]).current;
+
+  useEffect(() => {
+    const loops = anims.map((a, i) =>
+      Animated.loop(
+        Animated.sequence([
+          Animated.delay(i * 160),
+          Animated.timing(a, { toValue: 1, duration: 320, useNativeDriver: true }),
+          Animated.timing(a, { toValue: 0.3, duration: 320, useNativeDriver: true }),
+          Animated.delay((2 - i) * 160),
+        ]),
+      ),
+    );
+    loops.forEach((l) => l.start());
+    return () => loops.forEach((l) => l.stop());
+  }, [anims]);
+
+  return (
+    <View style={styles.bubbleRow}>
+      <IconBubble icon="flash" color={Colors.purple} size={28} />
+      <View style={[styles.bubble, styles.bubbleCoach, styles.typingBubble]}>
+        {anims.map((a, i) => (
+          <Animated.View key={i} style={[styles.typingDot, { opacity: a }]} />
+        ))}
+      </View>
+    </View>
+  );
+}
+
 export default function CoachScreen() {
   const { state, dispatch } = useApp();
   const insets = useSafeAreaInsets();
   const [input, setInput] = useState('');
+  const [typing, setTyping] = useState(false);
   const scrollRef = useRef<ScrollView>(null);
+  const replyTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
-    // Keep the latest message in view.
+    // Keep the latest message (or typing indicator) in view.
     const t = setTimeout(() => scrollRef.current?.scrollToEnd({ animated: true }), 80);
     return () => clearTimeout(t);
-  }, [state.chat.length]);
+  }, [state.chat.length, typing]);
+
+  useEffect(() => {
+    return () => {
+      if (replyTimer.current) clearTimeout(replyTimer.current);
+    };
+  }, []);
 
   const send = (text: string) => {
     const trimmed = text.trim();
-    if (!trimmed) return;
-    dispatch({ type: 'SEND_CHAT', text: trimmed });
+    if (!trimmed || typing) return;
+    dispatch({ type: 'USER_CHAT', text: trimmed });
     setInput('');
+    setTyping(true);
+    replyTimer.current = setTimeout(() => {
+      dispatch({ type: 'COACH_REPLY', prompt: trimmed });
+      setTyping(false);
+    }, 1000 + Math.random() * 500);
   };
 
   return (
@@ -70,6 +115,7 @@ export default function CoachScreen() {
             </View>
           </View>
         ))}
+        {typing ? <TypingDots /> : null}
       </ScrollView>
 
       {/* Quick prompts */}
@@ -142,6 +188,18 @@ const styles = StyleSheet.create({
   bubbleUser: {
     backgroundColor: Colors.primary,
     borderBottomRightRadius: 6,
+  },
+  typingBubble: {
+    flexDirection: 'row',
+    gap: 5,
+    paddingVertical: 16,
+    alignItems: 'center',
+  },
+  typingDot: {
+    width: 7,
+    height: 7,
+    borderRadius: 4,
+    backgroundColor: Colors.textSecondary,
   },
   prompts: { gap: Spacing.sm, paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm },
   prompt: {

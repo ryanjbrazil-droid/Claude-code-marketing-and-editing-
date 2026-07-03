@@ -1,8 +1,10 @@
+import { Ionicons } from '@expo/vector-icons';
+import { router } from 'expo-router';
 import React, { useCallback, useState } from 'react';
-import { RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Pressable, RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { Colors, Spacing, Type } from '@/constants/theme';
+import { Colors, Spacing, TouchTarget, Type } from '@/constants/theme';
 
 interface ScreenProps {
   title?: string;
@@ -10,12 +12,14 @@ interface ScreenProps {
   right?: React.ReactNode;
   children: React.ReactNode;
   scroll?: boolean;
+  /** Renders a back chevron before the title (for pushed stack screens). */
+  back?: boolean;
   /** Optional pull-to-refresh handler. Resolve the promise when done. */
   onRefresh?: () => Promise<void> | void;
 }
 
 /** Standard dark screen shell: safe-area, 20pt gutter, optional refresh. */
-export function Screen({ title, subtitle, right, children, scroll = true, onRefresh }: ScreenProps) {
+export function Screen({ title, subtitle, right, children, scroll = true, back, onRefresh }: ScreenProps) {
   const insets = useSafeAreaInsets();
   const [refreshing, setRefreshing] = useState(false);
 
@@ -30,6 +34,16 @@ export function Screen({ title, subtitle, right, children, scroll = true, onRefr
 
   const header = title ? (
     <View style={styles.header}>
+      {back ? (
+        <Pressable
+          onPress={() => router.back()}
+          accessibilityRole="button"
+          accessibilityLabel="Back"
+          hitSlop={10}
+          style={styles.backBtn}>
+          <Ionicons name="chevron-back" size={22} color={Colors.text} />
+        </Pressable>
+      ) : null}
       <View style={{ flex: 1 }}>
         <Text style={Type.title}>{title}</Text>
         {subtitle ? <Text style={[Type.secondary, { marginTop: 4 }]}>{subtitle}</Text> : null}
@@ -82,5 +96,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: Spacing.sm,
+    gap: Spacing.sm,
+  },
+  backBtn: {
+    width: 36,
+    height: TouchTarget - 8,
+    alignItems: 'flex-start',
+    justifyContent: 'center',
   },
 });

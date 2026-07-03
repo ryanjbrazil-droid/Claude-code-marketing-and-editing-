@@ -73,7 +73,8 @@ type Action =
   | { type: 'COMPLETE_HABIT'; id: string }
   | { type: 'LOG_MEAL'; meal: LoggedMeal }
   | { type: 'FINISH_WORKOUT' }
-  | { type: 'SEND_CHAT'; text: string }
+  | { type: 'USER_CHAT'; text: string }
+  | { type: 'COACH_REPLY'; prompt: string }
   | { type: 'UPDATE_PROFILE'; patch: Partial<UserProfile> }
   | { type: 'CLEAR_REWARD' }
   | { type: 'LOGOUT' };
@@ -218,14 +219,18 @@ function reducer(state: AppState, action: Action): AppState {
       };
     }
 
-    case 'SEND_CHAT': {
+    case 'USER_CHAT': {
       const user: ChatMessage = { id: `u-${Date.now()}`, from: 'user', text: action.text };
+      return { ...state, chat: [...state.chat, user] };
+    }
+
+    case 'COACH_REPLY': {
       const coach: ChatMessage = {
         id: `c-${Date.now()}`,
         from: 'coach',
-        text: coachReply(action.text, state.profile.coachPersonality),
+        text: coachReply(action.prompt, state.profile.coachPersonality),
       };
-      return { ...state, chat: [...state.chat, user, coach] };
+      return { ...state, chat: [...state.chat, coach] };
     }
 
     case 'UPDATE_PROFILE':
@@ -243,12 +248,11 @@ function reducer(state: AppState, action: Action): AppState {
 }
 
 function categoryForHabit(habit: Habit): string {
-  if (habit.id.includes('read') || habit.id.includes('learning')) return 'reading';
-  if (habit.id.includes('meditation')) return 'meditation';
-  if (habit.id.includes('journal')) return 'journaling';
-  if (habit.id.includes('sleep') || habit.id.includes('wake')) return 'sleep';
-  if (habit.id.includes('steps')) return 'steps';
-  if (habit.id.includes('water')) return 'water';
+  if (habit.id.includes('learning')) return 'reading';
+  if (habit.id.includes('meditation') || habit.id.includes('coldshower')) return 'meditation';
+  if (habit.id.includes('journal') || habit.id.includes('plan') || habit.id.includes('budget')) return 'journaling';
+  if (habit.id.includes('wake') || habit.id.includes('nophone')) return 'sleep';
+  if (habit.id.includes('mobility')) return 'workout';
   return 'nutrition';
 }
 

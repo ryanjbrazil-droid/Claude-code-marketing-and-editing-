@@ -23,7 +23,7 @@ export default function ProfileScreen() {
   const [remindCoach, setRemindCoach] = useState(false);
 
   return (
-    <Screen title="Profile" subtitle="Your account, plan, and settings.">
+    <Screen title="Profile" back>
       {/* Identity */}
       <Card style={styles.identity}>
         <View style={styles.avatar}>
