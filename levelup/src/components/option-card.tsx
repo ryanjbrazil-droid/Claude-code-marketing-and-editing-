@@ -19,7 +19,10 @@ export function OptionCard({ label, description, icon, color = Colors.primary, s
   return (
     <Pressable
       onPress={onPress}
-      style={({ pressed }) => [styles.card, selected && styles.selected, pressed && { opacity: 0.85 }]}>
+      accessibilityRole="radio"
+      accessibilityState={{ selected }}
+      accessibilityLabel={description ? `${label}. ${description}` : label}
+      style={({ pressed }) => [styles.card, selected && styles.selected, pressed && { backgroundColor: Colors.cardPressed }]}>
       <View style={[styles.icon, { backgroundColor: `${color}22` }]}>
         <Ionicons name={icon} size={22} color={color} />
       </View>
@@ -28,7 +31,7 @@ export function OptionCard({ label, description, icon, color = Colors.primary, s
         {description ? <Text style={[Type.small, { marginTop: 2 }]}>{description}</Text> : null}
       </View>
       <View style={[styles.radio, selected && styles.radioSelected]}>
-        {selected ? <Ionicons name="checkmark" size={14} color="#04121D" /> : null}
+        {selected ? <Ionicons name="checkmark" size={14} color="#06131D" /> : null}
       </View>
     </Pressable>
   );
@@ -40,10 +43,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: Spacing.md,
     backgroundColor: Colors.card,
-    borderRadius: Radius.md,
+    borderRadius: Radius.lg,
     borderWidth: 1.5,
     borderColor: Colors.border,
     padding: Spacing.lg,
+    minHeight: 72,
   },
   selected: {
     borderColor: Colors.primary,

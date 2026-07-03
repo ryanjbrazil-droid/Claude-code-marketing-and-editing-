@@ -139,7 +139,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   rankPillActive: {
-    borderColor: 'rgba(250, 204, 21, 0.5)',
+    borderColor: 'rgba(247, 201, 72, 0.5)',
     backgroundColor: Colors.xpSoft,
   },
   badgeGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.sm },

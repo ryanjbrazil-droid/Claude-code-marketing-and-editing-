@@ -1,10 +1,11 @@
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import React from 'react';
-import { Pressable, StyleSheet, Text, View, type ViewStyle } from 'react-native';
+import { StyleSheet, Text, View, type ViewStyle } from 'react-native';
 
-import { Colors, Radius, Shadow, Spacing } from '@/constants/theme';
+import { Colors, Radius, Shadow, Spacing, TouchTarget, Type } from '@/constants/theme';
 import type { IconName } from '@/lib/types';
+import { ScalePress } from './motion';
 
 interface PillButtonProps {
   label: string;
@@ -15,52 +16,50 @@ interface PillButtonProps {
   style?: ViewStyle;
 }
 
+/**
+ * The app's one button. Primary = the single most important action on a
+ * screen (gradient + glow); secondary = quiet outline; ghost = text-level.
+ */
 export function PillButton({ label, onPress, variant = 'primary', icon, disabled, style }: PillButtonProps) {
   const content = (
     <View style={styles.row}>
-      {icon ? (
-        <Ionicons
-          name={icon}
-          size={18}
-          color={variant === 'primary' ? '#04121D' : Colors.text}
-        />
-      ) : null}
+      {icon ? <Ionicons name={icon} size={18} color={variant === 'primary' ? '#06131D' : Colors.text} /> : null}
       <Text style={[styles.label, variant === 'primary' ? styles.labelPrimary : null]}>{label}</Text>
     </View>
   );
 
   if (variant === 'primary') {
     return (
-      <Pressable onPress={onPress} disabled={disabled} style={({ pressed }) => [pressed && styles.pressed, disabled && styles.disabled, style]}>
+      <ScalePress
+        onPress={onPress}
+        disabled={disabled}
+        accessibilityLabel={label}
+        style={style}>
         <LinearGradient
           colors={[Colors.primary, Colors.primaryDeep]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
-          style={[styles.base, Shadow.glow(Colors.primary, 14, 0.45)]}>
+          style={[styles.base, Shadow.glow(Colors.primary, 14, 0.35)]}>
           {content}
         </LinearGradient>
-      </Pressable>
+      </ScalePress>
     );
   }
 
   return (
-    <Pressable
+    <ScalePress
       onPress={onPress}
       disabled={disabled}
-      style={({ pressed }) => [
-        styles.base,
-        variant === 'secondary' ? styles.secondary : styles.ghost,
-        pressed && styles.pressed,
-        disabled && styles.disabled,
-        style,
-      ]}>
+      accessibilityLabel={label}
+      style={[styles.base, variant === 'secondary' ? styles.secondary : styles.ghost, style]}>
       {content}
-    </Pressable>
+    </ScalePress>
   );
 }
 
 const styles = StyleSheet.create({
   base: {
+    minHeight: TouchTarget + 8,
     borderRadius: Radius.full,
     paddingVertical: 14,
     paddingHorizontal: Spacing.xl,
@@ -76,8 +75,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
   row: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm },
-  label: { fontSize: 15, fontWeight: '700', color: Colors.text, letterSpacing: 0.2 },
-  labelPrimary: { color: '#04121D' },
-  pressed: { opacity: 0.85, transform: [{ scale: 0.98 }] },
-  disabled: { opacity: 0.4 },
+  label: { ...Type.button, color: Colors.text },
+  labelPrimary: { color: '#06131D' },
 });

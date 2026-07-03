@@ -2,6 +2,7 @@ import React from 'react';
 import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { FadeSlideIn } from '@/components/ui/motion';
 import { PillButton } from '@/components/ui/pill-button';
 import { Colors, Spacing, Type } from '@/constants/theme';
 
@@ -41,9 +42,13 @@ export function OnboardingShell({
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled">
-        <Text style={Type.hero}>{title}</Text>
-        {subtitle ? <Text style={[Type.secondary, styles.subtitle]}>{subtitle}</Text> : null}
-        <View style={styles.body}>{children}</View>
+        <FadeSlideIn>
+          <Text style={Type.hero}>{title}</Text>
+          {subtitle ? <Text style={[Type.secondary, styles.subtitle]}>{subtitle}</Text> : null}
+        </FadeSlideIn>
+        <FadeSlideIn delay={80} style={styles.body}>
+          {children}
+        </FadeSlideIn>
       </ScrollView>
 
       {onNext ? (
@@ -66,7 +71,7 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 4,
     borderRadius: 2,
-    backgroundColor: 'rgba(148, 184, 255, 0.14)',
+    backgroundColor: 'rgba(255, 255, 255, 0.08)',
   },
   dotActive: { backgroundColor: Colors.primary },
   content: {

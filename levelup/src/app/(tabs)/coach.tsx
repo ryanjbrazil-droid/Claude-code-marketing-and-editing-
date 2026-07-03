@@ -66,7 +66,7 @@ export default function CoachScreen() {
           <View key={m.id} style={[styles.bubbleRow, m.from === 'user' && { justifyContent: 'flex-end' }]}>
             {m.from === 'coach' ? <IconBubble icon="flash" color={Colors.purple} size={28} /> : null}
             <View style={[styles.bubble, m.from === 'user' ? styles.bubbleUser : styles.bubbleCoach]}>
-              <Text style={[Type.body, { lineHeight: 21 }, m.from === 'user' && { color: '#04121D' }]}>{m.text}</Text>
+              <Text style={[Type.body, { lineHeight: 21 }, m.from === 'user' && { color: '#06131D' }]}>{m.text}</Text>
             </View>
           </View>
         ))}
@@ -97,7 +97,7 @@ export default function CoachScreen() {
           returnKeyType="send"
         />
         <Pressable onPress={() => send(input)} style={styles.sendBtn}>
-          <Ionicons name="arrow-up" size={20} color="#04121D" />
+          <Ionicons name="arrow-up" size={20} color="#06131D" />
         </Pressable>
       </View>
     </KeyboardAvoidingView>
@@ -147,8 +147,10 @@ const styles = StyleSheet.create({
   prompt: {
     borderRadius: Radius.full,
     borderWidth: 1,
-    borderColor: 'rgba(56, 189, 248, 0.35)',
+    borderColor: 'rgba(76, 184, 255, 0.35)',
     backgroundColor: Colors.primarySoft,
+    minHeight: 38,
+    justifyContent: 'center',
     paddingVertical: 8,
     paddingHorizontal: 14,
   },

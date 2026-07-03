@@ -200,7 +200,7 @@ const styles = StyleSheet.create({
     borderColor: Colors.border,
     padding: Spacing.md,
   },
-  splitToday: { borderColor: 'rgba(56, 189, 248, 0.4)', backgroundColor: 'rgba(56, 189, 248, 0.06)' },
+  splitToday: { borderColor: 'rgba(76, 184, 255, 0.4)', backgroundColor: 'rgba(76, 184, 255, 0.06)' },
   splitDay: { width: 36 },
   todayPill: {
     backgroundColor: Colors.primarySoft,
@@ -221,7 +221,7 @@ const styles = StyleSheet.create({
   chartBar: {
     width: '70%',
     borderRadius: 6,
-    backgroundColor: 'rgba(56, 189, 248, 0.35)',
+    backgroundColor: 'rgba(76, 184, 255, 0.35)',
   },
   prRow: { flexDirection: 'row', alignItems: 'center', gap: Spacing.md },
   measureGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.sm },

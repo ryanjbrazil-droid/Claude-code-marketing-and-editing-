@@ -127,15 +127,15 @@ const styles = StyleSheet.create({
     borderRadius: 28,
     backgroundColor: Colors.primarySoft,
     borderWidth: 1,
-    borderColor: 'rgba(56, 189, 248, 0.4)',
+    borderColor: 'rgba(76, 184, 255, 0.4)',
     alignItems: 'center',
     justifyContent: 'center',
   },
   avatarText: { color: Colors.primary, fontSize: 24, fontWeight: '900' },
   proCard: {
     gap: Spacing.md,
-    borderColor: 'rgba(250, 204, 21, 0.35)',
-    backgroundColor: 'rgba(250, 204, 21, 0.05)',
+    borderColor: 'rgba(247, 201, 72, 0.35)',
+    backgroundColor: 'rgba(247, 201, 72, 0.05)',
   },
   proHeader: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm },
   trialPill: {

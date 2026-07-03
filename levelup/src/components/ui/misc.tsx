@@ -1,15 +1,16 @@
 import { Ionicons } from '@expo/vector-icons';
-import React from 'react';
-import { Pressable, StyleSheet, Text, View, type ViewStyle } from 'react-native';
+import React, { useEffect, useRef } from 'react';
+import { Animated, Pressable, StyleSheet, Text, View, type ViewStyle } from 'react-native';
 
-import { Colors, Radius, Spacing, Type } from '@/constants/theme';
+import { Colors, Radius, Spacing, TouchTarget, Type } from '@/constants/theme';
+import { hapticSelect } from '@/lib/haptics';
 import type { IconName } from '@/lib/types';
 
 // ---------- SectionHeader ----------
 
 export function SectionHeader({ title, right }: { title: string; right?: React.ReactNode }) {
   return (
-    <View style={styles.sectionHeader}>
+    <View style={styles.sectionHeader} accessibilityRole="header">
       <Text style={Type.label}>{title}</Text>
       {right}
     </View>
@@ -20,9 +21,11 @@ export function SectionHeader({ title, right }: { title: string; right?: React.R
 
 export function StreakFlame({ days, compact }: { days: number; compact?: boolean }) {
   return (
-    <View style={[styles.flamePill, compact && { paddingVertical: 4, paddingHorizontal: 10 }]}>
+    <View
+      style={[styles.flamePill, compact && { paddingVertical: 6, paddingHorizontal: 12 }]}
+      accessibilityLabel={`${days} day streak`}>
       <Ionicons name="flame" size={compact ? 14 : 18} color={Colors.flame} />
-      <Text style={[styles.flameText, compact && { fontSize: 13 }]}>{days}</Text>
+      <Text style={[styles.flameText, compact && { fontSize: 14 }]}>{days}</Text>
       {!compact && <Text style={styles.flameSub}>day streak</Text>}
     </View>
   );
@@ -41,9 +44,15 @@ interface ChipProps {
 export function Chip({ label, selected, onPress, icon, style }: ChipProps) {
   return (
     <Pressable
-      onPress={onPress}
-      style={({ pressed }) => [styles.chip, selected && styles.chipSelected, pressed && { opacity: 0.8 }, style]}>
-      {icon ? <Ionicons name={icon} size={16} color={selected ? Colors.primary : Colors.textSecondary} /> : null}
+      onPress={() => {
+        hapticSelect();
+        onPress?.();
+      }}
+      accessibilityRole="button"
+      accessibilityState={{ selected: !!selected }}
+      hitSlop={6}
+      style={({ pressed }) => [styles.chip, selected && styles.chipSelected, pressed && { opacity: 0.75 }, style]}>
+      {icon ? <Ionicons name={icon} size={15} color={selected ? Colors.primary : Colors.textSecondary} /> : null}
       <Text style={[styles.chipLabel, selected && styles.chipLabelSelected]}>{label}</Text>
     </Pressable>
   );
@@ -61,30 +70,52 @@ export function Segmented<T extends string>({
   onChange: (v: T) => void;
 }) {
   return (
-    <View style={styles.segmentTrack}>
-      {options.map((opt) => (
-        <Pressable
-          key={opt}
-          onPress={() => onChange(opt)}
-          style={[styles.segment, value === opt && styles.segmentActive]}>
-          <Text style={[styles.segmentLabel, value === opt && styles.segmentLabelActive]}>{opt}</Text>
-        </Pressable>
-      ))}
+    <View style={styles.segmentTrack} accessibilityRole="tablist">
+      {options.map((opt) => {
+        const active = value === opt;
+        return (
+          <Pressable
+            key={opt}
+            onPress={() => {
+              hapticSelect();
+              onChange(opt);
+            }}
+            accessibilityRole="tab"
+            accessibilityState={{ selected: active }}
+            style={[styles.segment, active && styles.segmentActive]}>
+            <Text style={[styles.segmentLabel, active && styles.segmentLabelActive]}>{opt}</Text>
+          </Pressable>
+        );
+      })}
     </View>
   );
 }
 
-// ---------- Stat row (character stats) ----------
+// ---------- Stat row (character stats) — value animates on change ----------
 
 export function StatRow({ label, value, max = 100, color }: { label: string; value: number; max?: number; color: string }) {
+  const anim = useRef(new Animated.Value(value / max)).current;
+
+  useEffect(() => {
+    Animated.spring(anim, { toValue: Math.min(1, value / max), useNativeDriver: false, friction: 9 }).start();
+  }, [value, max, anim]);
+
   return (
-    <View style={{ gap: 6 }}>
+    <View style={{ gap: 7 }} accessibilityLabel={`${label} ${value}`}>
       <View style={styles.statRowTop}>
         <Text style={Type.secondary}>{label}</Text>
-        <Text style={[Type.body, { fontWeight: '800' }]}>{value}</Text>
+        <Text style={[Type.cardTitle, { fontVariant: ['tabular-nums'] }]}>{value}</Text>
       </View>
       <View style={styles.statTrack}>
-        <View style={[styles.statFill, { width: `${Math.min(100, (value / max) * 100)}%`, backgroundColor: color }]} />
+        <Animated.View
+          style={[
+            styles.statFill,
+            {
+              backgroundColor: color,
+              width: anim.interpolate({ inputRange: [0, 1], outputRange: ['0%', '100%'] }),
+            },
+          ]}
+        />
       </View>
     </View>
   );
@@ -98,8 +129,8 @@ export function IconBubble({ icon, color, size = 40 }: { icon: IconName; color: 
       style={{
         width: size,
         height: size,
-        borderRadius: size / 3,
-        backgroundColor: `${color}22`,
+        borderRadius: size * 0.32,
+        backgroundColor: `${color}1E`,
         alignItems: 'center',
         justifyContent: 'center',
       }}>
@@ -112,7 +143,7 @@ export function IconBubble({ icon, color, size = 40 }: { icon: IconName; color: 
 
 export function SettingRow({
   icon,
-  color = Colors.primary,
+  color = Colors.textSecondary,
   label,
   value,
   onPress,
@@ -126,11 +157,22 @@ export function SettingRow({
   right?: React.ReactNode;
 }) {
   return (
-    <Pressable onPress={onPress} disabled={!onPress} style={({ pressed }) => [styles.settingRow, pressed && { opacity: 0.7 }]}>
-      <IconBubble icon={icon} color={color} size={34} />
-      <Text style={[Type.body, { flex: 1 }]}>{label}</Text>
-      {value ? <Text style={Type.secondary}>{value}</Text> : null}
-      {right ?? (onPress ? <Ionicons name="chevron-forward" size={16} color={Colors.textMuted} /> : null)}
+    <Pressable
+      onPress={onPress}
+      disabled={!onPress}
+      accessibilityRole={onPress ? 'button' : undefined}
+      accessibilityLabel={value ? `${label}, ${value}` : label}
+      style={({ pressed }) => [styles.settingRow, pressed && { opacity: 0.65 }]}>
+      <IconBubble icon={icon} color={color} size={32} />
+      <Text style={[Type.body, { flex: 1 }]} numberOfLines={1}>
+        {label}
+      </Text>
+      {value ? (
+        <Text style={[Type.secondary, { maxWidth: '45%' }]} numberOfLines={1}>
+          {value}
+        </Text>
+      ) : null}
+      {right ?? (onPress ? <Ionicons name="chevron-forward" size={15} color={Colors.textMuted} /> : null)}
     </Pressable>
   );
 }
@@ -140,32 +182,34 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginTop: Spacing.sm,
+    marginTop: Spacing.md,
     marginBottom: 2,
+    minHeight: 18,
   },
   flamePill: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
     backgroundColor: Colors.flameSoft,
-    borderColor: 'rgba(251, 146, 60, 0.35)',
+    borderColor: 'rgba(255, 158, 87, 0.28)',
     borderWidth: 1,
     borderRadius: Radius.full,
     paddingVertical: 6,
     paddingHorizontal: 12,
   },
-  flameText: { color: Colors.flame, fontSize: 16, fontWeight: '800' },
+  flameText: { color: Colors.flame, fontSize: 16, fontWeight: '800', fontVariant: ['tabular-nums'] },
   flameSub: { color: Colors.textSecondary, fontSize: 12, fontWeight: '600' },
   chip: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    paddingVertical: 10,
+    minHeight: 40,
+    paddingVertical: 9,
     paddingHorizontal: 14,
     borderRadius: Radius.full,
     borderWidth: 1,
-    borderColor: Colors.border,
-    backgroundColor: Colors.card,
+    borderColor: Colors.borderStrong,
+    backgroundColor: 'transparent',
   },
   chipSelected: {
     borderColor: Colors.primary,
@@ -176,32 +220,34 @@ const styles = StyleSheet.create({
   segmentTrack: {
     flexDirection: 'row',
     backgroundColor: Colors.bgElevated,
-    borderRadius: Radius.full,
-    borderWidth: 1,
-    borderColor: Colors.border,
-    padding: 4,
+    borderRadius: Radius.md,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: Colors.borderStrong,
+    padding: 3,
   },
   segment: {
     flex: 1,
-    paddingVertical: 8,
-    borderRadius: Radius.full,
+    minHeight: 36,
+    borderRadius: Radius.md - 3,
     alignItems: 'center',
+    justifyContent: 'center',
   },
-  segmentActive: { backgroundColor: Colors.primarySoft },
-  segmentLabel: { color: Colors.textMuted, fontSize: 13, fontWeight: '700' },
-  segmentLabelActive: { color: Colors.primary },
+  segmentActive: { backgroundColor: Colors.card },
+  segmentLabel: { color: Colors.textMuted, fontSize: 13, fontWeight: '600' },
+  segmentLabelActive: { color: Colors.text, fontWeight: '700' },
   statRowTop: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   statTrack: {
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: 'rgba(148, 184, 255, 0.10)',
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: 'rgba(255, 255, 255, 0.07)',
     overflow: 'hidden',
   },
-  statFill: { height: '100%', borderRadius: 4 },
+  statFill: { height: '100%', borderRadius: 3 },
   settingRow: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: Spacing.md,
-    paddingVertical: 10,
+    minHeight: TouchTarget,
+    paddingVertical: 6,
   },
 });

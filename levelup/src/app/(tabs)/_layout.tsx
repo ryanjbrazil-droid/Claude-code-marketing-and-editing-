@@ -25,10 +25,11 @@ export default function TabLayout() {
         tabBarInactiveTintColor: Colors.textMuted,
         tabBarStyle: {
           backgroundColor: Colors.tabBar,
-          borderTopColor: Colors.border,
-          borderTopWidth: 1,
+          borderTopColor: Colors.borderStrong,
+          borderTopWidth: 0.5,
+          paddingTop: 6,
         },
-        tabBarLabelStyle: { fontSize: 10, fontWeight: '700' },
+        tabBarLabelStyle: { fontSize: 10, fontWeight: '600', letterSpacing: 0.1 },
         sceneStyle: { backgroundColor: Colors.bg },
       }}>
       <Tabs.Screen name="index" options={{ title: 'Today', tabBarIcon: tabIcon('flash', 'flash-outline') }} />

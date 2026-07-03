@@ -19,7 +19,7 @@ export function ProgressRing({
   strokeWidth = 8,
   progress,
   color = Colors.primary,
-  trackColor = 'rgba(148, 184, 255, 0.12)',
+  trackColor = 'rgba(255, 255, 255, 0.07)',
   children,
 }: ProgressRingProps) {
   const r = (size - strokeWidth) / 2;

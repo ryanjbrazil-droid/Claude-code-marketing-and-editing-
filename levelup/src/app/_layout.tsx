@@ -5,6 +5,7 @@ import React, { useEffect } from 'react';
 import { View } from 'react-native';
 
 import { RewardToast } from '@/components/ui/reward-toast';
+import { TodaySkeleton } from '@/components/ui/skeleton';
 import { Colors } from '@/constants/theme';
 import { AppProvider, useApp } from '@/state/app-context';
 
@@ -30,14 +31,20 @@ function Root() {
     if (state.hydrated) SplashScreen.hideAsync();
   }, [state.hydrated]);
 
-  if (!state.hydrated) return <View style={{ flex: 1, backgroundColor: Colors.bg }} />;
+  // Skeleton instead of a blank flash while persisted state loads.
+  if (!state.hydrated) return <TodaySkeleton />;
 
   return (
     <View style={{ flex: 1, backgroundColor: Colors.bg }}>
-      <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: Colors.bg } }}>
+      <Stack
+        screenOptions={{
+          headerShown: false,
+          contentStyle: { backgroundColor: Colors.bg },
+          animation: 'fade_from_bottom',
+        }}>
         <Stack.Screen name="onboarding" />
         <Stack.Screen name="(tabs)" />
-        <Stack.Screen name="workout-session" options={{ presentation: 'fullScreenModal' }} />
+        <Stack.Screen name="workout-session" options={{ presentation: 'fullScreenModal', animation: 'slide_from_bottom' }} />
       </Stack>
       <RewardToast />
     </View>

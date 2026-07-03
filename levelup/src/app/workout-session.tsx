@@ -131,7 +131,7 @@ export default function WorkoutSessionScreen() {
                 <Text style={Type.secondary}>{s.weight > 0 ? `${s.weight} lb` : 'bodyweight'}</Text>
                 <View style={{ flex: 1 }} />
                 <View style={[styles.setCheck, s.done && styles.setCheckDone]}>
-                  {s.done ? <Ionicons name="checkmark" size={14} color="#04121D" /> : null}
+                  {s.done ? <Ionicons name="checkmark" size={14} color="#06131D" /> : null}
                 </View>
               </Pressable>
             ))}
@@ -184,7 +184,7 @@ const styles = StyleSheet.create({
     marginTop: Spacing.md,
     backgroundColor: Colors.flameSoft,
     borderWidth: 1,
-    borderColor: 'rgba(251, 146, 60, 0.4)',
+    borderColor: 'rgba(255, 158, 87, 0.4)',
     borderRadius: Radius.md,
     paddingVertical: 10,
     paddingHorizontal: Spacing.lg,
@@ -211,8 +211,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.md,
   },
   setRowDone: {
-    borderColor: 'rgba(52, 211, 153, 0.35)',
-    backgroundColor: 'rgba(52, 211, 153, 0.07)',
+    borderColor: 'rgba(74, 222, 156, 0.35)',
+    backgroundColor: 'rgba(74, 222, 156, 0.07)',
   },
   setNum: { width: 44 },
   setCheck: {

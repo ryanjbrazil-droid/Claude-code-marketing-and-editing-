@@ -38,7 +38,7 @@ function HabitCard({ habit, onComplete }: { habit: Habit; onComplete: () => void
           disabled={habit.doneToday}
           style={[styles.completeBtn, habit.doneToday && styles.completeBtnDone]}>
           {habit.doneToday ? (
-            <Ionicons name="checkmark" size={18} color="#04121D" />
+            <Ionicons name="checkmark" size={18} color="#06131D" />
           ) : (
             <Text style={[Type.small, { color: Colors.primary }]}>Do it</Text>
           )}
@@ -95,8 +95,8 @@ const styles = StyleSheet.create({
   top: { flexDirection: 'row', alignItems: 'center', gap: Spacing.md },
   metaRow: { flexDirection: 'row', alignItems: 'center', gap: 5, marginTop: 3 },
   completeBtn: {
-    minWidth: 56,
-    height: 34,
+    minWidth: 64,
+    height: 40,
     borderRadius: Radius.full,
     borderWidth: 1.5,
     borderColor: Colors.primary,

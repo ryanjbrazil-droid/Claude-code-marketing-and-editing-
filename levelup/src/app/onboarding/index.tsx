@@ -14,7 +14,7 @@ export default function Welcome() {
   return (
     <View style={styles.root}>
       <LinearGradient
-        colors={['rgba(56, 189, 248, 0.18)', 'rgba(7, 11, 18, 0)']}
+        colors={['rgba(76, 184, 255, 0.18)', 'rgba(7, 11, 18, 0)']}
         style={StyleSheet.absoluteFill}
       />
       <View style={styles.center}>
@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
     borderRadius: 32,
     backgroundColor: Colors.primarySoft,
     borderWidth: 1,
-    borderColor: 'rgba(56, 189, 248, 0.4)',
+    borderColor: 'rgba(76, 184, 255, 0.4)',
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: Spacing.xxl,

@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { Card } from '@/components/ui/card';
+import { EmptyState } from '@/components/ui/empty-state';
 import { Chip, IconBubble, SectionHeader, Segmented } from '@/components/ui/misc';
 import { PillButton } from '@/components/ui/pill-button';
 import { ProgressRing } from '@/components/ui/progress-ring';
@@ -105,9 +106,11 @@ function MealsView() {
               }
             />
             {meals.length === 0 ? (
-              <Card style={{ paddingVertical: Spacing.md }}>
-                <Text style={Type.small}>Nothing logged yet.</Text>
-              </Card>
+              <EmptyState
+                icon="restaurant-outline"
+                message={`No ${slot.toLowerCase()} logged yet`}
+                hint="Tap “Add meal” to log one in two seconds"
+              />
             ) : (
               meals.map((m) => (
                 <Card key={m.id} style={styles.mealRow}>
