@@ -91,9 +91,47 @@ const REPLIES: Record<QuickPrompt, Record<CoachPersonality, string>> = {
   },
 };
 
-export function coachReply(prompt: string, personality: CoachPersonality): string {
+/** What the coach can see when it replies — the witnessing context. */
+export interface CoachContext {
+  streak: number;
+  level: number;
+  /** Most recent trait gain, e.g. { trait: 'Discipline', reason: 'Workout complete' } */
+  lastTrait?: { trait: string; reason: string };
+  /** Title of the most recent Legacy entry. */
+  lastLegacy?: string;
+}
+
+/**
+ * The witnessing line: one sentence that proves the coach was watching.
+ * Cites real traits, real streaks, real Legacy — never generic praise.
+ */
+function witness(prompt: string, ctx: CoachContext): string | null {
+  if (prompt === 'Motivate me' && ctx.lastLegacy) {
+    return ` "${ctx.lastLegacy}" is already written in your Legacy. Nobody can take that back — go add to it.`;
+  }
+  if (prompt === 'Push me harder' && ctx.lastTrait) {
+    return ` Your ${ctx.lastTrait.trait} just moved from ${ctx.lastTrait.reason.toLowerCase()} — that's who you're becoming. Keep feeding it.`;
+  }
+  if (prompt === 'Review my week' && ctx.streak > 0) {
+    return ` And zoom out: ${ctx.streak} straight days. That's not a week, that's a pattern.`;
+  }
+  if (prompt === 'Make today easier' && ctx.streak > 0) {
+    return ` Your streak can bend without breaking. And even if it broke — the ${ctx.streak} days would still be yours. They're already part of you.`;
+  }
+  if (ctx.lastTrait) {
+    // Default witnessing for other prompts.
+    return ` For what it's worth — you didn't just check a box today. You proved ${ctx.lastTrait.trait} again.`;
+  }
+  return null;
+}
+
+export function coachReply(prompt: string, personality: CoachPersonality, ctx?: CoachContext): string {
   const known = REPLIES[prompt as QuickPrompt];
-  if (known) return known[personality];
+  if (known) {
+    const base = known[personality];
+    const seen = ctx ? witness(prompt, ctx) : null;
+    return seen ? base + seen : base;
+  }
 
   // Freeform fallback, flavored by personality.
   switch (personality) {

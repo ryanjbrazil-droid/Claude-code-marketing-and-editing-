@@ -62,7 +62,9 @@ export function QuestCard({ quest, onToggle }: QuestCardProps) {
               </Text>
             </View>
           ) : (
-            <Text style={[Type.small, { marginTop: 2 }]}>{quest.done ? 'Complete' : `+${quest.xp} XP`}</Text>
+            <Text style={[Type.small, { marginTop: 2 }, quest.done && { color: Colors.success }]}>
+              {quest.done ? 'Proof added' : `+${quest.xp} XP`}
+            </Text>
           )}
         </View>
 

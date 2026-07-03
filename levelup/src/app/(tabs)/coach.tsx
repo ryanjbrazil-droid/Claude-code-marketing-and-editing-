@@ -92,7 +92,7 @@ export default function CoachScreen() {
         <View style={{ flex: 1 }}>
           <Text style={Type.heading}>Coach</Text>
           <Text style={Type.small}>
-            {state.profile.coachPersonality} mode · knows your plan, streak & macros
+            {state.profile.coachPersonality} mode · witness to your whole journey
           </Text>
         </View>
         <View style={styles.livePill}>

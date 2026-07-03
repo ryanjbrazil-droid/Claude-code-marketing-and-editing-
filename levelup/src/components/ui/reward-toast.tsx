@@ -60,7 +60,9 @@ export function RewardToast() {
   const insets = useSafeAreaInsets();
   const anim = useRef(new Animated.Value(0)).current;
   const reward = state.reward;
-  const isLevelUp = !!reward?.sub;
+  // Confetti and the long dwell are reserved for level-ups only —
+  // every toast now carries a sub-line, so match the milestone explicitly.
+  const isLevelUp = !!reward?.sub?.startsWith('LEVEL UP');
 
   useEffect(() => {
     if (!reward) return;

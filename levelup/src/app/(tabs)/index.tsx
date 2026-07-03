@@ -104,15 +104,19 @@ export default function TodayScreen() {
           <ScalePress onPress={() => router.push('/habits')} accessibilityLabel={`${state.currentStreak} day streak`} style={{ flex: 1 }}>
             <Card style={styles.tile}>
               <View style={styles.tileTop}>
-                <Ionicons name="flame" size={16} color={Colors.flame} />
+                <Ionicons name="flame" size={16} color={state.currentStreak > 0 ? Colors.flame : Colors.textMuted} />
                 <Text style={Type.label}>Streak</Text>
               </View>
               <Text style={[Type.stat, { marginTop: 6 }]}>
-                {state.currentStreak}
-                <Text style={styles.tileUnit}> days</Text>
+                {state.currentStreak > 0 ? state.currentStreak : 'Day 1'}
+                {state.currentStreak > 0 ? <Text style={styles.tileUnit}> days</Text> : null}
               </Text>
               <Text style={[Type.small, { marginTop: 2 }]} numberOfLines={1}>
-                {questPct >= 0.7 ? 'Secured for today' : 'Hit 70% of quests to protect it'}
+                {state.currentStreak === 0
+                  ? 'The comeback starts now'
+                  : questPct >= 0.7
+                    ? 'Secured for today'
+                    : 'Hit 70% of quests to protect it'}
               </Text>
             </Card>
           </ScalePress>
@@ -134,6 +138,25 @@ export default function TodayScreen() {
           </ScalePress>
         </View>
       </FadeSlideIn>
+
+      {/* Setback flow — a broken streak is never a broken identity. */}
+      {state.currentStreak === 0 && state.longestStreak > 0 ? (
+        <FadeSlideIn delay={100}>
+          <Card style={styles.comeback}>
+            <Text style={Type.heading}>Your streak ended. Your progress did not.</Text>
+            <Text style={[Type.secondary, { marginTop: 6 }]}>
+              Level {state.level}, {state.legacy.length} Legacy milestones, and every trait you've earned are still
+              yours — your best run of {state.longestStreak} days is written in your record forever. Your streak can
+              end. Your identity cannot.
+            </Text>
+            {nextQuest ? (
+              <Text style={[Type.small, { marginTop: Spacing.sm, color: Colors.flame }]}>
+                Comeback quest: {nextQuest.title} · +{nextQuest.xp} XP
+              </Text>
+            ) : null}
+          </Card>
+        </FadeSlideIn>
+      ) : null}
 
       {/* 4 — The coach's one instruction for today. */}
       <FadeSlideIn delay={120}>
@@ -245,6 +268,10 @@ const styles = StyleSheet.create({
   tile: { flex: 1, paddingVertical: Spacing.lg, minHeight: 104 },
   tileTop: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   tileUnit: { fontSize: 14, fontWeight: '600', color: Colors.textMuted },
+  comeback: {
+    borderColor: 'rgba(255, 158, 87, 0.35)',
+    backgroundColor: 'rgba(255, 158, 87, 0.05)',
+  },
   coachCard: {
     flexDirection: 'row',
     alignItems: 'center',

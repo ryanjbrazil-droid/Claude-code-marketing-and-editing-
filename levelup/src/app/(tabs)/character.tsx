@@ -45,6 +45,7 @@ export default function CharacterScreen() {
   return (
     <Screen
       title="Character"
+      subtitle="The record of who you're becoming."
       right={
         <Pressable
           onPress={() => router.push('/profile')}
@@ -76,6 +77,7 @@ export default function CharacterScreen() {
             {state.xp.toLocaleString()} / {xpMax.toLocaleString()} XP
             {next ? ` · ${next.rank} at level ${next.atLevel}` : ' · Max rank'}
           </Text>
+          <Text style={[Type.small, { fontSize: 11 }]}>On the path since {state.legacy[0]?.date ?? 'day one'}</Text>
         </View>
         <View style={{ alignSelf: 'stretch' }}>
           <XPBar value={state.xp} max={xpMax} />

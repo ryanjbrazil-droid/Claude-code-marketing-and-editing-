@@ -95,7 +95,7 @@ export default function ProfileScreen() {
           </View>
         </View>
         <Text style={[Type.secondary, { lineHeight: 20 }]}>
-          AI coach, adaptive programming, meal planning, and streak protection. Payments arrive in a later release.
+          A coach that remembers everything, a plan that adapts to you, and protection for the record you're building.
         </Text>
         <PillButton label="Manage Plan" variant="secondary" onPress={() => {}} />
       </Card>
@@ -114,7 +114,7 @@ export default function ProfileScreen() {
         variant="secondary"
         onPress={() => dispatch({ type: 'LOGOUT' })}
       />
-      <Text style={[Type.small, { textAlign: 'center' }]}>LevelUp MVP · local data only</Text>
+      <Text style={[Type.small, { textAlign: 'center' }]}>Your record stays on this device.</Text>
     </Screen>
   );
 }

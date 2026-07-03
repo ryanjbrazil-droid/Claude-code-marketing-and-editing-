@@ -130,11 +130,12 @@ function earn(state: AppState, amount: number, label: string, category?: string)
     ];
   }
 
+  // The completion moment speaks identity, not points.
   const sub = leveledUp
-    ? `LEVEL UP! You reached Level ${level} · ${newRank}`
+    ? `LEVEL UP — Level ${level} · ${newRank}. This becomes part of you.`
     : gained.length > 0
-      ? gained.map((t) => `${t} +1`).join(' · ')
-      : undefined;
+      ? `Proof added · ${gained.map((t) => `${t} +1`).join(' · ')}`
+      : 'Proof added';
 
   return {
     level,
@@ -142,7 +143,7 @@ function earn(state: AppState, amount: number, label: string, category?: string)
     stats,
     traitLog,
     legacy,
-    reward: { key: rewardKey++, text: `+${amount.toLocaleString()} XP — ${label}`, sub },
+    reward: { key: rewardKey++, text: `${label} · +${amount.toLocaleString()} XP`, sub },
   };
 }
 
@@ -209,7 +210,7 @@ function reducer(state: AppState, action: Action): AppState {
         const { level, xp } = applyXp(state.level, state.xp, -quest.xp);
         return { ...state, quests, level, xp, ...reconcileStreak(state, quests) };
       }
-      const earned = earn(state, quest.xp, `${quest.title} Complete`, quest.category);
+      const earned = earn(state, quest.xp, quest.title, quest.category);
       const afterEarn = { ...state, ...earned };
       return { ...afterEarn, quests, ...reconcileStreak(afterEarn, quests) };
     }
@@ -222,7 +223,7 @@ function reducer(state: AppState, action: Action): AppState {
         q.category === 'water' ? { ...q, progress: waterOz, done: q.done || hitGoal } : q,
       );
       if (hitGoal && water) {
-        const earned = earn(state, water.xp, 'Water Goal Hit', 'water');
+        const earned = earn(state, water.xp, 'Water goal hit', 'water');
         const afterEarn = { ...state, ...earned };
         return { ...afterEarn, waterOz, quests, ...reconcileStreak(afterEarn, quests) };
       }
@@ -237,7 +238,7 @@ function reducer(state: AppState, action: Action): AppState {
           ? { ...h, doneToday: true, streak: h.streak + 1, week: [...h.week.slice(0, 6), true] }
           : h,
       );
-      return { ...state, habits, ...earn(state, habit.xp, `${habit.title} Complete`, categoryForHabit(habit)) };
+      return { ...state, habits, ...earn(state, habit.xp, habit.title, categoryForHabit(habit)) };
     }
 
     case 'LOG_MEAL': {
@@ -249,7 +250,7 @@ function reducer(state: AppState, action: Action): AppState {
         q.category === 'nutrition' ? { ...q, progress: protein, done: q.done || hitGoal } : q,
       );
       if (hitGoal && proteinQuest) {
-        const earned = earn(state, proteinQuest.xp, 'Protein Goal Hit', 'nutrition');
+        const earned = earn(state, proteinQuest.xp, 'Protein goal hit', 'nutrition');
         const afterEarn = { ...state, ...earned };
         return { ...afterEarn, meals, quests, ...reconcileStreak(afterEarn, quests) };
       }
@@ -260,7 +261,7 @@ function reducer(state: AppState, action: Action): AppState {
       const workout = state.quests.find((q) => q.category === 'workout');
       if (!workout || workout.done) return { ...state, workoutFinished: true };
       const quests = state.quests.map((q) => (q.category === 'workout' ? { ...q, done: true } : q));
-      const earned = earn(state, workout.xp, 'Workout Complete', 'workout');
+      const earned = earn(state, workout.xp, 'Workout complete', 'workout');
       const afterEarn = { ...state, ...earned };
       return { ...afterEarn, workoutFinished: true, quests, ...reconcileStreak(afterEarn, quests) };
     }
@@ -271,10 +272,18 @@ function reducer(state: AppState, action: Action): AppState {
     }
 
     case 'COACH_REPLY': {
+      // The coach replies as a witness — it can see the streak, the latest
+      // trait movement, and the most recent Legacy entry.
+      const lastChange = state.traitLog[state.traitLog.length - 1];
       const coach: ChatMessage = {
         id: `c-${Date.now()}`,
         from: 'coach',
-        text: coachReply(action.prompt, state.profile.coachPersonality),
+        text: coachReply(action.prompt, state.profile.coachPersonality, {
+          streak: state.currentStreak,
+          level: state.level,
+          lastTrait: lastChange ? { trait: lastChange.trait, reason: lastChange.reason } : undefined,
+          lastLegacy: state.legacy[state.legacy.length - 1]?.title,
+        }),
       };
       return { ...state, chat: [...state.chat, coach] };
     }
