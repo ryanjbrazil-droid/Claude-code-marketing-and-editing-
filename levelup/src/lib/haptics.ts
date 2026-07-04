@@ -1,23 +1,27 @@
+import * as Haptics from 'expo-haptics';
+import { Platform } from 'react-native';
+
 /**
- * Haptic feedback placeholders.
- *
- * The MVP ships without expo-haptics; these named hooks mark every point in
- * the UI that should buzz once the dependency lands. Swap the bodies for
- * `Haptics.selectionAsync()` / `Haptics.notificationAsync(...)` later — the
- * call sites are already correct.
+ * Haptic feedback. Real on iOS/Android via expo-haptics; silent no-op on web.
+ * Failures are swallowed — feedback must never break an interaction.
  */
+
+const native = Platform.OS === 'ios' || Platform.OS === 'android';
 
 /** Light tick — toggles, chips, segment changes. */
 export function hapticSelect() {
-  // TODO(expo-haptics): Haptics.selectionAsync()
+  if (!native) return;
+  Haptics.selectionAsync().catch(() => {});
 }
 
 /** Medium tap — button presses, set completion. */
 export function hapticImpact() {
-  // TODO(expo-haptics): Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
+  if (!native) return;
+  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium).catch(() => {});
 }
 
 /** Success buzz — quest complete, level up, streak secured. */
 export function hapticSuccess() {
-  // TODO(expo-haptics): Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
+  if (!native) return;
+  Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
 }

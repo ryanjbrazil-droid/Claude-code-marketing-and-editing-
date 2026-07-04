@@ -117,6 +117,16 @@ export default function WorkoutSessionScreen() {
                 <Text style={Type.small}>
                   {ex.sets.length} sets × {ex.sets[0].reps} reps · rest {ex.restSec}s
                 </Text>
+                {ex.lastWeight != null && ex.sets[0].weight > 0 ? (
+                  <Text style={[Type.small, { marginTop: 1 }]}>
+                    Last session {ex.lastWeight} lb
+                    {ex.sets[0].weight > ex.lastWeight ? (
+                      <Text style={{ color: Colors.success }}>
+                        {'  '}▲ +{ex.sets[0].weight - ex.lastWeight} lb today
+                      </Text>
+                    ) : null}
+                  </Text>
+                ) : null}
               </View>
               <Pressable onPress={() => replaceExercise(ex.id)} style={styles.replaceBtn} hitSlop={8}>
                 <Ionicons name="swap-horizontal" size={16} color={Colors.primary} />

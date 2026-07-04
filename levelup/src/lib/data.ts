@@ -141,6 +141,7 @@ const set = (reps: number, weight: number) => ({ reps, weight, done: false });
 export const TODAYS_WORKOUT: Exercise[] = [
   {
     id: 'ex-bench',
+    lastWeight: 180,
     name: 'Bench Press',
     sets: [set(8, 185), set(8, 185), set(8, 185), set(8, 185)],
     restSec: 150,
@@ -149,6 +150,7 @@ export const TODAYS_WORKOUT: Exercise[] = [
   },
   {
     id: 'ex-incline',
+    lastWeight: 60,
     name: 'Incline Dumbbell Press',
     sets: [set(10, 65), set(10, 65), set(10, 65)],
     restSec: 120,
@@ -157,6 +159,7 @@ export const TODAYS_WORKOUT: Exercise[] = [
   },
   {
     id: 'ex-fly',
+    lastWeight: 35,
     name: 'Cable Fly',
     sets: [set(12, 40), set(12, 40), set(12, 40)],
     restSec: 90,
@@ -165,6 +168,7 @@ export const TODAYS_WORKOUT: Exercise[] = [
   },
   {
     id: 'ex-pushdown',
+    lastWeight: 50,
     name: 'Triceps Pushdown',
     sets: [set(12, 55), set(12, 55), set(12, 55)],
     restSec: 90,
@@ -173,6 +177,7 @@ export const TODAYS_WORKOUT: Exercise[] = [
   },
   {
     id: 'ex-lateral',
+    lastWeight: 15,
     name: 'Lateral Raise',
     sets: [set(15, 20), set(15, 20), set(15, 20), set(15, 20)],
     restSec: 60,

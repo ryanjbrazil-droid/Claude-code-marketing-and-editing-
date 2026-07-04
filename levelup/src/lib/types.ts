@@ -104,6 +104,8 @@ export interface Exercise {
   restSec: number;
   notes: string;
   alternates: string[];
+  /** Top working weight from the previous session, for in-set context. */
+  lastWeight?: number;
 }
 
 export interface SplitDay {
