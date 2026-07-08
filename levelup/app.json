@@ -7,7 +7,10 @@
     "icon": "./assets/images/icon.png",
     "scheme": "levelup",
     "userInterfaceStyle": "dark",
-    "ios": {},
+    "ios": {
+      "bundleIdentifier": "com.ryanbrazil.levelup",
+      "supportsTablet": false
+    },
     "android": {
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
@@ -15,7 +18,8 @@
         "backgroundImage": "./assets/images/android-icon-background.png",
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.ryanbrazil.levelup"
     },
     "web": {
       "output": "static",
