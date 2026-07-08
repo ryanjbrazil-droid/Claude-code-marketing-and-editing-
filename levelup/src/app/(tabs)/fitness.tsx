@@ -136,7 +136,7 @@ function ProgressView() {
           <Text style={[Type.small, { color: Colors.success }]}>92% this month</Text>
         </View>
         <View style={{ marginTop: Spacing.md }}>
-          <XPBar value={4} max={5} colors={[Colors.primary, Colors.cyan]} />
+          <XPBar value={4} max={5} colors={[Colors.primary, Colors.cyan]} glow={false} />
         </View>
       </Card>
 

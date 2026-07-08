@@ -32,7 +32,7 @@ function MacroBarRow({ label, value, target, unit, color }: { label: string; val
           {Math.round(value).toLocaleString()}{unit} / {target.toLocaleString()}{unit}
         </Text>
       </View>
-      <XPBar value={value} max={target} height={8} colors={[color, color]} />
+      <XPBar value={value} max={target} height={8} colors={[color, color]} glow={false} />
     </View>
   );
 }

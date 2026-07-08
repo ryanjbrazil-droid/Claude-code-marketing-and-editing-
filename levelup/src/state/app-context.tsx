@@ -206,9 +206,24 @@ function reducer(state: AppState, action: Action): AppState {
           : q,
       );
       if (!nowDone) {
-        // Un-checking refunds the XP quietly (no toast).
+        // Un-checking refunds the XP quietly (no toast) and reverts today's
+        // trait gains for this quest's category, so toggling a quest on and
+        // off can never farm identity.
         const { level, xp } = applyXp(state.level, state.xp, -quest.xp);
-        return { ...state, quests, level, xp, ...reconcileStreak(state, quests) };
+        const day = todayKey();
+        const stats = { ...state.stats };
+        const traitLog = [...state.traitLog];
+        for (const trait of CATEGORY_STAT_GAINS[quest.category] ?? []) {
+          for (let i = traitLog.length - 1; i >= 0; i--) {
+            const c = traitLog[i];
+            if (c.trait === trait && c.day === day && c.delta > 0) {
+              stats[trait] = stats[trait] - c.delta;
+              traitLog.splice(i, 1);
+              break;
+            }
+          }
+        }
+        return { ...state, quests, level, xp, stats, traitLog, ...reconcileStreak(state, quests) };
       }
       const earned = earn(state, quest.xp, quest.title, quest.category);
       const afterEarn = { ...state, ...earned };

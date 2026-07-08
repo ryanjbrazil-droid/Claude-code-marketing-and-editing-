@@ -89,7 +89,7 @@ export default function WorkoutSessionScreen() {
       </View>
 
       <View style={{ paddingHorizontal: Spacing.lg, gap: 6 }}>
-        <XPBar value={doneSets} max={totalSets} colors={[Colors.primary, Colors.cyan]} height={8} />
+        <XPBar value={doneSets} max={totalSets} colors={[Colors.primary, Colors.cyan]} height={8} glow={false} />
         <Text style={Type.small}>{doneSets} / {totalSets} sets complete</Text>
       </View>
 

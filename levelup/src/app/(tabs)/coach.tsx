@@ -55,7 +55,7 @@ export default function CoachScreen() {
   const [input, setInput] = useState('');
   const [typing, setTyping] = useState(false);
   const scrollRef = useRef<ScrollView>(null);
-  const replyTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const mounted = useRef(true);
 
   useEffect(() => {
     // Keep the latest message (or typing indicator) in view.
@@ -64,8 +64,9 @@ export default function CoachScreen() {
   }, [state.chat.length, typing]);
 
   useEffect(() => {
+    mounted.current = true;
     return () => {
-      if (replyTimer.current) clearTimeout(replyTimer.current);
+      mounted.current = false;
     };
   }, []);
 
@@ -75,9 +76,11 @@ export default function CoachScreen() {
     dispatch({ type: 'USER_CHAT', text: trimmed });
     setInput('');
     setTyping(true);
-    replyTimer.current = setTimeout(() => {
+    // The reply always lands, even if the user leaves the screen mid-typing —
+    // dispatch targets app-level state; only the local indicator is guarded.
+    setTimeout(() => {
       dispatch({ type: 'COACH_REPLY', prompt: trimmed });
-      setTyping(false);
+      if (mounted.current) setTyping(false);
     }, 1000 + Math.random() * 500);
   };
 
