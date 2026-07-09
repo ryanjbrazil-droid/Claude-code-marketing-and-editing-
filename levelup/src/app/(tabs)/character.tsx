@@ -11,7 +11,6 @@ import { ProgressRing } from '@/components/ui/progress-ring';
 import { Screen } from '@/components/ui/screen';
 import { XPBar } from '@/components/ui/xp-bar';
 import { Colors, Radius, Shadow, Spacing, Type } from '@/constants/theme';
-import { ACHIEVEMENTS } from '@/lib/data';
 import { RANKS, nextRank, rankForLevel, xpForLevel } from '@/lib/game';
 import { LEGACY_CATEGORY_COLOR, latestChange, titlesFor, TRAIT_SOURCES } from '@/lib/identity';
 import type { StatKey } from '@/lib/types';
@@ -41,6 +40,40 @@ export default function CharacterScreen() {
     .toUpperCase();
   const titles = titlesFor(state);
   const recentLegacy = [...state.legacy].reverse().slice(0, 3);
+
+  const workoutsCompleted = state.workoutHistory.length;
+  const weightChange =
+    state.weightLog.length >= 2 ? state.weightLog[state.weightLog.length - 1].weightLb - state.weightLog[0].weightLb : null;
+  const prsSet = state.personalRecords.length;
+
+  const achievements: { title: string; detail: string; icon: React.ComponentProps<typeof Ionicons>['name']; done: boolean }[] = [
+    {
+      title: `${workoutsCompleted} workout${workoutsCompleted === 1 ? '' : 's'} completed`,
+      detail: 'Lifetime total',
+      icon: 'barbell',
+      done: workoutsCompleted > 0,
+    },
+    {
+      title: `${state.longestStreak}-day streak (best)`,
+      detail: 'Longest run so far',
+      icon: 'flame',
+      done: state.longestStreak > 0,
+    },
+    weightChange !== null
+      ? {
+          title: `${Math.abs(weightChange).toFixed(1)} lb ${weightChange <= 0 ? 'lost' : 'gained'}`,
+          detail: 'Since you started logging',
+          icon: 'trending-down',
+          done: true,
+        }
+      : { title: 'Weight not yet tracked', detail: 'Log your weight on the Train tab', icon: 'trending-down', done: false },
+    {
+      title: `${prsSet} personal record${prsSet === 1 ? '' : 's'} set`,
+      detail: 'Lifetime total',
+      icon: 'trophy',
+      done: prsSet > 0,
+    },
+  ];
 
   return (
     <Screen
@@ -190,14 +223,14 @@ export default function CharacterScreen() {
       {/* Achievements */}
       <SectionHeader title="Achievements" />
       <Card style={{ gap: Spacing.md }}>
-        {ACHIEVEMENTS.map((a) => (
+        {achievements.map((a) => (
           <View key={a.title} style={styles.achieveRow}>
-            <IconBubble icon={a.icon} color={Colors.xp} size={34} />
+            <IconBubble icon={a.icon} color={a.done ? Colors.xp : Colors.textMuted} size={34} />
             <View style={{ flex: 1 }}>
-              <Text style={[Type.body, { fontWeight: '700' }]}>{a.title}</Text>
+              <Text style={[Type.body, { fontWeight: '700' }, !a.done && { color: Colors.textSecondary }]}>{a.title}</Text>
               <Text style={Type.small}>{a.detail}</Text>
             </View>
-            <Ionicons name="checkmark-circle" size={18} color={Colors.success} />
+            {a.done ? <Ionicons name="checkmark-circle" size={18} color={Colors.success} /> : null}
           </View>
         ))}
       </Card>

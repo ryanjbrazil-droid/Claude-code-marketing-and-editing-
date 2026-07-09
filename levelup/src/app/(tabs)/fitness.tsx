@@ -3,21 +3,35 @@ import { router } from 'expo-router';
 import React, { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
+import { LogMeasurementModal } from '@/components/fitness/log-measurement-modal';
+import { LogWeightModal } from '@/components/fitness/log-weight-modal';
 import { Card } from '@/components/ui/card';
+import { EmptyState } from '@/components/ui/empty-state';
 import { IconBubble, SectionHeader, Segmented } from '@/components/ui/misc';
 import { PillButton } from '@/components/ui/pill-button';
 import { Screen } from '@/components/ui/screen';
 import { XPBar } from '@/components/ui/xp-bar';
 import { Colors, Radius, Spacing, Type } from '@/constants/theme';
-import { MEASUREMENTS, PERSONAL_RECORDS, WEEKLY_SPLIT, WEIGHT_TREND } from '@/lib/data';
+import { WEEKLY_SPLIT } from '@/lib/data';
 import { useApp, useReadiness } from '@/state/app-context';
 
 const VIEWS = ['Plan', 'Progress'] as const;
+const PROGRAM_WEEKS = 8;
+
+/** Real week number in the program, derived from when onboarding finished — never fabricated. */
+function programWeek(programStartDate: string | null): number {
+  if (!programStartDate) return 1;
+  const start = new Date(programStartDate);
+  const diffDays = Math.floor((Date.now() - start.getTime()) / (1000 * 60 * 60 * 24));
+  return Math.min(PROGRAM_WEEKS, Math.max(1, Math.floor(diffDays / 7) + 1));
+}
 
 function PlanView() {
   const { state } = useApp();
   const readiness = useReadiness();
   const todayIndex = (new Date().getDay() + 6) % 7; // Monday = 0
+  const today = WEEKLY_SPLIT[todayIndex];
+  const week = programWeek(state.programStartDate);
 
   return (
     <>
@@ -27,10 +41,15 @@ function PlanView() {
           {state.profile.goal === 'Lose fat' ? 'Lean Engine · 5-Day Split' : 'Iron Foundation · 5-Day Split'}
         </Text>
         <Text style={[Type.secondary, { marginTop: 4 }]}>
-          Week 3 of 8 · Built for {state.profile.equipment.toLowerCase()} · {state.profile.trainingDaysPerWeek} days/week
+          Week {week} of {PROGRAM_WEEKS} · Built for {state.profile.equipment.toLowerCase()} · {state.profile.trainingDaysPerWeek} days/week
         </Text>
         <View style={{ marginTop: Spacing.md }}>
-          <PillButton label="Start Today's Workout — Push Day" icon="barbell" onPress={() => router.push('/workout-session')} />
+          <PillButton
+            label={today.isRest ? `Today is a Rest Day — ${today.focus}` : `Start Today's Workout — ${today.focus} Day`}
+            icon={today.isRest ? 'bed' : 'barbell'}
+            variant={today.isRest ? 'secondary' : 'primary'}
+            onPress={() => router.push('/workout-session')}
+          />
         </View>
       </Card>
 
@@ -39,9 +58,7 @@ function PlanView() {
         <View style={{ flex: 1 }}>
           <Text style={Type.label}>Recovery status</Text>
           <Text style={[Type.body, { fontWeight: '700', marginTop: 2 }]}>{readiness.status}</Text>
-          <Text style={[Type.small, { marginTop: 2 }]}>
-            Readiness {readiness.score}% — AI kept bench heavy and trimmed accessory volume.
-          </Text>
+          <Text style={[Type.small, { marginTop: 2 }]}>Readiness {readiness.score}%</Text>
         </View>
       </Card>
 
@@ -68,90 +85,139 @@ function PlanView() {
           </View>
         ))}
       </View>
-
-      <SectionHeader title="AI recommendations" />
-      <Card style={{ gap: Spacing.md }}>
-        {[
-          { icon: 'trending-up' as const, color: Colors.primary, text: 'Bench is trending up — add 5 lb to your top set this week.' },
-          { icon: 'battery-half' as const, color: Colors.flame, text: 'Sleep dipped twice this week. Keep Saturday conditioning at zone 2.' },
-          { icon: 'body' as const, color: Colors.purple, text: 'Rear delts are undertrained vs. pressing volume. Face pulls added to Pull day.' },
-        ].map((r, i) => (
-          <View key={i} style={styles.recRow}>
-            <Ionicons name={r.icon} size={18} color={r.color} />
-            <Text style={[Type.secondary, { flex: 1, lineHeight: 20 }]}>{r.text}</Text>
-          </View>
-        ))}
-      </Card>
     </>
   );
 }
 
+const DAY_MS = 24 * 60 * 60 * 1000;
+
 function ProgressView() {
-  const max = Math.max(...WEIGHT_TREND);
-  const min = Math.min(...WEIGHT_TREND);
+  const { state } = useApp();
+  const [logWeightOpen, setLogWeightOpen] = useState(false);
+  const [logMeasureOpen, setLogMeasureOpen] = useState(false);
+
+  const weightLog = state.weightLog;
+  const hasWeight = weightLog.length > 0;
+  const weightValues = weightLog.map((w) => w.weightLb);
+  const max = hasWeight ? Math.max(...weightValues) : 0;
+  const min = hasWeight ? Math.min(...weightValues) : 0;
+  const weightChange = weightLog.length >= 2 ? weightLog[weightLog.length - 1].weightLb - weightLog[0].weightLb : 0;
+
+  const now = Date.now();
+  const weekAgo = now - 7 * DAY_MS;
+  const lastWeekStart = weekAgo - 7 * DAY_MS;
+  const sessionsThisWeek = state.workoutHistory.filter((w) => new Date(w.date).getTime() >= weekAgo).length;
+  const volumeThisWeek = state.workoutHistory
+    .filter((w) => new Date(w.date).getTime() >= weekAgo)
+    .reduce((s, w) => s + w.volume, 0);
+  const volumeLastWeek = state.workoutHistory
+    .filter((w) => {
+      const t = new Date(w.date).getTime();
+      return t >= lastWeekStart && t < weekAgo;
+    })
+    .reduce((s, w) => s + w.volume, 0);
+  const volumeChangePct = volumeLastWeek > 0 ? Math.round(((volumeThisWeek - volumeLastWeek) / volumeLastWeek) * 100) : null;
+
+  const latestByLabel = new Map<string, { value: string }>();
+  const previousByLabel = new Map<string, string>();
+  for (const m of state.measurementLog) {
+    if (latestByLabel.has(m.label)) previousByLabel.set(m.label, latestByLabel.get(m.label)!.value);
+    latestByLabel.set(m.label, { value: m.value });
+  }
 
   return (
     <>
       <Card>
         <View style={styles.rowBetween}>
           <Text style={Type.label}>Body weight trend</Text>
-          <Text style={[Type.small, { color: Colors.success }]}>-4.2 lb this month</Text>
+          {weightLog.length >= 2 ? (
+            <Text style={[Type.small, { color: weightChange <= 0 ? Colors.success : Colors.primary }]}>
+              {weightChange > 0 ? '+' : ''}
+              {weightChange.toFixed(1)} lb since you started
+            </Text>
+          ) : null}
         </View>
-        <View style={styles.chart}>
-          {WEIGHT_TREND.map((w, i) => {
-            const h = 24 + ((w - min) / (max - min || 1)) * 76;
-            return (
-              <View key={i} style={styles.chartCol}>
-                <View style={[styles.chartBar, { height: h }, i === WEIGHT_TREND.length - 1 && { backgroundColor: Colors.primary }]} />
-              </View>
-            );
-          })}
-        </View>
-        <View style={styles.rowBetween}>
-          <Text style={Type.small}>8 weeks ago · {max.toFixed(1)} lb</Text>
-          <Text style={[Type.small, { color: Colors.text }]}>Now · {WEIGHT_TREND[WEIGHT_TREND.length - 1].toFixed(1)} lb</Text>
-        </View>
+        {hasWeight ? (
+          <>
+            <View style={styles.chart}>
+              {weightLog.map((w, i) => {
+                const h = 24 + ((w.weightLb - min) / (max - min || 1)) * 76;
+                return (
+                  <View key={w.id} style={styles.chartCol}>
+                    <View style={[styles.chartBar, { height: h }, i === weightLog.length - 1 && { backgroundColor: Colors.primary }]} />
+                  </View>
+                );
+              })}
+            </View>
+            <View style={styles.rowBetween}>
+              <Text style={Type.small}>First logged · {weightLog[0].weightLb.toFixed(1)} lb</Text>
+              <Text style={[Type.small, { color: Colors.text }]}>Latest · {weightLog[weightLog.length - 1].weightLb.toFixed(1)} lb</Text>
+            </View>
+          </>
+        ) : (
+          <EmptyState icon="analytics-outline" message="No weigh-ins logged yet" hint="Log your weight to start the trend" />
+        )}
+        <PillButton
+          label="Log weight"
+          icon="add"
+          variant="secondary"
+          onPress={() => setLogWeightOpen(true)}
+          style={{ marginTop: Spacing.md }}
+        />
       </Card>
 
       <SectionHeader title="Strength PRs" />
-      <Card style={{ gap: Spacing.md }}>
-        {PERSONAL_RECORDS.map((pr) => (
-          <View key={pr.lift} style={styles.prRow}>
-            <IconBubble icon="trophy" color={Colors.xp} size={34} />
-            <View style={{ flex: 1 }}>
-              <Text style={[Type.body, { fontWeight: '700' }]}>{pr.lift}</Text>
-              <Text style={Type.small}>{pr.date}</Text>
+      {state.personalRecords.length === 0 ? (
+        <EmptyState icon="trophy-outline" message="No PRs yet" hint="Your first logged top set becomes your first PR" />
+      ) : (
+        <Card style={{ gap: Spacing.md }}>
+          {state.personalRecords.map((pr) => (
+            <View key={pr.lift} style={styles.prRow}>
+              <IconBubble icon="trophy" color={Colors.xp} size={34} />
+              <View style={{ flex: 1 }}>
+                <Text style={[Type.body, { fontWeight: '700' }]}>{pr.lift}</Text>
+                <Text style={Type.small}>{pr.date}</Text>
+              </View>
+              <Text style={[Type.stat, { fontSize: 18 }]}>
+                {pr.weight} <Text style={Type.small}>lb × {pr.reps}</Text>
+              </Text>
             </View>
-            <Text style={[Type.stat, { fontSize: 18 }]}>
-              {pr.weight} <Text style={Type.small}>lb × {pr.reps}</Text>
-            </Text>
-          </View>
-        ))}
-      </Card>
+          ))}
+        </Card>
+      )}
 
       <SectionHeader title="Workout consistency" />
       <Card>
         <View style={styles.rowBetween}>
-          <Text style={[Type.body, { fontWeight: '700' }]}>4 of 5 sessions this week</Text>
-          <Text style={[Type.small, { color: Colors.success }]}>92% this month</Text>
+          <Text style={[Type.body, { fontWeight: '700' }]}>
+            {sessionsThisWeek} of {state.profile.trainingDaysPerWeek} sessions this week
+          </Text>
+          <Text style={[Type.small, { color: Colors.success }]}>{state.workoutHistory.length} lifetime</Text>
         </View>
         <View style={{ marginTop: Spacing.md }}>
-          <XPBar value={4} max={5} colors={[Colors.primary, Colors.cyan]} glow={false} />
+          <XPBar value={sessionsThisWeek} max={state.profile.trainingDaysPerWeek} colors={[Colors.primary, Colors.cyan]} glow={false} />
         </View>
       </Card>
 
       <SectionHeader title="Measurements" />
-      <View style={styles.measureGrid}>
-        {MEASUREMENTS.map((m) => (
-          <Card key={m.label} style={styles.measureCard}>
-            <Text style={Type.label}>{m.label}</Text>
-            <Text style={[Type.stat, { marginTop: 4 }]}>{m.value}</Text>
-            <Text style={[Type.small, { color: m.change.startsWith('-') ? Colors.success : Colors.primary }]}>
-              {m.change} in · 30 days
-            </Text>
-          </Card>
-        ))}
-      </View>
+      {latestByLabel.size === 0 ? (
+        <EmptyState icon="resize-outline" message="No measurements logged yet" hint="Log your first to start tracking change" />
+      ) : (
+        <View style={styles.measureGrid}>
+          {[...latestByLabel.entries()].map(([label, m]) => (
+            <Card key={label} style={styles.measureCard}>
+              <Text style={Type.label}>{label}</Text>
+              <Text style={[Type.stat, { marginTop: 4 }]}>{m.value}</Text>
+              {previousByLabel.has(label) ? (
+                <Text style={Type.small}>was {previousByLabel.get(label)}</Text>
+              ) : (
+                <Text style={Type.small}>first log</Text>
+              )}
+            </Card>
+          ))}
+        </View>
+      )}
+      <PillButton label="Log measurement" icon="add" variant="secondary" onPress={() => setLogMeasureOpen(true)} />
 
       <SectionHeader title="Progress photos" />
       <Card style={styles.photoCard}>
@@ -162,18 +228,27 @@ function ProgressView() {
       </Card>
 
       <SectionHeader title="Weekly summary" />
-      <Card style={{ gap: 8 }}>
-        {[
-          'Volume up 6% vs last week',
-          'Best set: Bench 190 lb × 6 (rep PR)',
-          'Recovery days respected: 2 of 2',
-        ].map((s, i) => (
-          <View key={i} style={styles.recRow}>
+      {state.workoutHistory.length === 0 ? (
+        <EmptyState icon="barbell-outline" message="No workouts logged yet" hint="Complete a session to see your weekly summary" />
+      ) : (
+        <Card style={{ gap: 8 }}>
+          <View style={styles.recRow}>
             <Ionicons name="checkmark-circle" size={16} color={Colors.success} />
-            <Text style={Type.secondary}>{s}</Text>
+            <Text style={Type.secondary}>
+              {sessionsThisWeek} session{sessionsThisWeek === 1 ? '' : 's'} logged this week · {volumeThisWeek.toLocaleString()} lb total volume
+            </Text>
           </View>
-        ))}
-      </Card>
+          {volumeChangePct !== null ? (
+            <View style={styles.recRow}>
+              <Ionicons name={volumeChangePct >= 0 ? 'trending-up' : 'trending-down'} size={16} color={volumeChangePct >= 0 ? Colors.success : Colors.flame} />
+              <Text style={Type.secondary}>Volume {volumeChangePct >= 0 ? 'up' : 'down'} {Math.abs(volumeChangePct)}% vs last week</Text>
+            </View>
+          ) : null}
+        </Card>
+      )}
+
+      <LogWeightModal visible={logWeightOpen} onClose={() => setLogWeightOpen(false)} />
+      <LogMeasurementModal visible={logMeasureOpen} onClose={() => setLogMeasureOpen(false)} />
     </>
   );
 }

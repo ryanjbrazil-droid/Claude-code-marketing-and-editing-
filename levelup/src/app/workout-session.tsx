@@ -8,15 +8,28 @@ import { Card } from '@/components/ui/card';
 import { PillButton } from '@/components/ui/pill-button';
 import { XPBar } from '@/components/ui/xp-bar';
 import { Colors, Radius, Spacing, Type } from '@/constants/theme';
-import { TODAYS_WORKOUT } from '@/lib/data';
+import { WEEKLY_SPLIT, WORKOUT_TEMPLATES } from '@/lib/data';
 import { XP_REWARDS } from '@/lib/game';
-import type { Exercise } from '@/lib/types';
+import type { Exercise, WorkoutHistoryEntry } from '@/lib/types';
 import { useApp } from '@/state/app-context';
+
+/** Most recent logged top-set weight for this exercise, or undefined if never done before. */
+function lastWeightFor(name: string, history: WorkoutHistoryEntry[]): number | undefined {
+  for (let i = history.length - 1; i >= 0; i--) {
+    const match = history[i].exercises.find((e) => e.name === name);
+    if (match && match.sets.length > 0) return Math.max(...match.sets.map((s) => s.weight));
+  }
+  return undefined;
+}
 
 export default function WorkoutSessionScreen() {
   const insets = useSafeAreaInsets();
-  const { dispatch } = useApp();
-  const [exercises, setExercises] = useState<Exercise[]>(TODAYS_WORKOUT);
+  const { state, dispatch } = useApp();
+  const todayIndex = (new Date().getDay() + 6) % 7; // Monday = 0
+  const today = WEEKLY_SPLIT[todayIndex];
+  const template = WORKOUT_TEMPLATES[today.focus] ?? [];
+
+  const [exercises, setExercises] = useState<Exercise[]>(template);
   const [restLeft, setRestLeft] = useState(0);
   const restTimer = useRef<ReturnType<typeof setInterval> | null>(null);
 
@@ -49,6 +62,15 @@ export default function WorkoutSessionScreen() {
     );
   };
 
+  const updateSetValue = (exId: string, setIndex: number, field: 'reps' | 'weight', value: string) => {
+    const num = Number(value.replace(/[^0-9]/g, '')) || 0;
+    setExercises((prev) =>
+      prev.map((ex) =>
+        ex.id === exId ? { ...ex, sets: ex.sets.map((s, i) => (i === setIndex ? { ...s, [field]: num } : s)) } : ex,
+      ),
+    );
+  };
+
   const replaceExercise = (exId: string) => {
     setExercises((prev) =>
       prev.map((ex) => {
@@ -67,9 +89,27 @@ export default function WorkoutSessionScreen() {
   const doneSets = exercises.reduce((n, ex) => n + ex.sets.filter((s) => s.done).length, 0);
 
   const finish = () => {
-    dispatch({ type: 'FINISH_WORKOUT' });
+    const completed = exercises
+      .map((ex) => ({ name: ex.name, sets: ex.sets.filter((s) => s.done).map((s) => ({ reps: s.reps, weight: s.weight })) }))
+      .filter((ex) => ex.sets.length > 0);
+    dispatch({ type: 'LOG_WORKOUT_SESSION', dayFocus: today.focus, exercises: completed });
     router.back();
   };
+
+  if (today.isRest || template.length === 0) {
+    return (
+      <View style={[styles.root, styles.restRoot, { paddingTop: insets.top + Spacing.md }]}>
+        <Pressable onPress={() => router.back()} hitSlop={12} style={styles.closeRest}>
+          <Ionicons name="close" size={26} color={Colors.textSecondary} />
+        </Pressable>
+        <Ionicons name="bed-outline" size={40} color={Colors.textMuted} />
+        <Text style={[Type.heading, { marginTop: Spacing.md }]}>Today is {today.focus}</Text>
+        <Text style={[Type.secondary, { textAlign: 'center', marginTop: Spacing.sm }]}>
+          No lifting session scheduled — recovery is part of the program too.
+        </Text>
+      </View>
+    );
+  }
 
   return (
     <View style={[styles.root, { paddingTop: insets.top + Spacing.md }]}>
@@ -79,8 +119,8 @@ export default function WorkoutSessionScreen() {
           <Ionicons name="close" size={26} color={Colors.textSecondary} />
         </Pressable>
         <View style={{ flex: 1 }}>
-          <Text style={Type.heading}>Push Day</Text>
-          <Text style={Type.small}>Chest · Shoulders · Triceps</Text>
+          <Text style={Type.heading}>{today.focus} Day</Text>
+          <Text style={Type.small}>{today.muscles.join(' · ')}</Text>
         </View>
         <View style={styles.xpPill}>
           <Ionicons name="sparkles" size={13} color={Colors.xp} />
@@ -109,52 +149,66 @@ export default function WorkoutSessionScreen() {
       <ScrollView
         contentContainerStyle={{ padding: Spacing.lg, gap: Spacing.md, paddingBottom: 140 }}
         showsVerticalScrollIndicator={false}>
-        {exercises.map((ex) => (
-          <Card key={ex.id} style={{ gap: Spacing.md }}>
-            <View style={styles.exHeader}>
-              <View style={{ flex: 1 }}>
-                <Text style={[Type.body, { fontWeight: '800', fontSize: 16 }]}>{ex.name}</Text>
-                <Text style={Type.small}>
-                  {ex.sets.length} sets × {ex.sets[0].reps} reps · rest {ex.restSec}s
-                </Text>
-                {ex.lastWeight != null && ex.sets[0].weight > 0 ? (
-                  <Text style={[Type.small, { marginTop: 1 }]}>
-                    Last session {ex.lastWeight} lb
-                    {ex.sets[0].weight > ex.lastWeight ? (
-                      <Text style={{ color: Colors.success }}>
-                        {'  '}▲ +{ex.sets[0].weight - ex.lastWeight} lb today
-                      </Text>
-                    ) : null}
+        {exercises.map((ex) => {
+          const lastWeight = lastWeightFor(ex.name, state.workoutHistory);
+          const topWeightToday = Math.max(0, ...ex.sets.map((s) => s.weight));
+          return (
+            <Card key={ex.id} style={{ gap: Spacing.md }}>
+              <View style={styles.exHeader}>
+                <View style={{ flex: 1 }}>
+                  <Text style={[Type.body, { fontWeight: '800', fontSize: 16 }]}>{ex.name}</Text>
+                  <Text style={Type.small}>
+                    {ex.sets.length} sets · rest {ex.restSec}s
                   </Text>
-                ) : null}
-              </View>
-              <Pressable onPress={() => replaceExercise(ex.id)} style={styles.replaceBtn} hitSlop={8}>
-                <Ionicons name="swap-horizontal" size={16} color={Colors.primary} />
-                <Text style={[Type.small, { color: Colors.primary }]}>Replace</Text>
-              </Pressable>
-            </View>
-
-            {ex.sets.map((s, i) => (
-              <Pressable key={i} onPress={() => toggleSet(ex.id, i)} style={[styles.setRow, s.done && styles.setRowDone]}>
-                <Text style={[Type.small, styles.setNum]}>SET {i + 1}</Text>
-                <Text style={[Type.body, { fontWeight: '700' }]}>{s.reps} reps</Text>
-                <Text style={Type.secondary}>{s.weight > 0 ? `${s.weight} lb` : 'bodyweight'}</Text>
-                <View style={{ flex: 1 }} />
-                <View style={[styles.setCheck, s.done && styles.setCheckDone]}>
-                  {s.done ? <Ionicons name="checkmark" size={14} color="#06131D" /> : null}
+                  {lastWeight != null ? (
+                    <Text style={[Type.small, { marginTop: 1 }]}>
+                      Last session {lastWeight} lb
+                      {topWeightToday > lastWeight ? (
+                        <Text style={{ color: Colors.success }}>{'  '}▲ +{topWeightToday - lastWeight} lb today</Text>
+                      ) : null}
+                    </Text>
+                  ) : null}
                 </View>
-              </Pressable>
-            ))}
+                <Pressable onPress={() => replaceExercise(ex.id)} style={styles.replaceBtn} hitSlop={8}>
+                  <Ionicons name="swap-horizontal" size={16} color={Colors.primary} />
+                  <Text style={[Type.small, { color: Colors.primary }]}>Replace</Text>
+                </Pressable>
+              </View>
 
-            <TextInput
-              style={styles.notes}
-              placeholder="Notes — how did it feel?"
-              placeholderTextColor={Colors.textMuted}
-              value={ex.notes}
-              onChangeText={(t) => setNotes(ex.id, t)}
-            />
-          </Card>
-        ))}
+              {ex.sets.map((s, i) => (
+                <View key={i} style={[styles.setRow, s.done && styles.setRowDone]}>
+                  <Text style={[Type.small, styles.setNum]}>SET {i + 1}</Text>
+                  <TextInput
+                    style={styles.setInput}
+                    value={String(s.reps)}
+                    onChangeText={(v) => updateSetValue(ex.id, i, 'reps', v)}
+                    keyboardType="number-pad"
+                  />
+                  <Text style={Type.small}>reps</Text>
+                  <TextInput
+                    style={styles.setInput}
+                    value={String(s.weight)}
+                    onChangeText={(v) => updateSetValue(ex.id, i, 'weight', v)}
+                    keyboardType="number-pad"
+                  />
+                  <Text style={Type.small}>lb</Text>
+                  <View style={{ flex: 1 }} />
+                  <Pressable onPress={() => toggleSet(ex.id, i)} style={[styles.setCheck, s.done && styles.setCheckDone]}>
+                    {s.done ? <Ionicons name="checkmark" size={14} color="#06131D" /> : null}
+                  </Pressable>
+                </View>
+              ))}
+
+              <TextInput
+                style={styles.notes}
+                placeholder="Notes — how did it feel?"
+                placeholderTextColor={Colors.textMuted}
+                value={ex.notes}
+                onChangeText={(t) => setNotes(ex.id, t)}
+              />
+            </Card>
+          );
+        })}
       </ScrollView>
 
       <View style={[styles.footer, { paddingBottom: insets.bottom + Spacing.md }]}>
@@ -177,6 +231,8 @@ export default function WorkoutSessionScreen() {
 
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: Colors.bg },
+  restRoot: { alignItems: 'center', justifyContent: 'center', paddingHorizontal: Spacing.xxl },
+  closeRest: { position: 'absolute', top: Spacing.md, left: Spacing.lg },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -219,12 +275,12 @@ const styles = StyleSheet.create({
   setRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: Spacing.md,
+    gap: Spacing.sm,
     backgroundColor: Colors.bgElevated,
     borderRadius: Radius.sm,
     borderWidth: 1,
     borderColor: Colors.border,
-    paddingVertical: 10,
+    paddingVertical: 8,
     paddingHorizontal: Spacing.md,
   },
   setRowDone: {
@@ -232,6 +288,18 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(74, 222, 156, 0.07)',
   },
   setNum: { width: 44 },
+  setInput: {
+    width: 44,
+    textAlign: 'center',
+    color: Colors.text,
+    fontSize: 14,
+    fontWeight: '700',
+    backgroundColor: Colors.bg,
+    borderRadius: Radius.sm,
+    borderWidth: 1,
+    borderColor: Colors.border,
+    paddingVertical: 4,
+  },
   setCheck: {
     width: 22,
     height: 22,

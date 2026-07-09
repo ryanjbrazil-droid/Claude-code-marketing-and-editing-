@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
-import React, { useState } from 'react';
-import { StyleSheet, Switch, Text, View } from 'react-native';
+import React from 'react';
+import { Alert, Linking, StyleSheet, Text, View } from 'react-native';
 
 import { Card } from '@/components/ui/card';
 import { SectionHeader, SettingRow } from '@/components/ui/misc';
@@ -11,6 +11,8 @@ import { Colors, Radius, Spacing, Type } from '@/constants/theme';
 import { rankForLevel } from '@/lib/game';
 import { useApp } from '@/state/app-context';
 
+const SUPPORT_EMAIL = 'ryanjbrazil@gmail.com';
+
 function formatHeight(inches: number) {
   return `${Math.floor(inches / 12)}'${Math.round(inches % 12)}"`;
 }
@@ -18,9 +20,17 @@ function formatHeight(inches: number) {
 export default function ProfileScreen() {
   const { state, dispatch } = useApp();
   const p = state.profile;
-  const [remindQuests, setRemindQuests] = useState(true);
-  const [remindStreak, setRemindStreak] = useState(true);
-  const [remindCoach, setRemindCoach] = useState(false);
+
+  const confirmDeleteData = () => {
+    Alert.alert(
+      'Delete My Data',
+      'This permanently erases your profile, quests, habits, meals, workouts, and Legacy from this device. This cannot be undone.',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        { text: 'Delete Everything', style: 'destructive', onPress: () => dispatch({ type: 'LOGOUT' }) },
+      ],
+    );
+  };
 
   return (
     <Screen title="Profile" back>
@@ -61,59 +71,60 @@ export default function ProfileScreen() {
         />
       </Card>
 
-      {/* Notifications */}
+      {/* Notifications — honest: not wired to a real push system yet */}
       <SectionHeader title="Notifications" />
       <Card>
-        <SettingRow
-          icon="notifications"
-          color={Colors.primary}
-          label="Quest reminders"
-          right={<Switch value={remindQuests} onValueChange={setRemindQuests} trackColor={{ true: Colors.primaryDeep }} />}
-        />
-        <SettingRow
-          icon="flame"
-          color={Colors.flame}
-          label="Streak protection alerts"
-          right={<Switch value={remindStreak} onValueChange={setRemindStreak} trackColor={{ true: Colors.primaryDeep }} />}
-        />
-        <SettingRow
-          icon="sparkles"
-          color={Colors.purple}
-          label="Daily coach check-in"
-          right={<Switch value={remindCoach} onValueChange={setRemindCoach} trackColor={{ true: Colors.primaryDeep }} />}
-        />
+        <Text style={[Type.secondary, { lineHeight: 20 }]}>
+          Push notifications (quest reminders, streak alerts, daily coach check-ins) are coming in a future update.
+        </Text>
       </Card>
 
-      {/* Subscription */}
-      <SectionHeader title="Subscription" />
+      {/* Plan — honest: no payments are wired up yet */}
+      <SectionHeader title="Plan" />
       <Card style={styles.proCard}>
         <View style={styles.proHeader}>
           <Ionicons name="diamond" size={20} color={Colors.xp} />
           <Text style={[Type.heading, { color: Colors.xp }]}>LevelUp Pro</Text>
-          <View style={styles.trialPill}>
-            <Text style={[Type.small, { color: Colors.xp }]}>Trial · 5 days left</Text>
+          <View style={styles.soonPill}>
+            <Text style={[Type.small, { color: Colors.textSecondary }]}>Coming soon</Text>
           </View>
         </View>
         <Text style={[Type.secondary, { lineHeight: 20 }]}>
-          A coach that remembers everything, a plan that adapts to you, and protection for the record you're building.
+          Everything in LevelUp is free to use right now. A Pro plan with expanded coaching is planned for a future update.
         </Text>
-        <PillButton label="Manage Plan" variant="secondary" onPress={() => {}} />
       </Card>
 
-      {/* Integrations & privacy */}
-      <SectionHeader title="Integrations & privacy" />
+      {/* Legal & privacy */}
+      <SectionHeader title="Legal & privacy" />
+      <Card>
+        <SettingRow icon="lock-closed" color={Colors.success} label="Privacy Policy" onPress={() => router.push('/legal/privacy')} />
+        <SettingRow icon="document-text" color={Colors.primary} label="Terms of Use" onPress={() => router.push('/legal/terms')} />
+        <SettingRow icon="medkit" color={Colors.danger} label="Health Disclaimer" onPress={() => router.push('/legal/health')} />
+        <SettingRow icon="sparkles" color={Colors.purple} label="AI Coach Disclaimer" onPress={() => router.push('/legal/ai-coach')} />
+      </Card>
+
+      {/* Integrations */}
+      <SectionHeader title="Integrations" />
       <Card>
         <SettingRow icon="heart" color={Colors.pink} label="Apple Health" value="Coming soon" />
         <SettingRow icon="watch" color={Colors.cyan} label="Wearables" value="Coming soon" />
-        <SettingRow icon="lock-closed" color={Colors.success} label="Privacy settings" onPress={() => {}} />
       </Card>
 
-      <PillButton
-        label="Log Out"
-        icon="log-out"
-        variant="secondary"
-        onPress={() => dispatch({ type: 'LOGOUT' })}
-      />
+      {/* Data */}
+      <SectionHeader title="Your data" />
+      <Card style={{ gap: Spacing.sm }}>
+        <Text style={[Type.secondary, { lineHeight: 20 }]}>
+          Everything you see in LevelUp lives only on this device — there's no account and no server copy of your data.
+        </Text>
+        <PillButton
+          label="Contact support"
+          icon="mail-outline"
+          variant="ghost"
+          onPress={() => Linking.openURL(`mailto:${SUPPORT_EMAIL}?subject=LevelUp support`)}
+        />
+        <PillButton label="Delete My Data" icon="trash-outline" variant="secondary" onPress={confirmDeleteData} />
+      </Card>
+
       <Text style={[Type.small, { textAlign: 'center' }]}>Your record stays on this device.</Text>
     </Screen>
   );
@@ -138,9 +149,9 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(247, 201, 72, 0.05)',
   },
   proHeader: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm },
-  trialPill: {
+  soonPill: {
     marginLeft: 'auto',
-    backgroundColor: Colors.xpSoft,
+    backgroundColor: Colors.card,
     borderRadius: Radius.full,
     paddingVertical: 4,
     paddingHorizontal: 10,

@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { createContext, useContext, useEffect, useMemo, useReducer } from 'react';
 
-import { coachGreeting, coachReply } from '@/lib/coach';
+import { Colors } from '@/constants/theme';
 import {
   BADGES,
   CATEGORY_STAT_GAINS,
@@ -15,7 +15,24 @@ import {
 } from '@/lib/data';
 import { applyXp, computeReadiness, dayIsComplete, rankForLevel } from '@/lib/game';
 import { formatLegacyDate, LEGACY_STREAK_MILESTONES, todayKey, traitRoomToday } from '@/lib/identity';
-import type { ChatMessage, Habit, LegacyEvent, LoggedMeal, Quest, StatKey, TraitChange, UserProfile } from '@/lib/types';
+import type {
+  ChatMessage,
+  CompletedExercise,
+  Habit,
+  HabitDifficulty,
+  LegacyEvent,
+  LoggedMeal,
+  MeasurementEntry,
+  PersonalRecord,
+  Quest,
+  StatKey,
+  TraitChange,
+  UserProfile,
+  WeightEntry,
+  WorkoutHistoryEntry,
+} from '@/lib/types';
+
+const HABIT_DIFFICULTY_XP: Record<HabitDifficulty, number> = { Easy: 100, Medium: 150, Hard: 200 };
 
 // ---------- State ----------
 
@@ -47,28 +64,40 @@ export interface AppState {
   legacy: LegacyEvent[];
   /** Identity Engine ledger: every trait change with its reason. */
   traitLog: TraitChange[];
+  /** Real progress tracking — every entry here was actually logged by the user. */
+  workoutHistory: WorkoutHistoryEntry[];
+  weightLog: WeightEntry[];
+  personalRecords: PersonalRecord[];
+  measurementLog: MeasurementEntry[];
+  /** Set once, at onboarding completion — used to compute "Week N of 8". */
+  programStartDate: string | null;
 }
 
 const INITIAL_STATE: AppState = {
   hydrated: false,
   onboarded: false,
   profile: DEFAULT_PROFILE,
-  level: 12,
-  xp: 640,
+  level: 0,
+  xp: 0,
   stats: DEFAULT_STATS,
   quests: DAILY_QUESTS,
   habits: HABITS,
   meals: LOGGED_MEALS,
-  waterOz: 72,
-  currentStreak: 26,
-  longestStreak: 26,
+  waterOz: 0,
+  currentStreak: 0,
+  longestStreak: 0,
   streakCountedToday: false,
-  streakProtections: 2,
+  streakProtections: 0,
   workoutFinished: false,
   chat: [],
   reward: null,
   legacy: LEGACY_SEED,
   traitLog: [],
+  workoutHistory: [],
+  weightLog: [],
+  personalRecords: [],
+  measurementLog: [],
+  programStartDate: null,
 };
 
 // ---------- Actions ----------
@@ -79,10 +108,16 @@ type Action =
   | { type: 'TOGGLE_QUEST'; id: string }
   | { type: 'ADD_WATER'; oz: number }
   | { type: 'COMPLETE_HABIT'; id: string }
+  | { type: 'ADD_HABIT'; title: string; difficulty: HabitDifficulty }
+  | { type: 'DELETE_HABIT'; id: string }
   | { type: 'LOG_MEAL'; meal: LoggedMeal }
-  | { type: 'FINISH_WORKOUT' }
+  | { type: 'DELETE_MEAL'; id: string }
+  | { type: 'LOG_WORKOUT_SESSION'; dayFocus: string; exercises: CompletedExercise[] }
+  | { type: 'LOG_WEIGHT'; weightLb: number }
+  | { type: 'LOG_MEASUREMENT'; label: string; value: string }
+  | { type: 'LOG_PR'; lift: string; weight: number; reps: number }
   | { type: 'USER_CHAT'; text: string }
-  | { type: 'COACH_REPLY'; prompt: string }
+  | { type: 'COACH_MESSAGE'; text: string }
   | { type: 'UPDATE_PROFILE'; patch: Partial<UserProfile> }
   | { type: 'CLEAR_REWARD' }
   | { type: 'LOGOUT' };
@@ -188,12 +223,15 @@ function reducer(state: AppState, action: Action): AppState {
       return { ...state, ...action.payload, hydrated: true };
 
     case 'COMPLETE_ONBOARDING': {
-      const greeting: ChatMessage = {
-        id: 'c-greeting',
-        from: 'coach',
-        text: coachGreeting(action.profile.coachPersonality, action.profile.name),
+      const origin: LegacyEvent = {
+        id: 'l-origin',
+        date: formatLegacyDate(new Date()),
+        title: 'Started the Journey',
+        detail: `Day one. Chose "${action.profile.goal}" and never looked back.`,
+        icon: 'flag',
+        category: 'origin',
       };
-      return { ...state, onboarded: true, profile: action.profile, chat: [greeting] };
+      return { ...state, onboarded: true, profile: action.profile, chat: [], legacy: [origin], programStartDate: todayKey() };
     }
 
     case 'TOGGLE_QUEST': {
@@ -256,6 +294,24 @@ function reducer(state: AppState, action: Action): AppState {
       return { ...state, habits, ...earn(state, habit.xp, habit.title, categoryForHabit(habit)) };
     }
 
+    case 'ADD_HABIT': {
+      const habit: Habit = {
+        id: `h-custom-${Date.now()}`,
+        title: action.title,
+        icon: 'star',
+        color: Colors.primary,
+        xp: HABIT_DIFFICULTY_XP[action.difficulty],
+        difficulty: action.difficulty,
+        streak: 0,
+        doneToday: false,
+        week: [false, false, false, false, false, false, false],
+      };
+      return { ...state, habits: [...state.habits, habit] };
+    }
+
+    case 'DELETE_HABIT':
+      return { ...state, habits: state.habits.filter((h) => h.id !== action.id) };
+
     case 'LOG_MEAL': {
       const meals = [...state.meals, action.meal];
       const protein = meals.reduce((sum, m) => sum + m.protein, 0);
@@ -272,34 +328,92 @@ function reducer(state: AppState, action: Action): AppState {
       return { ...state, meals, quests };
     }
 
-    case 'FINISH_WORKOUT': {
+    case 'DELETE_MEAL': {
+      const meals = state.meals.filter((m) => m.id !== action.id);
+      const protein = meals.reduce((sum, m) => sum + m.protein, 0);
+      const proteinQuest = state.quests.find((q) => q.category === 'nutrition');
+      const stillHitsGoal = protein >= (proteinQuest?.target ?? MACRO_TARGETS.protein);
+
+      if (proteinQuest?.done && !stillHitsGoal) {
+        // Deleting a meal that drops protein back below target refunds the
+        // goal's XP and trait gains, mirroring TOGGLE_QUEST's uncheck path —
+        // logging and deleting a meal can't be used to farm XP.
+        const { level, xp } = applyXp(state.level, state.xp, -proteinQuest.xp);
+        const day = todayKey();
+        const stats = { ...state.stats };
+        const traitLog = [...state.traitLog];
+        for (const trait of CATEGORY_STAT_GAINS.nutrition ?? []) {
+          for (let i = traitLog.length - 1; i >= 0; i--) {
+            const c = traitLog[i];
+            if (c.trait === trait && c.day === day && c.delta > 0) {
+              stats[trait] = stats[trait] - c.delta;
+              traitLog.splice(i, 1);
+              break;
+            }
+          }
+        }
+        const quests = state.quests.map((q) => (q.category === 'nutrition' ? { ...q, progress: protein, done: false } : q));
+        return { ...state, meals, quests, level, xp, stats, traitLog, ...reconcileStreak(state, quests) };
+      }
+
+      const quests = state.quests.map((q) => (q.category === 'nutrition' ? { ...q, progress: protein } : q));
+      return { ...state, meals, quests };
+    }
+
+    case 'LOG_WORKOUT_SESSION': {
+      const date = todayKey();
+      const volume = action.exercises.reduce((sum, ex) => sum + ex.sets.reduce((s, set) => s + set.reps * set.weight, 0), 0);
+      const historyEntry: WorkoutHistoryEntry = {
+        id: `w-${Date.now()}`,
+        date,
+        dayFocus: action.dayFocus,
+        exercises: action.exercises,
+        volume,
+      };
+      let personalRecords = state.personalRecords;
+      for (const ex of action.exercises) {
+        const topSet = ex.sets.reduce((best, s) => (s.weight > best.weight ? s : best), { reps: 0, weight: 0 });
+        if (topSet.weight > 0) personalRecords = upsertPR(personalRecords, ex.name, topSet.weight, topSet.reps, date);
+      }
+      const workoutHistory = [...state.workoutHistory, historyEntry];
+
       const workout = state.quests.find((q) => q.category === 'workout');
-      if (!workout || workout.done) return { ...state, workoutFinished: true };
+      if (!workout || workout.done) {
+        return { ...state, workoutFinished: true, workoutHistory, personalRecords };
+      }
       const quests = state.quests.map((q) => (q.category === 'workout' ? { ...q, done: true } : q));
       const earned = earn(state, workout.xp, 'Workout complete', 'workout');
       const afterEarn = { ...state, ...earned };
-      return { ...afterEarn, workoutFinished: true, quests, ...reconcileStreak(afterEarn, quests) };
+      return {
+        ...afterEarn,
+        workoutFinished: true,
+        quests,
+        workoutHistory,
+        personalRecords,
+        ...reconcileStreak(afterEarn, quests),
+      };
     }
+
+    case 'LOG_WEIGHT': {
+      const entry: WeightEntry = { id: `wt-${Date.now()}`, date: todayKey(), weightLb: action.weightLb };
+      return { ...state, weightLog: [...state.weightLog, entry] };
+    }
+
+    case 'LOG_MEASUREMENT': {
+      const entry: MeasurementEntry = { id: `ms-${Date.now()}`, date: todayKey(), label: action.label, value: action.value };
+      return { ...state, measurementLog: [...state.measurementLog, entry] };
+    }
+
+    case 'LOG_PR':
+      return { ...state, personalRecords: upsertPR(state.personalRecords, action.lift, action.weight, action.reps, todayKey()) };
 
     case 'USER_CHAT': {
       const user: ChatMessage = { id: `u-${Date.now()}`, from: 'user', text: action.text };
       return { ...state, chat: [...state.chat, user] };
     }
 
-    case 'COACH_REPLY': {
-      // The coach replies as a witness — it can see the streak, the latest
-      // trait movement, and the most recent Legacy entry.
-      const lastChange = state.traitLog[state.traitLog.length - 1];
-      const coach: ChatMessage = {
-        id: `c-${Date.now()}`,
-        from: 'coach',
-        text: coachReply(action.prompt, state.profile.coachPersonality, {
-          streak: state.currentStreak,
-          level: state.level,
-          lastTrait: lastChange ? { trait: lastChange.trait, reason: lastChange.reason } : undefined,
-          lastLegacy: state.legacy[state.legacy.length - 1]?.title,
-        }),
-      };
+    case 'COACH_MESSAGE': {
+      const coach: ChatMessage = { id: `c-${Date.now()}`, from: 'coach', text: action.text };
       return { ...state, chat: [...state.chat, coach] };
     }
 
@@ -315,6 +429,16 @@ function reducer(state: AppState, action: Action): AppState {
     default:
       return state;
   }
+}
+
+/** Upserts a lift's current record — only replaces it when the new lift is genuinely heavier (or same weight, more reps). */
+function upsertPR(records: PersonalRecord[], lift: string, weight: number, reps: number, date: string): PersonalRecord[] {
+  const existing = records.find((r) => r.lift.toLowerCase() === lift.toLowerCase());
+  if (!existing) return [...records, { lift, weight, reps, date }];
+  if (weight > existing.weight || (weight === existing.weight && reps > existing.reps)) {
+    return records.map((r) => (r === existing ? { lift, weight, reps, date } : r));
+  }
+  return records;
 }
 
 function categoryForHabit(habit: Habit): string {

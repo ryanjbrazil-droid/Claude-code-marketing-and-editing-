@@ -1,9 +1,11 @@
 import { Ionicons } from '@expo/vector-icons';
-import React from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import React, { useState } from 'react';
+import { Modal, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Card } from '@/components/ui/card';
-import { IconBubble, SectionHeader } from '@/components/ui/misc';
+import { IconBubble, SectionHeader, Segmented } from '@/components/ui/misc';
+import { PillButton } from '@/components/ui/pill-button';
 import { Screen } from '@/components/ui/screen';
 import { Colors, Radius, Spacing, Type } from '@/constants/theme';
 import type { Habit, HabitDifficulty } from '@/lib/types';
@@ -15,9 +17,10 @@ const DIFFICULTY_COLOR: Record<HabitDifficulty, string> = {
   Hard: Colors.danger,
 };
 
+const DIFFICULTIES = ['Easy', 'Medium', 'Hard'] as const;
 const DAY_LABELS = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
 
-function HabitCard({ habit, onComplete }: { habit: Habit; onComplete: () => void }) {
+function HabitCard({ habit, onComplete, onDelete }: { habit: Habit; onComplete: () => void; onDelete: () => void }) {
   return (
     <Card style={{ gap: Spacing.md }}>
       <View style={styles.top}>
@@ -43,6 +46,14 @@ function HabitCard({ habit, onComplete }: { habit: Habit; onComplete: () => void
             <Text style={[Type.small, { color: Colors.primary }]}>Do it</Text>
           )}
         </Pressable>
+        <Pressable
+          onPress={onDelete}
+          accessibilityRole="button"
+          accessibilityLabel={`Delete ${habit.title}`}
+          hitSlop={8}
+          style={styles.deleteBtn}>
+          <Ionicons name="trash-outline" size={18} color={Colors.textMuted} />
+        </Pressable>
       </View>
 
       <View style={styles.week}>
@@ -57,13 +68,67 @@ function HabitCard({ habit, onComplete }: { habit: Habit; onComplete: () => void
   );
 }
 
-export default function HabitsScreen() {
-  const { state, dispatch } = useApp();
-  const doneCount = state.habits.filter((h) => h.doneToday).length;
-  const bestStreak = Math.max(...state.habits.map((h) => h.streak));
+function AddHabitModal({ visible, onClose }: { visible: boolean; onClose: () => void }) {
+  const { dispatch } = useApp();
+  const insets = useSafeAreaInsets();
+  const [title, setTitle] = useState('');
+  const [difficulty, setDifficulty] = useState<HabitDifficulty>('Easy');
+
+  const submit = () => {
+    const trimmed = title.trim();
+    if (!trimmed) return;
+    dispatch({ type: 'ADD_HABIT', title: trimmed, difficulty });
+    setTitle('');
+    setDifficulty('Easy');
+    onClose();
+  };
 
   return (
-    <Screen title="Habits" back>
+    <Modal visible={visible} animationType="slide" presentationStyle="pageSheet" onRequestClose={onClose}>
+      <View style={[styles.modalRoot, { paddingTop: insets.top + Spacing.lg }]}>
+        <View style={styles.modalHeader}>
+          <Text style={Type.title}>New habit</Text>
+          <Pressable onPress={onClose} accessibilityRole="button" accessibilityLabel="Close" hitSlop={10} style={styles.closeBtn}>
+            <Ionicons name="close" size={22} color={Colors.text} />
+          </Pressable>
+        </View>
+        <View style={styles.modalBody}>
+          <Text style={[Type.secondary, { marginBottom: Spacing.sm }]}>Name</Text>
+          <TextInput
+            style={styles.input}
+            value={title}
+            onChangeText={setTitle}
+            placeholder="e.g. Read before bed"
+            placeholderTextColor={Colors.textMuted}
+            autoFocus
+            returnKeyType="done"
+            onSubmitEditing={submit}
+          />
+          <Text style={[Type.secondary, { marginTop: Spacing.lg, marginBottom: Spacing.sm }]}>Difficulty</Text>
+          <Segmented options={DIFFICULTIES} value={difficulty} onChange={setDifficulty} />
+          <PillButton label="Add habit" icon="add" onPress={submit} disabled={!title.trim()} style={{ marginTop: Spacing.xl }} />
+        </View>
+      </View>
+    </Modal>
+  );
+}
+
+export default function HabitsScreen() {
+  const { state, dispatch } = useApp();
+  const [addOpen, setAddOpen] = useState(false);
+  const doneCount = state.habits.filter((h) => h.doneToday).length;
+  const bestStreak = state.habits.length ? Math.max(...state.habits.map((h) => h.streak)) : 0;
+
+  return (
+    <Screen
+      title="Habits"
+      back
+      right={
+        <Pressable onPress={() => setAddOpen(true)} style={styles.addBtn} hitSlop={8}>
+          <Ionicons name="add" size={16} color={Colors.primary} />
+          <Text style={[Type.small, { color: Colors.primary }]}>Add habit</Text>
+        </Pressable>
+      }>
       <View style={styles.statsRow}>
         <Card style={styles.statCard}>
           <Text style={Type.stat}>{doneCount}/{state.habits.length}</Text>
@@ -84,9 +149,16 @@ export default function HabitsScreen() {
       <SectionHeader title="Daily habits" />
       <View style={{ gap: Spacing.sm }}>
         {state.habits.map((h) => (
-          <HabitCard key={h.id} habit={h} onComplete={() => dispatch({ type: 'COMPLETE_HABIT', id: h.id })} />
+          <HabitCard
+            key={h.id}
+            habit={h}
+            onComplete={() => dispatch({ type: 'COMPLETE_HABIT', id: h.id })}
+            onDelete={() => dispatch({ type: 'DELETE_HABIT', id: h.id })}
+          />
         ))}
       </View>
+
+      <AddHabitModal visible={addOpen} onClose={() => setAddOpen(false)} />
     </Screen>
   );
 }
@@ -109,6 +181,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.success,
     borderColor: Colors.success,
   },
+  deleteBtn: { width: 32, height: 40, alignItems: 'center', justifyContent: 'center' },
   week: { flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 4 },
   dayCol: { alignItems: 'center', gap: 4 },
   dayDot: {
@@ -121,4 +194,33 @@ const styles = StyleSheet.create({
   },
   statsRow: { flexDirection: 'row', gap: Spacing.sm },
   statCard: { flex: 1, alignItems: 'center', gap: 2, paddingVertical: Spacing.md, paddingHorizontal: Spacing.sm },
+  addBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 2,
+    backgroundColor: Colors.primarySoft,
+    borderRadius: Radius.full,
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+  },
+  modalRoot: { flex: 1, backgroundColor: Colors.bg },
+  modalHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: Spacing.gutter,
+    marginBottom: Spacing.lg,
+  },
+  closeBtn: { width: 32, height: 32, alignItems: 'center', justifyContent: 'center' },
+  modalBody: { paddingHorizontal: Spacing.gutter },
+  input: {
+    backgroundColor: Colors.card,
+    borderWidth: 1,
+    borderColor: Colors.border,
+    borderRadius: Radius.md,
+    color: Colors.text,
+    paddingVertical: 12,
+    paddingHorizontal: Spacing.lg,
+    fontSize: 15,
+  },
 });

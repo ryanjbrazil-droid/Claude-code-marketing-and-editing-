@@ -10,31 +10,48 @@ import { onboardingDraft, patchDraft } from '@/state/onboarding-draft';
 
 const EXPERIENCE: TrainingExperience[] = ['Beginner', 'Intermediate', 'Advanced'];
 
+/** Reasonable human ranges — rejects negatives, zero, and obviously-mistyped values. */
+const RANGES = {
+  age: { min: 13, max: 100 },
+  heightIn: { min: 48, max: 96 },
+  weightLb: { min: 60, max: 600 },
+  goalWeightLb: { min: 60, max: 600 },
+} as const;
+
+function parsedOrNull(value: string, range: { min: number; max: number }): number | null {
+  const n = Number(value);
+  if (!value.trim() || !Number.isFinite(n) || n < range.min || n > range.max) return null;
+  return n;
+}
+
 function Field({
   label,
   value,
   onChange,
   suffix,
+  error,
 }: {
   label: string;
   value: string;
   onChange: (v: string) => void;
   suffix: string;
+  error?: string;
 }) {
   return (
     <View style={styles.field}>
       <Text style={Type.label}>{label}</Text>
-      <View style={styles.inputRow}>
+      <View style={[styles.inputRow, error && styles.inputRowError]}>
         <TextInput
           style={styles.input}
           value={value}
-          onChangeText={onChange}
+          onChangeText={(v) => onChange(v.replace(/[^0-9.]/g, ''))}
           keyboardType="numeric"
           placeholderTextColor={Colors.textMuted}
           maxLength={5}
         />
         <Text style={Type.secondary}>{suffix}</Text>
       </View>
+      {error ? <Text style={styles.errorText}>{error}</Text> : null}
     </View>
   );
 }
@@ -47,25 +64,34 @@ export default function StatsScreen() {
   const [goalWeight, setGoalWeight] = useState(String(onboardingDraft.goalWeightLb));
   const [experience, setExperience] = useState<TrainingExperience>('Intermediate');
 
+  const parsedAge = parsedOrNull(age, RANGES.age);
+  const parsedHeight = parsedOrNull(height, RANGES.heightIn);
+  const parsedWeight = parsedOrNull(weight, RANGES.weightLb);
+  const parsedGoalWeight = parsedOrNull(goalWeight, RANGES.goalWeightLb);
+  const nameValid = name.trim().length > 0;
+  const allValid = nameValid && parsedAge !== null && parsedHeight !== null && parsedWeight !== null && parsedGoalWeight !== null;
+
   return (
     <OnboardingShell
       step={3}
       title="Your starting stats"
       subtitle="Every hero has a level 1. This is yours."
+      ctaDisabled={!allValid}
       onNext={() => {
+        if (!allValid || parsedAge === null || parsedHeight === null || parsedWeight === null || parsedGoalWeight === null) return;
         patchDraft({
-          name: name.trim() || 'Player',
-          age: parseInt(age, 10) || 25,
-          heightIn: parseFloat(height) || 70,
-          weightLb: parseFloat(weight) || 180,
-          goalWeightLb: parseFloat(goalWeight) || 175,
+          name: name.trim(),
+          age: parsedAge,
+          heightIn: parsedHeight,
+          weightLb: parsedWeight,
+          goalWeightLb: parsedGoalWeight,
           experience,
         });
         router.push('/onboarding/lifestyle');
       }}>
       <View style={styles.field}>
         <Text style={Type.label}>Name</Text>
-        <View style={styles.inputRow}>
+        <View style={[styles.inputRow, !nameValid && name.length > 0 && styles.inputRowError]}>
           <TextInput
             style={styles.input}
             value={name}
@@ -77,12 +103,36 @@ export default function StatsScreen() {
       </View>
 
       <View style={styles.grid}>
-        <Field label="Age" value={age} onChange={setAge} suffix="yrs" />
-        <Field label="Height" value={height} onChange={setHeight} suffix="in" />
+        <Field
+          label="Age"
+          value={age}
+          onChange={setAge}
+          suffix="yrs"
+          error={age.length > 0 && parsedAge === null ? `${RANGES.age.min}–${RANGES.age.max}` : undefined}
+        />
+        <Field
+          label="Height"
+          value={height}
+          onChange={setHeight}
+          suffix="in"
+          error={height.length > 0 && parsedHeight === null ? `${RANGES.heightIn.min}–${RANGES.heightIn.max}` : undefined}
+        />
       </View>
       <View style={styles.grid}>
-        <Field label="Weight" value={weight} onChange={setWeight} suffix="lb" />
-        <Field label="Goal weight" value={goalWeight} onChange={setGoalWeight} suffix="lb" />
+        <Field
+          label="Weight"
+          value={weight}
+          onChange={setWeight}
+          suffix="lb"
+          error={weight.length > 0 && parsedWeight === null ? `${RANGES.weightLb.min}–${RANGES.weightLb.max}` : undefined}
+        />
+        <Field
+          label="Goal weight"
+          value={goalWeight}
+          onChange={setGoalWeight}
+          suffix="lb"
+          error={goalWeight.length > 0 && parsedGoalWeight === null ? `${RANGES.goalWeightLb.min}–${RANGES.goalWeightLb.max}` : undefined}
+        />
       </View>
 
       <Text style={[Type.label, { marginTop: Spacing.md }]}>Training experience</Text>
@@ -108,6 +158,8 @@ const styles = StyleSheet.create({
     borderColor: Colors.border,
     paddingHorizontal: Spacing.lg,
   },
+  inputRowError: { borderColor: Colors.danger },
+  errorText: { color: Colors.danger, fontSize: 12 },
   input: {
     flex: 1,
     color: Colors.text,

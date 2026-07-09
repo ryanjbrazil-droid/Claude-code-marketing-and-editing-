@@ -8,8 +8,6 @@ import type {
   LoggedMeal,
   MacroTargets,
   MacroTotals,
-  PersonalRecord,
-  Measurement,
   Quest,
   SplitDay,
   StatKey,
@@ -56,7 +54,7 @@ export const DAILY_QUESTS: Quest[] = [
     icon: 'restaurant',
     color: Colors.success,
     done: false,
-    progress: 142,
+    progress: 0,
     target: 190,
     unit: 'g',
   },
@@ -68,7 +66,7 @@ export const DAILY_QUESTS: Quest[] = [
     icon: 'water',
     color: Colors.cyan,
     done: false,
-    progress: 72,
+    progress: 0,
     target: 100,
     unit: 'oz',
   },
@@ -80,7 +78,7 @@ export const DAILY_QUESTS: Quest[] = [
     icon: 'footsteps',
     color: Colors.flame,
     done: false,
-    progress: 6480,
+    progress: 0,
     target: 10000,
     unit: '',
   },
@@ -111,17 +109,19 @@ export const DAILY_QUESTS: Quest[] = [
  * twice. Quests cover the core loop (workout, protein, water, steps,
  * reading, sleep); habits cover everything else that builds the person.
  */
+const FRESH_WEEK = [false, false, false, false, false, false, false];
+
 export const HABITS: Habit[] = [
-  { id: 'h-meditation', title: 'Meditation', icon: 'leaf', color: Colors.success, xp: 100, difficulty: 'Easy', streak: 5, doneToday: false, week: [false, true, true, false, true, true, false] },
-  { id: 'h-journaling', title: 'Journaling', icon: 'create', color: Colors.cyan, xp: 100, difficulty: 'Easy', streak: 8, doneToday: false, week: [true, true, true, false, true, true, false] },
-  { id: 'h-wake', title: 'Wake up by 6:30 AM', icon: 'sunny', color: Colors.xp, xp: 150, difficulty: 'Medium', streak: 17, doneToday: true, week: [true, true, true, true, true, true, true] },
-  { id: 'h-mobility', title: 'Stretch 10 minutes', icon: 'body', color: Colors.primary, xp: 100, difficulty: 'Easy', streak: 12, doneToday: false, week: [true, true, false, true, true, true, false] },
-  { id: 'h-nojunk', title: 'No junk food', icon: 'close-circle', color: Colors.danger, xp: 200, difficulty: 'Hard', streak: 6, doneToday: false, week: [true, false, true, true, true, true, false] },
-  { id: 'h-nophone', title: 'No phone in bed', icon: 'phone-portrait', color: Colors.pink, xp: 150, difficulty: 'Medium', streak: 3, doneToday: false, week: [false, false, true, true, false, true, false] },
-  { id: 'h-coldshower', title: 'Cold shower finish', icon: 'snow', color: Colors.cyan, xp: 150, difficulty: 'Hard', streak: 9, doneToday: false, week: [true, true, true, false, true, true, false] },
-  { id: 'h-plan', title: 'Plan tomorrow tonight', icon: 'calendar', color: Colors.flame, xp: 100, difficulty: 'Easy', streak: 21, doneToday: false, week: [true, true, true, true, true, true, false] },
-  { id: 'h-budget', title: 'Budget check', icon: 'wallet', color: Colors.success, xp: 100, difficulty: 'Easy', streak: 4, doneToday: false, week: [false, true, false, true, true, true, false] },
-  { id: 'h-learning', title: '30 min learning', icon: 'school', color: Colors.purple, xp: 150, difficulty: 'Medium', streak: 11, doneToday: false, week: [true, true, true, true, false, true, false] },
+  { id: 'h-meditation', title: 'Meditation', icon: 'leaf', color: Colors.success, xp: 100, difficulty: 'Easy', streak: 0, doneToday: false, week: FRESH_WEEK },
+  { id: 'h-journaling', title: 'Journaling', icon: 'create', color: Colors.cyan, xp: 100, difficulty: 'Easy', streak: 0, doneToday: false, week: FRESH_WEEK },
+  { id: 'h-wake', title: 'Wake up by 6:30 AM', icon: 'sunny', color: Colors.xp, xp: 150, difficulty: 'Medium', streak: 0, doneToday: false, week: FRESH_WEEK },
+  { id: 'h-mobility', title: 'Stretch 10 minutes', icon: 'body', color: Colors.primary, xp: 100, difficulty: 'Easy', streak: 0, doneToday: false, week: FRESH_WEEK },
+  { id: 'h-nojunk', title: 'No junk food', icon: 'close-circle', color: Colors.danger, xp: 200, difficulty: 'Hard', streak: 0, doneToday: false, week: FRESH_WEEK },
+  { id: 'h-nophone', title: 'No phone in bed', icon: 'phone-portrait', color: Colors.pink, xp: 150, difficulty: 'Medium', streak: 0, doneToday: false, week: FRESH_WEEK },
+  { id: 'h-coldshower', title: 'Cold shower finish', icon: 'snow', color: Colors.cyan, xp: 150, difficulty: 'Hard', streak: 0, doneToday: false, week: FRESH_WEEK },
+  { id: 'h-plan', title: 'Plan tomorrow tonight', icon: 'calendar', color: Colors.flame, xp: 100, difficulty: 'Easy', streak: 0, doneToday: false, week: FRESH_WEEK },
+  { id: 'h-budget', title: 'Budget check', icon: 'wallet', color: Colors.success, xp: 100, difficulty: 'Easy', streak: 0, doneToday: false, week: FRESH_WEEK },
+  { id: 'h-learning', title: '30 min learning', icon: 'school', color: Colors.purple, xp: 150, difficulty: 'Medium', streak: 0, doneToday: false, week: FRESH_WEEK },
 ];
 
 // ---------- Fitness ----------
@@ -138,69 +138,47 @@ export const WEEKLY_SPLIT: SplitDay[] = [
 
 const set = (reps: number, weight: number) => ({ reps, weight, done: false });
 
-export const TODAYS_WORKOUT: Exercise[] = [
-  {
-    id: 'ex-bench',
-    lastWeight: 180,
-    name: 'Bench Press',
-    sets: [set(8, 185), set(8, 185), set(8, 185), set(8, 185)],
-    restSec: 150,
-    notes: '',
-    alternates: ['Dumbbell Bench Press', 'Machine Chest Press', 'Weighted Push-Up'],
-  },
-  {
-    id: 'ex-incline',
-    lastWeight: 60,
-    name: 'Incline Dumbbell Press',
-    sets: [set(10, 65), set(10, 65), set(10, 65)],
-    restSec: 120,
-    notes: '',
-    alternates: ['Incline Barbell Press', 'Incline Machine Press'],
-  },
-  {
-    id: 'ex-fly',
-    lastWeight: 35,
-    name: 'Cable Fly',
-    sets: [set(12, 40), set(12, 40), set(12, 40)],
-    restSec: 90,
-    notes: '',
-    alternates: ['Pec Deck', 'Dumbbell Fly'],
-  },
-  {
-    id: 'ex-pushdown',
-    lastWeight: 50,
-    name: 'Triceps Pushdown',
-    sets: [set(12, 55), set(12, 55), set(12, 55)],
-    restSec: 90,
-    notes: '',
-    alternates: ['Overhead Cable Extension', 'Skull Crusher'],
-  },
-  {
-    id: 'ex-lateral',
-    lastWeight: 15,
-    name: 'Lateral Raise',
-    sets: [set(15, 20), set(15, 20), set(15, 20), set(15, 20)],
-    restSec: 60,
-    notes: '',
-    alternates: ['Cable Lateral Raise', 'Machine Lateral Raise'],
-  },
-];
-
-export const WEIGHT_TREND = [196.2, 195.4, 195.8, 194.6, 193.9, 193.2, 192.8, 192.0];
-
-export const PERSONAL_RECORDS: PersonalRecord[] = [
-  { lift: 'Bench Press', weight: 225, reps: 3, date: 'Jun 24' },
-  { lift: 'Squat', weight: 315, reps: 2, date: 'Jun 18' },
-  { lift: 'Deadlift', weight: 405, reps: 1, date: 'Jun 10' },
-  { lift: 'Overhead Press', weight: 135, reps: 5, date: 'Jun 27' },
-];
-
-export const MEASUREMENTS: Measurement[] = [
-  { label: 'Chest', value: '42.0 in', change: '+0.5' },
-  { label: 'Waist', value: '33.5 in', change: '-1.0' },
-  { label: 'Arms', value: '15.8 in', change: '+0.3' },
-  { label: 'Thighs', value: '24.5 in', change: '+0.4' },
-];
+/**
+ * Starting-point templates per split focus — suggested sets/reps/weight for
+ * a first session. Never claims a "last session"; that only appears once
+ * there's real workout history to look up.
+ */
+export const WORKOUT_TEMPLATES: Record<string, Exercise[]> = {
+  Push: [
+    { id: 'ex-bench', name: 'Bench Press', sets: [set(8, 135), set(8, 135), set(8, 135), set(8, 135)], restSec: 150, notes: '', alternates: ['Dumbbell Bench Press', 'Machine Chest Press', 'Weighted Push-Up'] },
+    { id: 'ex-incline', name: 'Incline Dumbbell Press', sets: [set(10, 40), set(10, 40), set(10, 40)], restSec: 120, notes: '', alternates: ['Incline Barbell Press', 'Incline Machine Press'] },
+    { id: 'ex-fly', name: 'Cable Fly', sets: [set(12, 20), set(12, 20), set(12, 20)], restSec: 90, notes: '', alternates: ['Pec Deck', 'Dumbbell Fly'] },
+    { id: 'ex-pushdown', name: 'Triceps Pushdown', sets: [set(12, 40), set(12, 40), set(12, 40)], restSec: 90, notes: '', alternates: ['Overhead Cable Extension', 'Skull Crusher'] },
+    { id: 'ex-lateral', name: 'Lateral Raise', sets: [set(15, 10), set(15, 10), set(15, 10), set(15, 10)], restSec: 60, notes: '', alternates: ['Cable Lateral Raise', 'Machine Lateral Raise'] },
+  ],
+  Pull: [
+    { id: 'ex-deadlift', name: 'Deadlift', sets: [set(5, 185), set(5, 185), set(5, 185)], restSec: 180, notes: '', alternates: ['Trap Bar Deadlift', 'Romanian Deadlift'] },
+    { id: 'ex-latpulldown', name: 'Lat Pulldown', sets: [set(10, 100), set(10, 100), set(10, 100)], restSec: 120, notes: '', alternates: ['Pull-Up', 'Assisted Pull-Up'] },
+    { id: 'ex-cablerow', name: 'Seated Cable Row', sets: [set(10, 100), set(10, 100), set(10, 100)], restSec: 90, notes: '', alternates: ['Barbell Row', 'Chest-Supported Row'] },
+    { id: 'ex-facepull', name: 'Face Pull', sets: [set(15, 30), set(15, 30), set(15, 30)], restSec: 60, notes: '', alternates: ['Reverse Pec Deck', 'Band Pull-Apart'] },
+    { id: 'ex-curl', name: 'Barbell Curl', sets: [set(10, 50), set(10, 50), set(10, 50)], restSec: 60, notes: '', alternates: ['Dumbbell Curl', 'Cable Curl'] },
+  ],
+  Legs: [
+    { id: 'ex-squat', name: 'Back Squat', sets: [set(6, 185), set(6, 185), set(6, 185), set(6, 185)], restSec: 180, notes: '', alternates: ['Front Squat', 'Leg Press'] },
+    { id: 'ex-legpress', name: 'Leg Press', sets: [set(10, 270), set(10, 270), set(10, 270)], restSec: 120, notes: '', alternates: ['Hack Squat', 'Goblet Squat'] },
+    { id: 'ex-rdl', name: 'Romanian Deadlift', sets: [set(8, 135), set(8, 135), set(8, 135)], restSec: 120, notes: '', alternates: ['Leg Curl', 'Good Morning'] },
+    { id: 'ex-legcurl', name: 'Leg Curl', sets: [set(12, 60), set(12, 60), set(12, 60)], restSec: 90, notes: '', alternates: ['Nordic Curl', 'Glute Ham Raise'] },
+    { id: 'ex-calf', name: 'Standing Calf Raise', sets: [set(15, 90), set(15, 90), set(15, 90), set(15, 90)], restSec: 60, notes: '', alternates: ['Seated Calf Raise', 'Leg Press Calf Raise'] },
+  ],
+  Upper: [
+    { id: 'ex-ohp', name: 'Overhead Press', sets: [set(8, 95), set(8, 95), set(8, 95)], restSec: 150, notes: '', alternates: ['Dumbbell Shoulder Press', 'Machine Shoulder Press'] },
+    { id: 'ex-pullup', name: 'Pull-Up', sets: [set(8, 0), set(8, 0), set(8, 0)], restSec: 120, notes: '', alternates: ['Lat Pulldown', 'Assisted Pull-Up'] },
+    { id: 'ex-inclinebench', name: 'Incline Barbell Press', sets: [set(8, 115), set(8, 115), set(8, 115)], restSec: 120, notes: '', alternates: ['Incline Dumbbell Press'] },
+    { id: 'ex-row', name: 'Barbell Row', sets: [set(10, 115), set(10, 115), set(10, 115)], restSec: 90, notes: '', alternates: ['Cable Row', 'Chest-Supported Row'] },
+    { id: 'ex-hammercurl', name: 'Hammer Curl', sets: [set(10, 30), set(10, 30), set(10, 30)], restSec: 60, notes: '', alternates: ['Barbell Curl'] },
+  ],
+  Conditioning: [
+    { id: 'ex-intervals', name: 'Treadmill Intervals', sets: [set(1, 0), set(1, 0), set(1, 0), set(1, 0)], restSec: 90, notes: '', alternates: ['Bike Intervals', 'Row Intervals'] },
+    { id: 'ex-rower', name: 'Rowing Machine', sets: [set(1, 0), set(1, 0)], restSec: 120, notes: '', alternates: ['Ski Erg', 'Assault Bike'] },
+    { id: 'ex-plank', name: 'Plank', sets: [set(1, 0), set(1, 0), set(1, 0)], restSec: 60, notes: '', alternates: ['Side Plank', 'Dead Bug'] },
+    { id: 'ex-mountainclimber', name: 'Mountain Climbers', sets: [set(20, 0), set(20, 0), set(20, 0)], restSec: 45, notes: '', alternates: ['Burpees', 'Jump Rope'] },
+  ],
+};
 
 // ---------- Nutrition ----------
 
@@ -222,12 +200,8 @@ export const MACRO_TOTALS: MacroTotals = {
   fiber: 24,
 };
 
-export const LOGGED_MEALS: LoggedMeal[] = [
-  { id: 'm1', slot: 'Breakfast', name: 'Eggs, oats & berries', calories: 520, protein: 38, carbs: 55, fats: 16 },
-  { id: 'm2', slot: 'Lunch', name: 'Chicken rice bowl', calories: 680, protein: 52, carbs: 70, fats: 18 },
-  { id: 'm3', slot: 'Snacks', name: 'Greek yogurt + almonds', calories: 290, protein: 24, carbs: 18, fats: 14 },
-  { id: 'm4', slot: 'Dinner', name: 'Salmon, potatoes & greens', calories: 360, protein: 28, carbs: 22, fats: 10 },
-];
+/** Real users start with no meals logged — everything here is earned by logging it. */
+export const LOGGED_MEALS: LoggedMeal[] = [];
 
 export const SUGGESTED_MEALS: SuggestedMeal[] = [
   { name: 'Ground turkey pasta', calories: 640, protein: 54, tag: 'High protein' },
@@ -254,13 +228,13 @@ export const GROCERY_LIST = [
 // ---------- Character ----------
 
 export const DEFAULT_STATS: Record<StatKey, number> = {
-  Strength: 34,
-  Discipline: 41,
-  Endurance: 29,
-  Focus: 22,
-  Knowledge: 18,
-  Confidence: 31,
-  Wisdom: 15,
+  Strength: 0,
+  Discipline: 0,
+  Endurance: 0,
+  Focus: 0,
+  Knowledge: 0,
+  Confidence: 0,
+  Wisdom: 0,
 };
 
 /** Which character stats grow when a quest/habit in this category is completed. */
@@ -276,33 +250,15 @@ export const CATEGORY_STAT_GAINS: Record<string, StatKey[]> = {
 };
 
 export const BADGES: BadgeItem[] = [
-  { id: 'b1', title: '7-Day Streak', icon: 'flame', color: Colors.flame, earned: true, description: 'Complete 7 days in a row' },
-  { id: 'b2', title: 'First PR', icon: 'trophy', color: Colors.xp, earned: true, description: 'Set your first personal record' },
-  { id: 'b3', title: 'Early Riser', icon: 'sunny', color: Colors.xp, earned: true, description: 'Wake up on time 14 days straight' },
-  { id: 'b4', title: 'Hydration Master', icon: 'water', color: Colors.cyan, earned: true, description: 'Hit water goal 21 days straight' },
-  { id: 'b5', title: 'Iron Will', icon: 'shield', color: Colors.textSecondary, earned: true, description: 'Reach Iron rank' },
+  { id: 'b1', title: '7-Day Streak', icon: 'flame', color: Colors.flame, earned: false, description: 'Complete 7 days in a row' },
+  { id: 'b2', title: 'First PR', icon: 'trophy', color: Colors.xp, earned: false, description: 'Set your first personal record' },
+  { id: 'b3', title: 'Early Riser', icon: 'sunny', color: Colors.xp, earned: false, description: 'Wake up on time 14 days straight' },
+  { id: 'b4', title: 'Hydration Master', icon: 'water', color: Colors.cyan, earned: false, description: 'Hit water goal 21 days straight' },
+  { id: 'b5', title: 'Iron Will', icon: 'shield', color: Colors.textSecondary, earned: false, description: 'Reach Iron rank' },
   { id: 'b6', title: 'Bookworm', icon: 'book', color: Colors.purple, earned: false, description: 'Read 500 pages total' },
   { id: 'b7', title: '30-Day Streak', icon: 'flame', color: Colors.flameDeep, earned: false, description: 'Complete 30 days in a row' },
   { id: 'b8', title: 'Centurion', icon: 'barbell', color: Colors.primary, earned: false, description: 'Complete 100 workouts' },
 ];
 
-/**
- * Legacy seed — the permanent timeline this user has already written.
- * Real users start with only "Started Journey"; everything else is earned.
- */
-export const LEGACY_SEED: LegacyEvent[] = [
-  { id: 'l-origin', date: 'Apr 2, 2026', title: 'Started the Journey', detail: 'Day one. Chose "Build muscle" and never looked back.', icon: 'flag', category: 'origin' },
-  { id: 'l-first-workout', date: 'Apr 3, 2026', title: 'First Workout Logged', detail: 'Push day. It all starts with one session.', icon: 'barbell', category: 'strength' },
-  { id: 'l-streak-7', date: 'Apr 9, 2026', title: '7-Day Streak', detail: 'One full week without breaking the chain.', icon: 'flame', category: 'discipline' },
-  { id: 'l-first-5', date: 'May 1, 2026', title: 'Lost First 5 Pounds', detail: '196.2 → 191.0. The scale finally moved.', icon: 'trending-down', category: 'body' },
-  { id: 'l-workouts-50', date: 'Jun 8, 2026', title: '50 Workouts Completed', detail: 'Fifty sessions of showing up.', icon: 'trophy', category: 'strength' },
-  { id: 'l-bench-225', date: 'Jun 24, 2026', title: 'Bench Press 225', detail: 'Two plates. A lifetime first.', icon: 'medal', category: 'strength' },
-  { id: 'l-rank-bronze', date: 'Jun 28, 2026', title: 'Reached Bronze Rank', detail: 'Level 10 · the first rank earned, not given.', icon: 'shield', category: 'rank' },
-];
-
-export const ACHIEVEMENTS = [
-  { title: '50 workouts completed', detail: 'Lifetime total', icon: 'barbell' as const },
-  { title: '26-day streak (best)', detail: 'Longest run so far', icon: 'flame' as const },
-  { title: '4.2 lb lost this month', detail: 'Trending toward goal', icon: 'trending-down' as const },
-  { title: 'Protein goal hit 18x', detail: 'Last 30 days', icon: 'restaurant' as const },
-];
+/** Real users start with an empty Legacy — the origin entry is written when onboarding completes. */
+export const LEGACY_SEED: LegacyEvent[] = [];

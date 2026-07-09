@@ -165,7 +165,14 @@ export default function TodayScreen() {
             <View style={styles.coachAccent} />
             <View style={{ flex: 1, gap: 6 }}>
               <Text style={Type.label}>Coach · {state.profile.coachPersonality}</Text>
-              <Text style={[Type.secondary, { color: Colors.text }]}>{todayFocus(state.profile.coachPersonality)}</Text>
+              <Text style={[Type.secondary, { color: Colors.text }]}>
+                {todayFocus(state.profile.coachPersonality, {
+                  questsDone,
+                  questsTotal: state.quests.length,
+                  nextQuestTitle: nextQuest?.title ?? null,
+                  currentStreak: state.currentStreak,
+                })}
+              </Text>
             </View>
             <Ionicons name="chevron-forward" size={16} color={Colors.textMuted} />
           </View>

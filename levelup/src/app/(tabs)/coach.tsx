@@ -16,7 +16,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { IconBubble } from '@/components/ui/misc';
 import { Colors, Radius, Spacing, Type } from '@/constants/theme';
 import { QUICK_PROMPTS } from '@/lib/coach';
-import { useApp } from '@/state/app-context';
+import { getCoachReply } from '@/lib/coach-ai';
+import { useApp, useMacroTotals } from '@/state/app-context';
 
 /** Three-dot typing indicator — the pause is what makes the coach feel present. */
 function TypingDots() {
@@ -51,6 +52,7 @@ function TypingDots() {
 
 export default function CoachScreen() {
   const { state, dispatch } = useApp();
+  const macroTotals = useMacroTotals();
   const insets = useSafeAreaInsets();
   const [input, setInput] = useState('');
   const [typing, setTyping] = useState(false);
@@ -70,18 +72,21 @@ export default function CoachScreen() {
     };
   }, []);
 
-  const send = (text: string) => {
+  const send = async (text: string) => {
     const trimmed = text.trim();
     if (!trimmed || typing) return;
     dispatch({ type: 'USER_CHAT', text: trimmed });
     setInput('');
     setTyping(true);
-    // The reply always lands, even if the user leaves the screen mid-typing —
-    // dispatch targets app-level state; only the local indicator is guarded.
-    setTimeout(() => {
-      dispatch({ type: 'COACH_REPLY', prompt: trimmed });
+    try {
+      const reply = await getCoachReply(state, macroTotals, trimmed);
+      if (mounted.current) dispatch({ type: 'COACH_MESSAGE', text: reply });
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Couldn't reach the coach just now — try again in a moment.";
+      if (mounted.current) dispatch({ type: 'COACH_MESSAGE', text: message });
+    } finally {
       if (mounted.current) setTyping(false);
-    }, 1000 + Math.random() * 500);
+    }
   };
 
   return (

@@ -48,6 +48,7 @@ function Root() {
         <Stack.Screen name="habits" options={{ animation: 'slide_from_right' }} />
         <Stack.Screen name="profile" options={{ animation: 'slide_from_right' }} />
         <Stack.Screen name="legacy" options={{ animation: 'slide_from_right' }} />
+        <Stack.Screen name="legal/[doc]" options={{ animation: 'slide_from_right' }} />
       </Stack>
       <RewardToast />
     </View>

@@ -9,7 +9,13 @@
     "userInterfaceStyle": "dark",
     "ios": {
       "bundleIdentifier": "com.ryanbrazil.levelup",
-      "supportsTablet": false
+      "supportsTablet": false,
+      "infoPlist": {
+        "NSCameraUsageDescription": "LevelUp uses the camera to scan barcodes and photograph meals for calorie estimation.",
+        "NSPhotoLibraryUsageDescription": "LevelUp uses your photo library to estimate calories from meal photos.",
+        "NSMicrophoneUsageDescription": "LevelUp uses the microphone for voice meal logging.",
+        "NSSpeechRecognitionUsageDescription": "LevelUp uses speech recognition to transcribe voice meal logs."
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -33,6 +39,25 @@
           "backgroundColor": "#070B12",
           "image": "./assets/images/splash-icon.png",
           "imageWidth": 120
+        }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "LevelUp uses the camera to scan barcodes and photograph meals for calorie estimation."
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "LevelUp uses your photo library to estimate calories from meal photos."
+        }
+      ],
+      [
+        "expo-speech-recognition",
+        {
+          "microphonePermission": "LevelUp uses the microphone for voice meal logging.",
+          "speechRecognitionPermission": "LevelUp uses speech recognition to transcribe voice meal logs."
         }
       ]
     ],

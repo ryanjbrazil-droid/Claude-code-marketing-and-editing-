@@ -122,10 +122,32 @@ export interface PersonalRecord {
   date: string;
 }
 
-export interface Measurement {
+// ---------- Real progress tracking (logged by the user, never seeded) ----------
+
+export interface WeightEntry {
+  id: string;
+  date: string;
+  weightLb: number;
+}
+
+export interface MeasurementEntry {
+  id: string;
+  date: string;
   label: string;
   value: string;
-  change: string;
+}
+
+export interface CompletedExercise {
+  name: string;
+  sets: { reps: number; weight: number }[];
+}
+
+export interface WorkoutHistoryEntry {
+  id: string;
+  date: string;
+  dayFocus: string;
+  exercises: CompletedExercise[];
+  volume: number;
 }
 
 // ---------- Nutrition ----------
