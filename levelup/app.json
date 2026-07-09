@@ -14,7 +14,8 @@
         "NSCameraUsageDescription": "LevelUp uses the camera to scan barcodes and photograph meals for calorie estimation.",
         "NSPhotoLibraryUsageDescription": "LevelUp uses your photo library to estimate calories from meal photos.",
         "NSMicrophoneUsageDescription": "LevelUp uses the microphone for voice meal logging.",
-        "NSSpeechRecognitionUsageDescription": "LevelUp uses speech recognition to transcribe voice meal logs."
+        "NSSpeechRecognitionUsageDescription": "LevelUp uses speech recognition to transcribe voice meal logs.",
+        "ITSAppUsesNonExemptEncryption": false
       }
     },
     "android": {
