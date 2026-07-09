@@ -42,6 +42,7 @@ All of it — nothing in this app is used for tracking as Apple defines the term
 | Service | Purpose | Data shared |
 |---|---|---|
 | Anthropic (Claude API) | Powers the AI Coach, AI photo/voice meal estimation, and AI meal planner | Name (first name only), fitness stats/goals, quest/habit status, macro totals, chat messages, and — only when you use those specific features — a meal description, photo, or voice transcript. See anthropic.com/privacy for how Anthropic handles this data. |
+| Open Food Facts (public product database) | Powers barcode scan lookups | Only the scanned barcode number, sent directly from the app (`src/lib/barcode.ts`) — no name, profile, or other personal data. Keyless public API; see openfoodfacts.org/privacy. |
 
 No other third-party SDKs (analytics, ads, crash reporting, attribution) are present in the codebase as of this audit — verified by inspecting `package.json` dependencies directly.
 
