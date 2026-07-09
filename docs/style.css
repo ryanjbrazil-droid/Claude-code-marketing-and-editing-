@@ -111,3 +111,27 @@ footer a:hover { color: var(--text); }
   border-radius: 10px;
   text-decoration: none;
 }
+
+.shot-gallery {
+  display: flex;
+  gap: 14px;
+  overflow-x: auto;
+  margin: 24px -24px 32px;
+  padding: 4px 24px 12px;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+
+.shot-gallery img {
+  height: 420px;
+  width: auto;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  scroll-snap-align: start;
+  flex-shrink: 0;
+  background: var(--panel);
+}
+
+@media (max-width: 480px) {
+  .shot-gallery img { height: 320px; }
+}
