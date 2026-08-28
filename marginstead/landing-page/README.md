@@ -40,6 +40,37 @@ dollar figures, forms, analytics and stock photography.
 
 ---
 
+## Mode A wording changes — 2026-08-28 (Gate 0)
+
+Every line that implied Marginstead would contact, chase or represent a customer to its vendor
+has been removed. The page now states the division of labour explicitly.
+
+| # | Element | Before | After |
+|---|---|---|---|
+| 1 | **Core promise** | "We don't just find money you're owed. **We get it back.**" | **"Finding it is the easy part. We manage the claim until the credit actually posts."** |
+| 2 | Sub-headline | "…then, when you authorize it, **follows the issue through** until the credit is resolved." | **"We find the issue, build the claim, manage the follow-up process, and verify that the credit actually posts."** (the approved wording, verbatim) |
+| 3 | Comparison panel | "**We contact the vendor** — or hand you the packet" | **"We write the claim — you send it, in your name"** |
+| 4 | Comparison panel | "We follow up on a schedule" / "**We escalate it** when it stalls" | **"We set the follow-up schedule and draft each one"** / **"We draft the escalation when it stalls"** |
+| 5 | Step 3 heading | "You decide **what we chase**" | **"You decide what to claim"** |
+| 6 | Step 3 body | "…or **we contact them directly on your behalf.** Your call." | **"We write the claim and put the evidence together; you send it to your vendor under your own name. Your vendor never hears from us."** — Mode B removed entirely |
+| 7 | Step 4 heading | "**We chase it** until it posts" | **"We manage it until it posts"** |
+| 8 | Step 4 body | "We follow up, escalate, track…" | **"We set the follow-up schedule and draft each one for you to send. You forward us what the vendor says…"** |
+| 9 | **New section** | — | **"Who talks to your vendor / You do. Always."** — states plainly that Marginstead does not contact vendors, is **not a collection agency**, does not negotiate or represent, and that recovered money goes straight from vendor to customer and never passes through Marginstead |
+| 10 | Pricing | "20% of what's **actually recovered** … posted or paid — not promised" | **Realized-recovery definition:** cash counts when it reaches you; an account credit counts **only once it posts *and* gets applied** against a bill you'd otherwise have paid. "A credit sitting unused on your account costs you nothing from us." |
+| 11 | Panel footer | "A promised credit isn't a credit until it **shows up on a statement**" | "…until it **posts and gets used**" |
+| 12 | Closing | "you'll have findings back before anything else happens" | **"…before anything goes to your vendor — and when it does, it goes from you."** |
+| 13 | Footer | "independent recovery service" | Adds: **"Not a collection agency. We do not contact vendors on your behalf or hold recovered funds."** |
+| 14 | Meta / OG tags | Recovery framing | Mode A framing |
+
+**Verified after the edit:** the only remaining occurrences of "collection agency" and "on your
+behalf" are inside the negative disclaimers. No instance of "we chase", "we contact the vendor",
+"we get it back", or any reference to Mode B remains.
+
+**Mode A is presented as a feature, not a limitation** — it removes the objection that a stranger
+might contact the shop's FleetPride rep, which was previously the highest-severity funnel risk.
+
+---
+
 ## Deploy
 
 Drop `index.html` on any static host and point marginstead.com at it. No dependencies.
@@ -56,6 +87,7 @@ software). No form backend to build.
 |---|---|---|
 | 1 | **Fill `[STREET ADDRESS]` and `[CITY, STATE ZIP]` in the footer** | Required in commercial email under CAN-SPAM; the site address should match. Still a placeholder. |
 | 2 | **Publish the retention policy at a stable URL and link it from the "Your records" section** | The intake email links to it. Text is written in `ops/data-handling.md` §4. |
+| 2b | **Nothing is hosted yet** — `marginstead.com` has no A record (verified by DNS lookup 2026-08-28). MX, SPF, DKIM and DMARC are all configured; only web hosting is missing. | Blocks items 2 and 4 |
 | 3 | Confirm ryan@marginstead.com is live and monitored | Only conversion path on the page |
 | 4 | HTTPS with a real certificate | The page asks shops to send financial records |
 | 5 | Confirm the vendor-neutrality disclaimer is accurate | Footer currently states no affiliation with any parts vendor |
@@ -66,3 +98,4 @@ software). No form backend to build.
   written permission, never extrapolated into a general claim.**
 - A real upload form — only when email and shared folders become the bottleneck.
 - Any claim of an integration. Marginstead integrates with nothing today.
+- **Any Mode B language** — direct vendor contact — until Gate 0 clears with counsel.

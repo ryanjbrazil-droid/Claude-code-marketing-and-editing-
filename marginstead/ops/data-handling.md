@@ -131,32 +131,52 @@ whether money posted. It does not need to contain the customer's source document
 **Nothing is claimed from any vendor without written authorization.** The findings report is
 delivered first, and the customer decides.
 
-### Two modes — offer both, lead with A on hesitation
+### MODE A ONLY (Gate 0)
 
-| | **Mode A — Claim packet** | **Mode B — Direct contact** |
-|---|---|---|
-| Who contacts the vendor | **The shop** | **Marginstead**, on the shop's behalf |
-| What Marginstead does | Assembles the documented claim, tracks it, sets follow-up dates, drafts escalations, verifies posting on the next statement | All of the above, plus makes the contact |
-| Vendor relationship | Untouched | Marginstead appears as the shop's representative |
-| Best for | Owners protective of their vendor rep | Owners who want it off their plate |
+**Marginstead does not contact vendors.** There is one mode during validation:
 
-Mode A still delivers the core value — the tracking, the scheduled follow-up, the escalation
-drafting and the step-7 verification. **It is the answer to "I don't want a third party calling
-my FleetPride rep,"** and it should be offered immediately when that hesitation appears.
+| Step | Who |
+|---|---|
+| Identify the discrepancy, assemble evidence, draft the claim | **Marginstead** |
+| **Send it to the vendor** | **The customer**, in its own name |
+| Schedule follow-ups and draft each one | **Marginstead** |
+| Send each follow-up | **The customer** |
+| Forward the vendor's responses | **The customer** |
+| Log responses, track promises and dates, draft escalations | **Marginstead** |
+| Review the next statement; verify the credit posted and was applied | **Marginstead** |
+| Close the case | **Marginstead**, only on verified realization |
+
+**Prohibited until Gate 0 clears — no exceptions, including at a customer's request:**
+contacting vendors directly · representing Marginstead as a collection agency · receiving
+customer recoveries into Marginstead accounts · threatening legal action or collections ·
+negotiating disputed obligations as the customer's representative · building or activating a
+vendor-facing recovery voice agent.
+
+**Mode B is locked.** Do not offer it, reference it in any customer-facing material, or agree to
+it if asked. The answer to a customer who offers is: *"Not yet — I'm getting the legal side
+squared away first."*
+
+**Recovered funds never pass through Marginstead.** Money goes directly from vendor to customer;
+Marginstead invoices separately afterward. This should probably remain permanent regardless of
+what counsel concludes.
 
 ### Authorization document — what it must state
 
 Draft before Gate 6. **Have a lawyer review it before it is signed by anyone.**
 
 1. **Scope:** the named vendor, the named period, and the specific claims listed by amount
-2. **Mode:** A or B, explicitly chosen
-3. **Fee:** 20% of amounts **actually recovered and verified as posted**; **no recovery, no fee**
-4. **Definition of "recovered":** verified on a subsequent vendor statement — not a vendor's
-   promise, not an email saying yes
-5. **Account credit vs. cash:** exactly how a credit against the account is treated for fee
-   purposes — **must be settled before the first authorization** (see positioning doc §6)
-6. **Limits:** Marginstead does not make legal claims, does not conduct collections activity,
-   does not litigate, and does not sign anything on the shop's behalf
+2. **Mode:** Mode A. State explicitly that Marginstead will not contact the vendor and that all
+   communications are sent by the customer in the customer's own name.
+3. **Fee:** 20% of **verified realized recovery value**; **no realized recovery, no fee**
+4. **Definition of "recovered":** cash refunds count when the customer receives the money;
+   account credits count only when **both** verified as posted **and** actually applied against
+   an invoice or balance the customer would otherwise have paid. A promise is not a recovery; an
+   unapplied credit memo is not a recovery. Worked example in `research/09-gate-0-regulatory.md` §5.
+5. **Funds:** recovered money is paid by the vendor directly to the customer. Marginstead never
+   receives or holds customer recoveries, and invoices separately after realization.
+6. **Limits:** Marginstead is not a collection agency; does not contact vendors; does not
+   negotiate as the customer's representative; does not make legal claims, conduct collections
+   activity or litigate; and does not sign anything on the shop's behalf.
 7. **Revocable:** the customer may withdraw authorization in writing at any time
 8. **Data:** retention and deletion terms per §4
 
@@ -174,9 +194,9 @@ Draft before Gate 6. **Have a lawyer review it before it is signed by anyone.**
 | 6 | Machine holding records is disk-encrypted and password-protected | ☐ |
 | 7 | Case log template created (claims, dates, contacts, promises, postings) | ☐ |
 | 8 | Findings report template created | ☐ |
-| 9 | Authorization document drafted | ☐ (needed by Gate 6, not Gate 4) |
-| 10 | Authorization document reviewed by a lawyer | ☐ (needed by Gate 6) |
-| 11 | Account-credit-vs-cash fee definition settled in writing | ☐ (needed by Gate 6) |
+| 9 | Mode A authorization document drafted | ☐ (needed by Gate 6, not Gate 4) |
+| 10 | **Gate 0: counsel confirms Mode A classification** and reviews the authorization | ☐ **(blocks Gate 6)** |
+| 11 | Realized-recovery fee definition settled in writing | ☑ (see `research/09-gate-0-regulatory.md` §5) |
 
 **Items 1–8 block Gate 4** (receiving the first record set).
 **Items 9–11 block Gate 6** (authorizing the first recovery).
@@ -192,8 +212,10 @@ Write this down now, while it is hypothetical.
   understand it fully first.
 - **A customer asks for deletion mid-audit:** stop work immediately, delete, confirm in writing.
   No retention attempt, no asking why.
-- **A vendor disputes Marginstead's standing to ask:** stop, switch to Mode A, and let the shop
-  make the contact. Do not argue with a vendor on a customer's behalf.
+- **A vendor contacts Marginstead directly:** do not engage on the substance of the claim.
+  Redirect to the customer. Marginstead has no standing with the vendor and must not acquire one.
+- **A customer asks Marginstead to just call the vendor:** decline. Explain that the legal review
+  isn't finished. Mode B is locked regardless of who requests it.
 - **A finding turns out to be wrong after a claim was made:** tell the customer and the vendor
   immediately and withdraw it. **A shop that takes three bad claims to its FleetPride rep loses
   credibility with that vendor and will never work with Marginstead again.** Precision matters

@@ -2,7 +2,12 @@
 
 **A managed vendor-credit and parts-money recovery service for heavy-duty repair businesses.**
 
-> **We don't just find money you're owed. We get it back.**
+> **Finding it is the easy part. We manage the claim until the credit actually posts.**
+
+> **MODE A ONLY (Gate 0).** Marginstead does not contact vendors, represent customers, or hold
+> recovered funds. We find the issue, build the claim, manage the follow-up process, and verify
+> the credit posts — **the customer sends every communication, in its own name.** Mode B is
+> locked pending legal review. See [`research/09-gate-0-regulatory.md`](research/09-gate-0-regulatory.md).
 
 **Objective:** find out whether US heavy-duty repair businesses will **pay** Marginstead to
 recover money lost through vendor credits, parts returns, cores, warranty credits, duplicate
@@ -15,7 +20,11 @@ plainly and the idea is not forced.
 
 ## Current status
 
-**Gate 1 of 8 — 0 of 20 complete.** Nothing sent. **No SaaS development.**
+**Gate 0 open (counsel not engaged). Gate 1 — 0 of 20 complete.** Nothing sent. **No SaaS development.**
+
+Gate 0 blocks **Gate 6** only. Enrichment, outreach, record intake and the first audit proceed in
+parallel with legal review — **but legal review is the longest-lead item in the plan and sits in
+the critical path to revenue, so start it now.**
 
 **Immediate goal:** get **one** qualified business to provide records for **one vendor, one
 month**. That is Gate 4, and everything before it exists to produce it.
@@ -26,7 +35,8 @@ month**. That is Gate 4, and everything before it exists to produce it.
 
 | File | What it is |
 |---|---|
-| [`research/08-positioning-marginstead-recovery.md`](research/08-positioning-marginstead-recovery.md) | **Start here.** Current positioning, the nine-step recovery workflow, contingency pricing, honest risks |
+| [`research/09-gate-0-regulatory.md`](research/09-gate-0-regulatory.md) | **Read first.** Mode A definition, prohibited activities, questions for counsel, realized-recovery pricing |
+| [`research/08-positioning-marginstead-recovery.md`](research/08-positioning-marginstead-recovery.md) | Positioning, the nine-step workflow, honest risks |
 | [`research/01-competitor-analysis.md`](research/01-competitor-analysis.md) | Market map + competitor matrix, with the 2026-08-28 WickedFile update at the end |
 | [`research/02-ideal-customer-profile.md`](research/02-ideal-customer-profile.md) | ICP grounded in published heavy-duty benchmarks (unchanged by the pivot) |
 | [`data/tier-a-enrichment-queue.csv`](data/tier-a-enrichment-queue.csv) | **The working list.** 20 prospects, ranked, awaiting contact verification |
@@ -90,8 +100,13 @@ recovery.
 ## The two risks worth watching
 
 **Gate 7 is the real test.** Gates 4–6 measure whether shops will engage. Gate 7 measures
-whether vendors actually pay when chased — the one assumption Marginstead cannot control and
-has no evidence for. Nothing before Gate 7 proves the business works.
+whether vendors actually pay a well-documented, consistently followed-up claim — the one
+assumption Marginstead cannot control and has no evidence for. Nothing before Gate 7 proves the
+business works.
+
+**Mode A adds a specific new failure mode:** the customer has to actually send the claim. If
+shops authorize work and then never send anything, the value proposition is weaker than assumed.
+That is now tracked as its own scoreboard metric.
 
 **WickedFile can add recovery faster than Marginstead can build software.** They have the data,
 the customers, and a roadmap that already mentions vendor payment execution. The only defence
@@ -108,3 +123,6 @@ is speed — a service can start this week; software cannot.
 - **A shop that loves the free work and won't pay is a negative result** and is recorded as one.
 - **Precision over volume.** A shop that takes three bad claims to its FleetPride rep loses
   credibility with that vendor and never works with Marginstead again.
+- **Never contact a vendor**, even if a customer asks. Mode B is locked until counsel clears it.
+- **Never hold customer funds.** Recovered money goes vendor → customer directly.
+- **A promise is not a recovery. An unapplied credit is not a recovery.**

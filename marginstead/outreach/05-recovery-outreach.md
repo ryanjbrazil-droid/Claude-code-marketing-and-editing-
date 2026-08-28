@@ -3,8 +3,12 @@
 **Effective:** 2026-08-28 · **Supersedes** the three variants in `04-outreach-strategy.md`
 (the compliance and deliverability sections of that document remain in force).
 
-**STATUS: NOT SENDABLE.** Two blockers stand — no registered business postal address, and
-zero verified contact addresses. See §6.
+**STATUS: NOT SENDABLE.** See §6 for the live blocker list.
+
+> **MODE A ONLY (Gate 0).** Marginstead does not contact vendors. Every claim and follow-up is
+> drafted by Marginstead and **sent by the customer, in the customer's own name.** No copy in
+> this document may imply Marginstead contacts, chases, negotiates with or represents anyone to
+> a vendor. See `research/09-gate-0-regulatory.md`.
 
 ---
 
@@ -25,10 +29,17 @@ skeleton for a human to fill from that shop's row in the enrichment queue.
 ## 2. The message
 
 > "We're testing a service for heavy-duty repair shops that checks whether parts vendors
-> actually credited returned parts and cores — and, when authorized, handles the follow-up
-> until the credit is resolved."
+> actually credited returned parts and cores — and, when authorized, builds the claim and
+> manages the follow-up process until the credit actually posts."
 
 The differentiator carried in every email is **the follow-through**, not the finding.
+
+**Mode A phrasing that is safe to use:** *find the issue · build the claim · put the evidence
+together · manage the follow-up process · draft what you send · track what they promised ·
+check the next statement · verify the credit posted.*
+
+**Never use:** *we contact your vendor · we chase them · we go after them · we deal with your
+rep · we negotiate · on your behalf · we get it back for you.*
 
 ---
 
@@ -51,15 +62,16 @@ statement to confirm the credit actually posted?
 Most shops assume it did. Nobody has the hours to verify it, and a promised
 credit isn't a credit until it shows up.
 
-I'm testing a service that checks that — and, if you authorize it, handles the
-follow-up with the vendor until it's resolved. Not software. No migration. Me,
-doing the chasing.
+I'm testing a service that checks that. If something's missing, I put the claim
+together with the evidence behind it and hand it to you to send — you deal with
+your vendor, I make sure nothing gets dropped and that the credit actually
+posts. Not software. No migration.
 
 To start I'd only need one vendor and one month: whoever you spend the most
 with, their statement for a single month, plus the returns and credits that go
 with it. I'll tell you what doesn't line up.
 
-Free, and you see the findings before anything else happens.
+Free, and you see the findings before anything goes anywhere.
 
 Would you be open to checking one vendor?
 
@@ -69,8 +81,8 @@ Marginstead
 Reply "no thanks" and I won't contact you again.
 ```
 
-**Word count: ~170.** Longer than the previous variants, deliberately — it has to carry both
-the new promise and the smallness of the ask.
+**Word count: ~185.** Longer than the previous variants, deliberately — it has to carry the
+promise, the Mode A division of labour, and the smallness of the ask.
 
 **Why each part is there:**
 
@@ -79,9 +91,10 @@ the new promise and the smallness of the ask.
 | The personalization | Proves a human looked at their business |
 | "does anyone check the next statement" | Nearly impossible to answer *yes* to honestly. This is the wedge, phrased as a question. |
 | "a promised credit isn't a credit" | The whole thesis in seven words |
-| "Not software... Me, doing the chasing." | Separates Marginstead from every SaaS pitch they've been sent, and from WickedFile specifically |
+| "I put the claim together... you deal with your vendor" | **The Mode A distinction, stated plainly in the first email.** Also pre-empts the biggest objection — nobody unknown goes near their parts rep. |
+| "Not software. No migration." | Separates Marginstead from every SaaS pitch they've been sent, and from WickedFile specifically |
 | "one vendor and one month" | Kills the trust objection before it forms |
-| "you see the findings before anything else happens" | Removes the fear that authorizing an audit means authorizing vendor contact |
+| "you see the findings before anything goes anywhere" | Removes the fear that sending records sets something irreversible in motion |
 | "Would you be open to checking one vendor?" | Lowest-friction close available |
 
 **Note on pricing:** the 20% fee is deliberately **not** in email #1. The first email sells a
@@ -99,7 +112,8 @@ any authorization.
 [Name] — following up once, then I'll leave it.
 
 Still happy to check one vendor, one month, free. If it's easier, I can tell you
-exactly which four documents to pull — it's a short list.
+exactly which four documents to pull — it's a short list. Nothing goes to your
+vendor from me either way; you'd send anything that gets sent.
 
 Not interested is a fine answer.
 
@@ -140,7 +154,8 @@ Two quick questions while I set this up:
 - Are you using anything today to check that invoices, returns, cores and vendor
   credits are right?
 
-I'll have findings back to you within [X] business days.
+I'll have findings back to you within [X] business days. Nothing goes to your vendor
+unless you decide it should — and if it does, it goes from you, not me.
 ```
 
 ### 5.2 The competitor questions — record every answer
@@ -174,34 +189,43 @@ Delivered free, whatever it contains. Structure:
 Then, plainly:
 
 ```
-If you want me to go after any of these, here's how it works:
+If you want me to work any of these, here's how it goes:
 
-I assemble the claim, contact the vendor, follow up on a schedule, escalate if it
-stalls, and check the next statement to confirm the credit actually posted. I don't
-close a case until the money or the account credit shows up.
+I put the claim together — the invoice, the statement line, the credit memo, the
+return record, all of it — and write the letter or email. You send it to your
+vendor, from you. They never hear from me.
 
-20% of what's actually recovered. Nothing recovered, nothing owed. No subscription,
-no commitment.
+From there I keep it moving: I tell you when to follow up and write each one,
+log whatever they send back, track what they promised and by when, draft the
+escalation if it stalls, and check your next statement to confirm the credit
+actually posted.
 
-Two ways to run it, your choice:
-  A) I build the claim and you send it — I still track it, chase it and verify it,
-     and your vendor never hears from me.
-  B) I contact the vendor directly on your behalf.
+20% of what you actually get back. Nothing back, nothing owed.
 
-Plenty of shops prefer A. Either is fine.
+On a cash refund, that's when the money reaches you. On an account credit, it's
+when the credit posts AND gets applied against a bill you'd otherwise have paid
+— a credit sitting unused on your account costs you nothing from me.
 
-Want me to go after any of these?
+No subscription, no commitment.
+
+Want me to work any of these?
 ```
 
-**Offer Mode A unprompted.** Some owners will not say out loud that they don't want a stranger
-calling their FleetPride rep — they will just go quiet.
+**State the division of labour before they ask.** Some owners will not say out loud that they
+don't want a stranger near their FleetPride rep — they will just go quiet. "They never hear from
+me" answers it before it becomes a silence.
+
+**Do not offer, hint at, or agree to contact a vendor directly, even if the customer asks you
+to.** Mode B is locked until Gate 0 clears. If a customer offers, the answer is: *"Not yet — I'm
+getting the legal side squared away first. For now I build it and you send it."*
 
 ### 5.4 The question that decides everything
 
 If the shop declines recovery, ask anyway:
 
-> "Fair enough. Out of curiosity — if the money were real and someone handled the chasing
-> end to end, is that something you'd pay for? What would it be worth?"
+> "Fair enough. Out of curiosity — if the money were real and someone built the claim and kept
+> the whole follow-up on track until it posted, is that something you'd pay for? What would it
+> be worth?"
 
 Their answer goes on the scoreboard. **A shop that enjoyed the free audit and will not pay is
 a negative result** and must be recorded as one.
@@ -224,6 +248,7 @@ of **$53,088 per non-compliant message** (FTC, January 2025 adjustment).
 | 5 | Clear opt-out mechanism | ☑ (reply "no thanks" — no login, no fee, no form) |
 | 6 | Opt-outs honored within 10 business days; suppression list exists | ☐ |
 | 7 | Responsibility for anything sent on Marginstead's behalf | ☐ |
+| 8 | **Gate 0: no copy implies vendor contact, representation or collection activity** | ☑ verified |
 
 ### 6.2 Deliverability
 
@@ -269,7 +294,11 @@ without somewhere for that link to point.
 - **No customers, testimonials or case studies.** Competitors publish recovery figures; those
   are theirs.
 - **No claimed integrations.** Marginstead integrates with nothing. It reads documents.
-- **No AI or software pitch.** "Me, doing the chasing" is the accurate description.
+- **No AI or software pitch.** A person building claims and tracking them is the accurate
+  description.
+- **No claim that Marginstead contacts, chases or negotiates with vendors.** It does not. The
+  customer sends everything, under its own name.
+- **No mention of Mode B.** Locked until Gate 0 clears.
 - **No fake urgency.** No deadline, no limited spots.
 - **No blame on shop staff.** The framing is always *the vendor owes you*.
 - **No call request.** Email start to finish unless they want one.

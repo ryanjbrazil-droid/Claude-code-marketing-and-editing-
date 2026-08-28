@@ -1,7 +1,8 @@
 # Validation Scoreboard — Marginstead Recovery
 
 **Last updated:** 2026-08-28
-**Status:** Pre-outreach. Nothing sent. **Gate 1 not met.**
+**Status:** Pre-outreach. Nothing sent. **Gate 0 open. Gate 1 not met.**
+**Operating mode: MODE A ONLY** — Marginstead does not contact vendors (`09-gate-0-regulatory.md`)
 **Positioning:** managed vendor-credit recovery service (see `08-positioning-marginstead-recovery.md`)
 
 > Update after every enrichment session, every send, and every reply.
@@ -9,13 +10,13 @@
 
 ---
 
-## THE EIGHT GATES
+## THE GATES
 
-Each gate must be cleared before the next is worked. **No significant software development
-until Gate 8.**
+**No significant software development until Gate 8.**
 
 | Gate | Requirement | Target | Actual | Met |
 |---|---|---:|---:|:--:|
+| **0** | **Regulatory classification confirmed by counsel (Mode A)** | — | **counsel not yet engaged** | ☐ **OPEN — blocks Gate 6** |
 | **1** | Fully enriched Tier A prospects | 20 | **0** | ☐ |
 | **2** | Compliant, highly personalized emails delivered | 20 | **0** | ☐ |
 | **3** | Genuine interested responses | 3 | **0** | ☐ |
@@ -25,7 +26,11 @@ until Gate 8.**
 | **7** | Money or account credit **actually recovered and verified as posted** | 1 | **0** | ☐ |
 | **8** | Customer pays Marginstead | 1 | **0** | ☐ |
 
-**Current position: Gate 1, 0 of 20.**
+**Current position: Gate 1, 0 of 20. Gate 0 open in parallel.**
+
+**Gate 0 does not block Gates 1–5.** Enrichment, outreach, record intake and the first audit all
+proceed while counsel works. It blocks **Gate 6** (first authorization). Because legal review is
+the longest-lead item on the whole plan and sits in the critical path to revenue, **start it now.**
 
 ### The gate that matters most
 
@@ -73,10 +78,13 @@ take six months, is a legitimate reason to stop.
 | 19 | — Mode B (Marginstead contacts vendor) | 0 | |
 | 20 | Claims submitted to vendors | 0 | |
 | 21 | Vendor promises obtained | 0 | A promise is not a recovery |
-| 22 | **Money/credit verified as posted** | **$0** | **Gate 7.** Confirmed on a subsequent statement |
+| 22a | Credits verified as **posted** to the vendor account | **$0** | Not yet billable |
+| 22b | **Verified _realized_ recovery** — cash received, or credit posted **and applied** | **$0** | **Gate 7.** The only billable figure. |
 | 23 | Claims refused or unresolved | 0 | Track reasons — this is how the model gets priced |
 | 24 | **Revenue actually received** | **$0** | **Gate 8** |
-| 25 | Median days: claim submitted → posted | — | Determines whether the cash cycle is viable |
+| 25 | Median days: claim submitted → credit posted | — | |
+| 26 | **Median days: credit posted → credit applied** | — | **The revenue lag created by the conservative definition. Measure it; do not fix it by billing earlier.** |
+| 27 | Claims where the customer declined to send | 0 | Tests whether Mode A's "you send it" step is a real drop-off point |
 
 ### Competitive intelligence — the WickedFile question
 
@@ -84,14 +92,14 @@ Ask every prospect. This is a primary validation instrument, not a side note.
 
 | # | Metric | Count | Meaning |
 |---|---|---:|---|
-| 26 | Prospects asked the tooling question | 0 | |
-| 27 | Using **WickedFile** | 0 | |
-| 28 | Using another reconciliation tool | 0 | |
-| 29 | Using nothing | 0 | |
-| 30 | **Uses a tool AND still chases vendors manually** | **0** | **Thesis confirmed. Best prospects in the list.** |
-| 31 | Uses a tool and has someone who handles recovery | 0 | Gap closed — disqualified, but important data |
+| 28 | Prospects asked the tooling question | 0 | |
+| 29 | Using **WickedFile** | 0 | |
+| 30 | Using another reconciliation tool | 0 | |
+| 31 | Using nothing | 0 | |
+| 32 | **Uses a tool AND still chases vendors manually** | **0** | **Thesis confirmed. Best prospects in the list.** |
+| 33 | Uses a tool and has someone who handles recovery | 0 | Gap closed — disqualified, but important data |
 
-**How to read rows 27–31:** high row 27 with high row 30 is the **best possible** outcome — the
+**How to read rows 29–33:** high row 29 with high row 32 is the **best possible** outcome — the
 detection market is served, the recovery market is not, and Marginstead's wedge is real. High
 row 27 with high row 31 is a **stop signal**.
 
@@ -124,12 +132,22 @@ January 2025 adjustment).*
 
 ### Before email #1 — deliverability
 
-| # | Item | Status |
-|---|---|---|
-| 1 | SPF, DKIM, DMARC published | ☐ |
-| 2 | Domain warmed 2–3 weeks | ☐ |
-| 3 | Every address verified | ☐ |
-| 4 | Bounce monitoring in place | ☐ |
+**Verified by live DNS lookup, 2026-08-28:**
+
+| # | Item | Status | Evidence |
+|---|---|---|---|
+| 1 | Domain registered, DNS active | ☑ | NS → `zita.ns.cloudflare.com`, `steven.ns.cloudflare.com` |
+| 2 | Mail routing configured | ☑ | MX → `smtp.google.com` (Google Workspace) |
+| 3 | **SPF published** | ☑ | `v=spf1 include:_spf.google.com ~all` |
+| 4 | **DKIM published** | ☑ | `google._domainkey` → valid `v=DKIM1` RSA key |
+| 5 | **DMARC published** | ☑ | `v=DMARC1; p=none; rua=mailto:ryan@marginstead.com` — monitoring mode, correct for warm-up |
+| 6 | Domain warmed 2–3 weeks | ☐ | Unknown — depends on real sending history |
+| 7 | Every address verified before sending | ☐ | 0/20 |
+| 8 | Bounce monitoring in place | ☐ | |
+| 9 | **Website live at marginstead.com** | ☐ | **No A record.** Nothing is hosted. Blocks the privacy/retention URL. |
+
+**Authentication is done.** SPF, DKIM and DMARC are all published and correctly formed. Leave
+DMARC at `p=none` through the first sends and read the `rua` reports before tightening.
 
 ### Before email #1 — contact verification (Gate 1)
 
@@ -146,19 +164,22 @@ From `ops/data-handling.md`:
 | # | Item | Status |
 |---|---|---|
 | 1 | Paid business cloud storage, 2FA, per-customer private folders | ☐ |
-| 2 | **Retention policy published at a stable URL** | ☐ **BLOCKING — intake email links to it** |
+| 2 | **Retention policy published at a stable URL** | ☐ **BLOCKING — intake email links to it. marginstead.com has no A record, so nothing is hosted yet.** |
 | 3 | Findings report template | ☐ |
 | 4 | Case log template | ☐ |
 | 5 | Disk-encrypted machine for handling records | ☐ |
 
-### Before the first authorization (Gate 6)
+### Before the first authorization (Gate 6) — Gate 0 items
 
 | # | Item | Status |
 |---|---|---|
-| 1 | Authorization document drafted (scope, mode, fee, revocability) | ☐ |
-| 2 | Reviewed by a lawyer | ☐ |
-| 3 | **"Account credit vs. cash" fee definition settled in writing** | ☐ |
-| 4 | "Recovered" defined as *posted*, not promised | ☐ |
+| 1 | **Counsel engaged** | ☐ **OPEN — longest lead item; start now** |
+| 2 | **Mode A classification confirmed by counsel** | ☐ **OPEN — blocks Gate 6** |
+| 3 | Mode A authorization document drafted (scope, fee, limits, revocability) | ☐ |
+| 4 | Authorization reviewed by counsel | ☐ |
+| 5 | Realized-recovery fee definition settled in writing | ☑ `09-gate-0-regulatory.md` §5 |
+| 6 | Prohibited-activity list published across all materials | ☑ |
+| 7 | Mode B removed from all customer-facing materials | ☑ |
 
 ---
 
@@ -171,9 +192,12 @@ Recorded now, before data exists, so a bad result cannot be rationalised later.
 | Fewer than 2 replies from 20 highly personalized emails | The message or the segment is wrong | Diagnose which. Do not just rewrite subject lines. |
 | Replies come, but nobody sends records | **Most likely failure.** Curiosity without trust. | The bottleneck is data handover. Shrink the ask further, or offer to work from photos of four documents. |
 | Records arrive, nothing defensible found | The leak is not real at one-vendor/one-month scale | Try a second shop. If two clean months in a row, **report it and stop.** |
-| Findings produced, nobody authorizes recovery | Shops don't want a third party near their vendors | Test Mode A explicitly. If Mode A is also refused, the service model is rejected. |
-| Authorized, but vendors refuse or stall indefinitely | **Recovery doesn't work.** The core promise fails. | **Stop.** This is the model's central assumption failing. |
-| Money recovered, customer won't pay the 20% | Real value, wrong price or wrong instrument | Ask what they *would* pay. If nothing, stop. |
+| Findings produced, nobody authorizes a claim | Under Mode A the shop must send it themselves — that may be the friction | Ask what would make them send it. If they won't act on a documented claim handed to them, the service model is rejected. |
+| Customer authorizes but never actually sends the claim | **Mode A's specific failure mode.** The work still lands on them. | Measure it (metric 27). If common, the value proposition is weaker than assumed and Mode B matters more than expected. |
+| Counsel finds Mode A itself requires licensing | Regulatory cost arrives earlier than modelled | Reassess viability before spending further |
+| Claims sent, but vendors refuse or stall indefinitely | **Recovery doesn't work.** The core promise fails. | **Stop.** This is the model's central assumption failing. |
+| Credits post but sit unapplied for months | Real value, but revenue lag may be commercially unworkable | Measure metric 26. **Do not fix it by billing earlier.** |
+| Money realized, customer won't pay the 20% | Real value, wrong price or wrong instrument | Ask what they *would* pay. If nothing, stop. |
 | Several prospects use WickedFile and have recovery handled | Market is served end to end | Reassess before any further investment |
 | All 8 gates cleared | Proceed to Phase 7 scope, and only that scope | |
 
@@ -197,9 +221,10 @@ on contingency for decades, pursuing claims against suppliers on the client's be
 
 - Whether a shop will hand over records at all (Gate 4)
 - Whether one vendor-month contains anything defensible (Gate 5)
-- Whether shops will let a third party near their vendor relationships (Gate 6)
-- **Whether vendors actually pay when chased by a third party (Gate 7)** — the least tested and
-  most important assumption in the whole model
+- Whether shops will act on a claim handed to them, and actually send it (Gate 6)
+- **Whether vendors actually pay a well-documented, consistently followed-up claim (Gate 7)** —
+  the least tested and most important assumption in the whole model
+- Whether counsel confirms Mode A is outside collection-agency regulation (Gate 0)
 - Whether 20% of recovered money is a price anyone accepts (Gate 8)
 
 **The honest read:** the pivot moved Marginstead from a crowded space with a strong incumbent

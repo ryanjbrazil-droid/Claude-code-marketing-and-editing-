@@ -3,6 +3,11 @@
 **Effective:** 2026-08-28 · **Supersedes:** the "vendor audit → AP reconciliation platform" positioning
 **Status:** Pre-validation. No SaaS development. No outreach sent.
 
+> **GATE 0 AMENDMENT (2026-08-28) — MODE A ONLY.** Marginstead does not contact vendors,
+> represent customers, or hold recovered funds until qualified legal review completes. Mode B is
+> **locked**. The pricing definition in §6 is superseded by the conservative "realized recovery"
+> definition. **`research/09-gate-0-regulatory.md` governs where it differs from this document.**
+
 ---
 
 ## 1. The shift, in one line
@@ -105,12 +110,12 @@ email client.
 |---|---|---|
 | 1 | **Identify** a potentially recoverable amount — missing vendor credit, return, core, warranty payment, duplicate charge, short credit | Findings only; nothing is claimed yet |
 | 2 | **Assemble the evidence** — the invoice, statement line, credit memo, return authorization, PO/RO | A claim without documentation gets refused |
-| 3 | **Contact the vendor** on the customer's behalf — **only when authorized in writing** | See §7 on vendor-relationship risk |
-| 4 | **Follow up** on a schedule, not when someone remembers | The step that fails inside a shop |
-| 5 | **Escalate** unresolved cases past the counter | Branch manager, regional, account rep |
-| 6 | **Track vendor promises** and expected credit dates | "It'll be on next month's statement" is a commitment with a date |
-| 7 | **Verify against the subsequent statement** that the money or account credit actually posted | **The step nobody does.** A promised credit is not a credit |
-| 8 | **Close only after recovery is verified** | Not when the vendor says yes — when it posts |
+| 3 | **Draft the claim; the customer sends it** to the vendor under the customer's own name | **Mode A. Marginstead does not contact the vendor.** |
+| 4 | **Schedule and draft the follow-ups**; the customer sends each one | The step that fails inside a shop |
+| 5 | **Draft the escalation** when a case stalls; the customer sends it | Branch manager, regional, account rep |
+| 6 | **Track vendor promises** and expected credit dates, from responses the customer forwards | "It'll be on next month's statement" is a commitment with a date |
+| 7 | **Verify against the subsequent statement** that the credit posted — and that it was applied | **The step nobody does.** A promised credit is not a credit |
+| 8 | **Close only after recovery is realized** | Not when the vendor says yes; not when a credit posts unused — when the customer is actually better off |
 | 9 | **Produce a complete audit trail** | Every claim, contact, promise and posting |
 
 **Step 7 is the defensible core.** Detection tools stop at step 1. Shops, when they try, get to
@@ -126,8 +131,8 @@ repeating one level up.
 |---|---|
 | **Initial audit** | **Free.** One vendor. One month. |
 | **Findings report** | Delivered free. Customer sees everything before authorizing anything. |
-| **Recovery fee** | **20% of money or account credits actually recovered** |
-| **No recovery** | **No fee.** |
+| **Recovery fee** | **20% of verified _realized_ recovery value** — see `09-gate-0-regulatory.md` §5 |
+| **No realized recovery** | **No fee.** |
 | **Subscription** | None. |
 | **Commitment** | None. |
 
@@ -145,18 +150,18 @@ sticking point, that is data.
 4. It aligns incentives: Marginstead earns nothing for a long list of findings. It earns only
    when money moves.
 
-### Two pricing definitions that must be settled before quoting anyone
+### Pricing definitions — SETTLED (2026-08-28)
 
-**These are open blockers, not details.**
+Both open questions are now closed, conservatively. Full detail and worked example in
+`09-gate-0-regulatory.md` §5.
 
-1. **"Account credit" vs. cash.** If a vendor issues a $3,000 credit against the shop's account
-   rather than a refund, the shop has value but no cash — and owes $600. Decide now: is the fee
-   charged on account credits at all; if so, is it invoiced immediately or as the credit is
-   consumed? An unhappy surprise here poisons the first customer relationship.
-2. **"Actually recovered" must mean posted, not promised.** Bill only on amounts verified on a
-   subsequent vendor statement (step 7). Define it in writing before the first authorization.
+- **Cash refund:** recovery occurs when the customer actually receives the money.
+- **Account credit:** billable only when the credit is **both** verified as posted **and**
+  actually applied against an invoice or balance the customer would otherwise have paid.
+- **A promise is not a recovery. An unapplied credit memo is not a recovery.**
 
----
+**Accepted consequence:** revenue lags recovery, because a credit may sit unapplied until the
+customer's next purchase. Track the lag; do not solve it by loosening the definition.
 
 ## 7. The wedge: one vendor, one month
 
@@ -175,20 +180,20 @@ So the ask is deliberately tiny:
 One month of one vendor's paperwork is a small, comprehensible, low-stakes packet. It is also
 genuinely enough to find a duplicate, a short credit, or an uncredited core.
 
-### The vendor-relationship risk — raise it before the customer does
+### The vendor-relationship risk — Mode A removes it entirely
 
-A shop's relationship with its FleetPride or dealer counter is commercially valuable. Some
-owners will be uneasy about a third party contacting their rep. **Do not discover this
-objection during a call — pre-empt it by offering two modes at authorization:**
+A shop's relationship with its FleetPride or dealer counter is commercially valuable, and some
+owners would be uneasy about a third party contacting their rep.
 
-| Mode | How it works | For |
-|---|---|---|
-| **A — Claim packet** | Marginstead assembles the documented claim; **the shop sends it** and forwards the replies. Marginstead still tracks, follows up, escalates and verifies. | Owners protective of the vendor relationship |
-| **B — Direct contact** | Marginstead contacts the vendor on the shop's behalf under written authorization. | Owners who want it off their plate entirely |
+**Under Gate 0 this is no longer a risk to manage — it is a feature to lead with.** Marginstead
+does not contact vendors at all. Everything that reaches the supplier goes out from the customer,
+in the customer's own name, on the customer's letterhead.
 
-**Mode A still delivers the core value** — the tracking, the follow-up schedule, the escalation
-and the step-7 verification — while removing the objection completely. Offer it first to
-anyone who hesitates.
+> *"Your vendor only ever hears from you. We just make sure the claim is airtight and that
+> nothing gets dropped."*
+
+**Mode B — Marginstead contacting vendors directly — is locked** pending legal review, and must
+not be offered, hinted at, or agreed to even if a customer asks for it.
 
 ---
 
@@ -241,12 +246,14 @@ Unchanged and non-negotiable:
 | Risk | Severity | Mitigation |
 |---|---|---|
 | **WickedFile adds recovery workflow** | **High** — they have the data, the customers and the roadmap | Speed. Get to a verified recovery and a paying customer before it is on anyone's roadmap. A service can start today; software cannot. |
-| Shops refuse to let a third party contact their vendor | High | Mode A (claim packet) removes it entirely. Lead with it on any hesitation. |
+| Shops refuse to let a third party contact their vendor | **Eliminated** | Mode A means Marginstead never contacts a vendor. Lead with it. |
 | Manual recovery does not scale | Medium | Irrelevant until Gate 8. Scaling problems are the good kind. |
-| Vendors refuse to deal with a third party | Medium | Written authorization; Mode A as fallback. Test on the first real claim. |
+| Vendors refuse to deal with a third party | **Eliminated under Mode A** | The vendor only ever deals with its own customer. |
 | Recovery takes months, so cash is slow | Medium | Real. Set expectations at authorization; do not promise timelines that depend on a vendor. |
 | Amounts recoverable from one month of one vendor are too small to matter | Medium | The one-month sample proves the *rate*, not the total. Extrapolate honestly to the full vendor set only with the customer's own numbers. |
-| Legal/agency exposure from acting for a customer | Medium | Written authorization defining exact scope; no legal claims, no collections activity, no litigation. Have a lawyer review the authorization before Gate 6. |
+| **Regulatory classification of recovery activity** | **High — now Gate 0** | Mode A only until counsel clears it. No vendor contact, no representation, no holding funds, no collection-agency posture. `09-gate-0-regulatory.md`. |
+| Legal review takes longer than expected | Medium | **Longest-lead item in the plan. Start it now** — Gates 1–5 proceed in parallel. |
+| Revenue lags recovery because credits sit unapplied | Medium | Accepted consequence of the conservative definition. Measure it. |
 
 ---
 
