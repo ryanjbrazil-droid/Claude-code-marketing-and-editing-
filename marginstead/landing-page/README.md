@@ -1,73 +1,68 @@
-# Phase 5 — Landing Page
+# Landing Page — Marginstead Recovery
 
 **Files**
-- `index.html` — the complete, standalone page. Deploy this.
-- `_body.html` — the same page as a body fragment, used to publish the review preview.
-  Not for deployment.
+- `index.html` — the complete, standalone page. Deploy this. ~21 KB, no build step, no JS.
+- `_body.html` — body fragment used to publish the review preview. Not for deployment.
 
 **Live preview:** https://claude.ai/code/artifact/5d20f85d-a2bd-4786-8063-ab063ab13c22
 
 ---
 
-## What it is
+## Exact changes made in the 2026-08-28 rewrite
 
-A single page, no build step, no dependencies, no JavaScript. Drop `index.html` on any
-static host (Netlify, Cloudflare Pages, GitHub Pages, S3) and point marginstead.com at it.
-Roughly 18 KB total.
+| # | Element | Before | After |
+|---|---|---|---|
+| 1 | Page title | "Marginstead Vendor Audit" | **"Marginstead Recovery"** |
+| 2 | Masthead tagline | "Vendor audits for heavy-duty repair shops" | **"Vendor-credit recovery for heavy-duty repair shops"** |
+| 3 | Headline | *unchanged* | **"Your parts vendors may owe your shop money."** |
+| 4 | Sub-headline | Described the leak types | **"Marginstead checks returned parts, cores, warranty credits and vendor statements for money that appears to be missing — then, when you authorize it, follows the issue through until the credit is resolved."** |
+| 5 | **New element** | — | **Core promise, set as a pull quote in accent green: "We don't just find money you're owed. We get it back."** |
+| 6 | **Primary CTA** | "Get the free 90-day vendor audit" | **"Check one vendor free"** (both instances) |
+| 7 | CTA sub-copy | "One vendor. One sample period." | **"Start with one vendor. Start with one month. See the findings before you authorize anything."** |
+| 8 | Comparison panel | "Your records" vs "The vendor's paperwork" | **"Where everyone else stops" vs "Where Marginstead starts"** — reframed around detection-vs-recovery, ending on "and it sits there" / "we check the next statement to confirm it posted" |
+| 9 | Panel footer | "the gap between them is where the money sits" | **"A promised credit isn't a credit until it shows up on a statement — so we don't close a case until it does."** |
+| 10 | Checked categories | 7 rows | **8 rows — added `WC` Warranty credits**, per the new positioning |
+| 11 | Ledger caption | "Vendor profit-leak audit — categories checked" | **"What we check — and pursue"** |
+| 12 | Process | 3 steps ending at "you get the findings" | **4 steps ending at "We chase it until it posts"** — adds the authorization step and the recovery step |
+| 13 | Step 1 | "3 months is plenty" | **"One vendor, one month"** with the exact four-document list |
+| 14 | Step 3 | — | **New: "You decide what we chase"** — introduces Mode A (claim packet, vendor never hears from us) and Mode B (direct contact) |
+| 15 | Pricing block | "The audit is free. No subscription." | **"The check is free… 20% of what's actually recovered. Nothing recovered, nothing owed. 'Recovered' means posted to your account or paid — not promised."** |
+| 16 | Who it's for | *largely unchanged* | Last line changed to **"Nobody on staff whose actual job is chasing vendors for credits."** |
+| 17 | **New section** | — | **"What we ask for, and what we never ask for"** — the four documents, the explicit never-ask list (bank access, logins, tax returns, payroll, customer lists), private-folder upload, 30-day deletion, no publishing your name, no vendor contact without written authorization |
+| 18 | Candour block | "no case studies… we're not going to invent them" | Strengthened: **"and we're not going to quote somebody else's"** |
+| 19 | Closing CTA | "Worth checking one vendor?" | **"Would you be open to checking one vendor?"** — matches the outreach CTA exactly |
+| 20 | Footer | "independent audit service" | **"independent recovery service"** |
+| 21 | Meta description / OG tags | Audit framing | Recovery framing |
 
-**Structure:**
-1. Headline — *"Your parts vendors may owe your shop money."*
-2. The reconciliation panel — your records vs. the vendor's paperwork, and the gap between
-3. The seven checked categories, as a statement-style ledger
-4. How the audit works — three steps
-5. What it costs / who it's for
-6. A candour block stating plainly that Marginstead is new and has no results yet
-7. Closing CTA
-8. Footer with the physical-address slot
+**Unchanged:** the visual system (form-green palette, Archivo/IBM Plex pairing, ledger-table
+treatment, light and dark themes), the headline, and the absence of testimonials, logos,
+dollar figures, forms, analytics and stock photography.
 
-**Primary CTA:** *Get the free 90-day vendor audit* — a `mailto:` to ryan@marginstead.com
-with a pre-filled subject and a short intake template (shop name, location, technician count,
-main vendor, shop software). No form backend to build, no lead-capture tool to pay for, and
-the reply lands directly in the inbox that will run the audit.
+---
 
-## Design rationale
+## Deploy
 
-The page is built to look like the thing it is about. The palette is drawn from the pale
-green copy of a multipart parts ticket; the seven categories are set as an actual ledger
-table with monospace reference codes and a hairline grid rather than as icon cards; the
-discrepancy red appears in exactly two places and nowhere else. Type is Archivo (signage) +
-IBM Plex Sans (technical text) + IBM Plex Mono (data and labels). Light and dark themes are
-both defined at token level and both tested.
+Drop `index.html` on any static host and point marginstead.com at it. No dependencies.
 
-## What it deliberately does not have
+**Primary CTA** is a `mailto:` to ryan@marginstead.com with subject "Check one vendor" and a
+short intake template pre-filled (shop name, location, technician count, main vendor, shop
+software). No form backend to build.
 
-Per the brief — *"Do not build unnecessary features"* and *"Do not publish fake claims"*:
+---
 
-- **No testimonials, logos, case studies, or dollar figures.** There are none, and the page
-  says so in its own section rather than leaving an awkward gap where social proof usually is.
-- No form backend, CRM, analytics, chat widget, cookie banner, or newsletter signup.
-- No pricing page — the audit is free and there is nothing else to sell yet.
-- No "book a demo" calendar. The offer is explicitly *no sales call required*.
-- No stock photography of trucks.
-
-The candour block is the page's strongest differentiator. Every competing vendor claims a
-result. Marginstead saying "we don't have case studies and we're not going to invent them,
-and if we find nothing we'll tell you that" is both true and more persuasive to a shop owner
-than a fabricated number would be.
-
-## Before it goes live — blocking items
+## Blocking before it goes live
 
 | # | Item | Why |
 |---|---|---|
-| 1 | **Fill in `[STREET ADDRESS]` and `[CITY, STATE ZIP]` in the footer** | Required by CAN-SPAM in commercial email, and the address should match the site. Currently a placeholder. |
-| 2 | Confirm ryan@marginstead.com is live and monitored | It is the only conversion path on the page |
-| 3 | Add a short privacy note | The page asks shops to send financial records. State retention and deletion in writing. |
-| 4 | Serve over HTTPS with a real certificate | Shops will not send invoices to an insecure site |
-| 5 | Re-read the vendor disclaimer in the footer | Confirm the wording is accurate for Marginstead's actual relationships (currently: not affiliated with any vendor) |
+| 1 | **Fill `[STREET ADDRESS]` and `[CITY, STATE ZIP]` in the footer** | Required in commercial email under CAN-SPAM; the site address should match. Still a placeholder. |
+| 2 | **Publish the retention policy at a stable URL and link it from the "Your records" section** | The intake email links to it. Text is written in `ops/data-handling.md` §4. |
+| 3 | Confirm ryan@marginstead.com is live and monitored | Only conversion path on the page |
+| 4 | HTTPS with a real certificate | The page asks shops to send financial records |
+| 5 | Confirm the vendor-neutrality disclaimer is accurate | Footer currently states no affiliation with any parts vendor |
 
-## Later, only if the experiment justifies it
+## Not to be added until earned
 
-- Replace the `mailto:` with a real intake form plus secure upload once volume makes email
-  attachments unwieldy.
-- Add the measured leak findings **only after real audits produce them**, with written
-  permission, and never extrapolated into a general claim.
+- Recovery figures, case studies or testimonials — **only after a real verified recovery, with
+  written permission, never extrapolated into a general claim.**
+- A real upload form — only when email and shared folders become the bottleneck.
+- Any claim of an integration. Marginstead integrates with nothing today.

@@ -1,130 +1,207 @@
-# Phase 6 — Validation Scoreboard
+# Validation Scoreboard — Marginstead Recovery
 
-**Last updated:** 2026-08-27
-**Status:** Pre-outreach. Nothing has been sent.
+**Last updated:** 2026-08-28
+**Status:** Pre-outreach. Nothing sent. **Gate 1 not met.**
+**Positioning:** managed vendor-credit recovery service (see `08-positioning-marginstead-recovery.md`)
 
-> Update this file after every batch of sends and every reply. It is the only honest record
-> of whether this business should exist.
+> Update after every enrichment session, every send, and every reply.
+> This is the only honest record of whether this business should exist.
 
 ---
 
-## THE SCOREBOARD
+## THE EIGHT GATES
+
+Each gate must be cleared before the next is worked. **No significant software development
+until Gate 8.**
+
+| Gate | Requirement | Target | Actual | Met |
+|---|---|---:|---:|:--:|
+| **1** | Fully enriched Tier A prospects | 20 | **0** | ☐ |
+| **2** | Compliant, highly personalized emails delivered | 20 | **0** | ☐ |
+| **3** | Genuine interested responses | 3 | **0** | ☐ |
+| **4** | Businesses providing one vendor / one month record set | 1 | **0** | ☐ |
+| **5** | Defensible discrepancies identified | 1 | **0** | ☐ |
+| **6** | Customer authorizes Marginstead to pursue a discrepancy | 1 | **0** | ☐ |
+| **7** | Money or account credit **actually recovered and verified as posted** | 1 | **0** | ☐ |
+| **8** | Customer pays Marginstead | 1 | **0** | ☐ |
+
+**Current position: Gate 1, 0 of 20.**
+
+### The gate that matters most
+
+**Gate 4 is the immediate objective.** One business, one vendor, one month. Everything before
+it is preparation; everything after it depends on it. Gates 1–3 exist only to produce Gate 4.
+
+### The gate most likely to fail
+
+**Gate 7.** Gates 4–6 measure whether a shop will engage. Gate 7 measures whether vendors will
+actually pay when chased — which is the one assumption Marginstead cannot control, cannot test
+without a real claim, and has no evidence for yet. A finding that vendors simply refuse, or
+take six months, is a legitimate reason to stop.
+
+---
+
+## OPERATING METRICS
+
+### Funnel
 
 | # | Metric | Count | Notes |
 |---|---|---:|---|
-| 1 | **Prospects researched** | **150** | Real, independently sourced US heavy-duty businesses across 32 states. `data/prospects.csv` |
-| 2 | **Qualified prospects** | **140** | 20 Tier A + 120 Tier B. 10 Tier C need qualification first. |
-| 3 | **Contact-ready prospects** | **0** | **The current bottleneck.** 0 of 150 have a verified email address. |
-| 4 | **Emails sent** | **0** | Blocked — see gates below |
-| 5 | **Delivered** | 0 | |
-| 6 | **Bounced** | 0 | Stop sending immediately if this exceeds 3% |
-| 7 | **Replies** | 0 | Any human reply, including "no thanks" |
-| 8 | **Positive replies** | 0 | Expressed interest or asked a question |
-| 9 | **Audits requested** | 0 | Said yes to the free audit |
-| 10 | **Record sets received** | 0 | **Actually sent files.** The single hardest step. |
-| 11 | **Audits completed** | 0 | |
-| 12 | **Discrepancies found** | 0 | Individual verified discrepancies |
-| 13 | **Total potential money identified** | **$0** | Sum of verified discrepancies. Never estimate. |
-| 14 | **Recovery requests** | 0 | Shops that actually went to the vendor |
-| 15 | **Money actually recovered** | **$0** | Confirmed by the shop. The number that matters most. |
-| 16 | **Customers willing to pay** | **0** | Said yes to paying for ongoing monitoring |
-| 17 | **Revenue** | **$0** | Money actually received |
+| 1 | Prospects researched | 150 | 32 states. `data/prospects.csv` |
+| 2 | Tier A working queue | **20** | `data/tier-a-enrichment-queue.csv` |
+| 3 | — with verified decision maker | **0** | Gate 1 |
+| 4 | — with verified business email | **0** | Gate 1 |
+| 5 | Emails sent | 0 | |
+| 6 | Delivered | 0 | |
+| 7 | Bounced | 0 | **1 bounce out of 20 is a 5% rate — verify every address** |
+| 8 | Replies (any human reply) | 0 | |
+| 9 | Positive replies | 0 | Gate 3 |
+| 10 | Opt-outs ("no thanks") | 0 | Honor permanently, immediately |
+| 11 | Record sets requested by prospect | 0 | |
+| 12 | **Record sets received** | **0** | **Gate 4** |
 
-### Supplementary metrics — track these too
+### Audit and recovery
 
-| Metric | Count | Why it matters |
-|---|---:|---|
-| Prospects already using WickedFile or equivalent | 0 | **The most important competitive signal available.** A high number is a strong negative result. |
-| Prospects using Fullbay | 0 | Determines the first integration if Phase 7 is ever reached |
-| Prospects using ShopView / Karmak / RTA / other | 0 | Same |
-| Prospects using spreadsheets or paper | 0 | Highest leak probability, hardest audit |
-| Audits completed that found **nothing** | 0 | **A clean audit is a real result. Record it honestly.** |
-| Median audit turnaround (days) | — | A slow first audit kills the experiment |
-| Opt-outs ("no thanks") | 0 | Must be honored permanently and immediately |
+| # | Metric | Count | Notes |
+|---|---|---:|---|
+| 13 | Audits completed | 0 | |
+| 14 | Audits finding **nothing** | 0 | **A clean month is a real result. Record it.** |
+| 15 | Defensible discrepancies identified | 0 | Gate 5 |
+| 16 | Total potential money identified | **$0** | Verified items only. Never estimate. |
+| 17 | Recovery authorizations signed | 0 | Gate 6 |
+| 18 | — Mode A (claim packet, shop sends) | 0 | Tracks the vendor-relationship objection |
+| 19 | — Mode B (Marginstead contacts vendor) | 0 | |
+| 20 | Claims submitted to vendors | 0 | |
+| 21 | Vendor promises obtained | 0 | A promise is not a recovery |
+| 22 | **Money/credit verified as posted** | **$0** | **Gate 7.** Confirmed on a subsequent statement |
+| 23 | Claims refused or unresolved | 0 | Track reasons — this is how the model gets priced |
+| 24 | **Revenue actually received** | **$0** | **Gate 8** |
+| 25 | Median days: claim submitted → posted | — | Determines whether the cash cycle is viable |
 
----
+### Competitive intelligence — the WickedFile question
 
-## GATES — nothing proceeds until these clear
+Ask every prospect. This is a primary validation instrument, not a side note.
 
-### Gate 1 — Compliance and infrastructure (blocks all outreach)
+| # | Metric | Count | Meaning |
+|---|---|---:|---|
+| 26 | Prospects asked the tooling question | 0 | |
+| 27 | Using **WickedFile** | 0 | |
+| 28 | Using another reconciliation tool | 0 | |
+| 29 | Using nothing | 0 | |
+| 30 | **Uses a tool AND still chases vendors manually** | **0** | **Thesis confirmed. Best prospects in the list.** |
+| 31 | Uses a tool and has someone who handles recovery | 0 | Gap closed — disqualified, but important data |
 
-| # | Item | Status |
-|---|---|---|
-| 1 | Valid physical business mailing address, in the email footer and on the site | ☐ **BLOCKING** |
-| 2 | ryan@marginstead.com live and monitored | ☐ |
-| 3 | SPF, DKIM, DMARC published for the sending domain | ☐ |
-| 4 | Domain warmed 2–3 weeks | ☐ |
-| 5 | Opt-out mechanism live; suppression list exists | ☐ |
-| 6 | Every address verified before sending | ☐ |
-| 7 | Landing page live over HTTPS with a privacy note | ☐ |
+**How to read rows 27–31:** high row 27 with high row 30 is the **best possible** outcome — the
+detection market is served, the recovery market is not, and Marginstead's wedge is real. High
+row 27 with high row 31 is a **stop signal**.
 
-*Reference: CAN-SPAM applies to B2B email and is enforced per individual message, with a
-maximum penalty of $53,088 per non-compliant email as of the FTC's January 2025 adjustment.
-Full checklist in `outreach/04-outreach-strategy.md` Part 1.*
+### Shop software captured at intake
 
-### Gate 2 — Contact enrichment (blocks outreach)
-
-| # | Item | Status |
-|---|---|---|
-| 1 | Verified emails for the 20 Tier A prospects | ☐ 0/20 |
-| 2 | Decision-maker names for the 20 Tier A prospects | ☐ 0/20 |
-| 3 | `NEEDS RESEARCH` personalization points filled or rows dropped | ☐ ~15 outstanding |
-
-### Gate 3 — Validation (blocks all significant product development)
-
-**Do not write product code until this gate clears.** From the brief, strong evidence is
-some combination of:
-
-| Threshold | Target | Actual | Met? |
-|---|---:|---:|:--:|
-| Genuine replies from ~150 qualified prospects | 15+ | 0 | ☐ |
-| Businesses willing to provide records | 5+ | 0 | ☐ |
-| Audits finding legitimate financial discrepancies | 3+ | 0 | ☐ |
-| Businesses demonstrating willingness to pay for ongoing monitoring or recovery | 1+ | 0 | ☐ |
-
-**Gate 3 status: NOT MET — 0 of 4.**
+| System | Count |
+|---|---:|
+| Fullbay | 0 |
+| ShopView | 0 |
+| Karmak / RTA / other | 0 |
+| Spreadsheets or paper | 0 |
 
 ---
 
-## HOW TO READ THE RESULT — decide in advance, not afterwards
+## BLOCKING PREREQUISITES
 
-Writing the failure conditions down now, before any data exists, is the only protection
-against rationalising a bad result later.
+### Before email #1 — legal
+
+| # | Item | Status |
+|---|---|---|
+| 1 | **Valid registered business postal address in the email footer** | ☐ **BLOCKING** |
+| 2 | Truthful sender information | ☐ |
+| 3 | Truthful subject line | ☑ |
+| 4 | Commercial-email disclosure in footer | ☑ |
+| 5 | Compliant opt-out (reply-based, no login, no fee) | ☑ |
+| 6 | Opt-outs honored within 10 business days; suppression list exists | ☐ |
+
+*CAN-SPAM applies to B2B, is enforced per individual email, max $53,088 per message (FTC,
+January 2025 adjustment).*
+
+### Before email #1 — deliverability
+
+| # | Item | Status |
+|---|---|---|
+| 1 | SPF, DKIM, DMARC published | ☐ |
+| 2 | Domain warmed 2–3 weeks | ☐ |
+| 3 | Every address verified | ☐ |
+| 4 | Bounce monitoring in place | ☐ |
+
+### Before email #1 — contact verification (Gate 1)
+
+| # | Item | Status |
+|---|---|---|
+| 1 | 20 verified decision-maker names | ☐ **0/20** |
+| 2 | 20 verified public business emails | ☐ **0/20** |
+| 3 | Real, sourced personalization for each | ☑ **20/20** |
+
+### Before the first record set (Gate 4) — operational
+
+From `ops/data-handling.md`:
+
+| # | Item | Status |
+|---|---|---|
+| 1 | Paid business cloud storage, 2FA, per-customer private folders | ☐ |
+| 2 | **Retention policy published at a stable URL** | ☐ **BLOCKING — intake email links to it** |
+| 3 | Findings report template | ☐ |
+| 4 | Case log template | ☐ |
+| 5 | Disk-encrypted machine for handling records | ☐ |
+
+### Before the first authorization (Gate 6)
+
+| # | Item | Status |
+|---|---|---|
+| 1 | Authorization document drafted (scope, mode, fee, revocability) | ☐ |
+| 2 | Reviewed by a lawyer | ☐ |
+| 3 | **"Account credit vs. cash" fee definition settled in writing** | ☐ |
+| 4 | "Recovered" defined as *posted*, not promised | ☐ |
+
+---
+
+## FAILURE CONDITIONS — written down in advance
+
+Recorded now, before data exists, so a bad result cannot be rationalised later.
 
 | Signal | Reading | Action |
 |---|---|---|
-| Under 5 replies from 150 qualified prospects | Message isn't landing, or the pain isn't felt | Diagnose which. Do not simply rewrite subject lines and re-send. |
-| 15+ genuine replies | Real interest exists | Continue |
-| Replies come in, but nobody sends records | **Most likely failure mode.** Curiosity without trust. | The bottleneck is data handover, not interest. Fix trust — a named privacy commitment, an NDA, a smaller ask. |
-| Records arrive, audits find nothing | **The leak is not real at this size.** | **Report it clearly and stop.** This is a legitimate finding, not a setback. |
-| Audits find money, nobody will pay | Problem is real but not painful enough to fund | Stop. A free service people like is not a business. |
-| A large share already use WickedFile | Market is served; the wedge is narrower than assumed | Reassess before building anything |
-| Gate 3 clears | Proceed to Phase 7 | Build only the scope in `07-product-spec.md` |
+| Fewer than 2 replies from 20 highly personalized emails | The message or the segment is wrong | Diagnose which. Do not just rewrite subject lines. |
+| Replies come, but nobody sends records | **Most likely failure.** Curiosity without trust. | The bottleneck is data handover. Shrink the ask further, or offer to work from photos of four documents. |
+| Records arrive, nothing defensible found | The leak is not real at one-vendor/one-month scale | Try a second shop. If two clean months in a row, **report it and stop.** |
+| Findings produced, nobody authorizes recovery | Shops don't want a third party near their vendors | Test Mode A explicitly. If Mode A is also refused, the service model is rejected. |
+| Authorized, but vendors refuse or stall indefinitely | **Recovery doesn't work.** The core promise fails. | **Stop.** This is the model's central assumption failing. |
+| Money recovered, customer won't pay the 20% | Real value, wrong price or wrong instrument | Ask what they *would* pay. If nothing, stop. |
+| Several prospects use WickedFile and have recovery handled | Market is served end to end | Reassess before any further investment |
+| All 8 gates cleared | Proceed to Phase 7 scope, and only that scope | |
 
-**The objective is not to prove the idea is good. It is to discover whether customers will
-actually pay Marginstead.** If the market rejects it, report that clearly and do not force it.
+**The objective is not to prove the idea is good. It is to discover whether customers will pay
+Marginstead.** If the market rejects it, report that clearly and do not force it.
 
 ---
 
 ## CURRENT HONEST ASSESSMENT
 
-**What is genuinely known:**
-- The problem is real in kind. Industry sources — Fullbay, Tekmetric, RTA, ShopView — all
-  document core and credit tracking as a known failure mode, and RTA states core tracking
-  "can save fleets thousands of dollars each year."
-- The economics are plausible. Parts and materials are 30–40% of revenue in a heavy-duty
-  shop, the largest single expense line, and 54% of shops report being understaffed.
-- The recovery-audit model is proven at enterprise scale (PRGX, CBIZ, GEP) on contingency.
-- Someone has already built the software version for auto repair after losing $180k
-  themselves, and it integrates with Fullbay.
+**What is now better evidenced than before the pivot:**
 
-**What is completely unknown:**
-- Whether a heavy-duty shop will hand over financial records to a stranger.
-- How much money is actually recoverable per shop.
-- Whether the amount is large enough to pay for.
-- Whether WickedFile has already taken this market.
+The gap Marginstead is targeting is documented rather than assumed. WickedFile — the strongest
+incumbent, already in heavy-duty, already integrated with Fullbay — **flags discrepancies and
+assigns resolution tasks to the shop's own team. It does not contact vendors.** In a segment
+where 54% of shops report being understaffed, a task assigned to a team with no spare hours is
+not a recovery. And the recovery model itself is proven: enterprise AP recovery audit has run
+on contingency for decades, pursuing claims against suppliers on the client's behalf.
 
-**Honest read on the biggest risk:** it is not that the leak isn't real — the evidence says
-it probably is. It is **step 10, record sets received.** A shop owner who is intrigued by a
-free audit still has to email a stranger their invoices, statements and pricing. Expect the
-funnel to break there, and design against it deliberately.
+**What remains completely unknown:**
+
+- Whether a shop will hand over records at all (Gate 4)
+- Whether one vendor-month contains anything defensible (Gate 5)
+- Whether shops will let a third party near their vendor relationships (Gate 6)
+- **Whether vendors actually pay when chased by a third party (Gate 7)** — the least tested and
+  most important assumption in the whole model
+- Whether 20% of recovered money is a price anyone accepts (Gate 8)
+
+**The honest read:** the pivot moved Marginstead from a crowded space with a strong incumbent
+into a genuinely empty one — but "empty" and "viable" are different things, and Gate 7 is where
+that gets settled. Nothing before Gate 7 proves the business works.

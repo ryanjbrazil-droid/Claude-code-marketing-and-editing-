@@ -1,3 +1,10 @@
+
+> **SUPERSEDED (2026-08-28):** The three cold-email variants in Part 3 below are replaced by
+> [`05-recovery-outreach.md`](05-recovery-outreach.md) following the pivot to Marginstead Recovery.
+> **Part 1 (compliance and deliverability) remains in force** and is still the governing checklist.
+
+---
+
 # Phase 4 — Outreach Strategy & Cold Email Variants
 
 **Prepared:** 2026-08-27

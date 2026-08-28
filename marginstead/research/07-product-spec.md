@@ -1,126 +1,96 @@
-# Phase 7 — Product Specification (GATED — DO NOT BUILD YET)
+# Product Specification — LOCKED
 
-**Status: LOCKED.** Validation Gate 3 stands at **0 of 4**. No product code should be written.
+**Status: LOCKED. DO NOT BUILD.**
+**Gate position: Gate 1 of 8, 0 of 20 complete.**
 
-This document exists so that *if* validation succeeds, the scope is already agreed and
-narrow. It is not a to-do list. It is a boundary.
-
----
-
-## Build trigger
-
-Open this document again only when **all four** conditions in the Phase 6 scoreboard are met:
-
-- [ ] 15+ genuine replies from ~150 qualified prospects
-- [ ] 5+ businesses willing to provide records
-- [ ] 3+ audits finding legitimate financial discrepancies
-- [ ] 1+ business demonstrating willingness to pay for ongoing monitoring or recovery
-
-Until then the correct engineering effort is **zero**. Audits are run by hand, in a
-spreadsheet. Doing them manually is not a stopgap — it is how you learn what the software
-actually has to do, and every manual audit makes the eventual product better.
+This document is a boundary, not a backlog. It is here so that *if* all eight validation gates
+clear, the scope is already agreed and narrow.
 
 ---
 
-## Product position — the one line that governs every decision
+## The instruction, restated
 
-> **Marginstead augments Fullbay, ShopView, Karmak and QuickBooks. It never replaces them.**
+**No SaaS development.** Not a prototype, not a "quick MVP", not a scaffold to be ready.
 
-Any feature that starts to look like shop management — work orders, scheduling, dispatch,
-technician time, invoicing the customer, inventory management, DVI, estimating — is **out of
-scope, permanently**. That is Fullbay's business, Fullbay is very good at it, and competing
-there would be the fastest way to lose.
+Marginstead Recovery is currently **a person doing careful work with a spreadsheet, a document
+folder and an email client.** That is not a placeholder for software — it is how the business
+learns what recovery actually takes. Every manual case teaches something that would otherwise
+be guessed and coded wrong:
 
----
+- What evidence a vendor actually accepts before paying a claim
+- How many follow-ups a claim really takes, and at what interval
+- Who at a distributor has authority to issue a credit
+- How long "next statement" actually means
+- Which discrepancy types are worth pursuing and which are not worth the postage
 
-## Scope, if built
-
-### In scope
-
-**Intake**
-- Secure document upload (PDF, image, CSV)
-- Invoice OCR / extraction
-- Vendor statement extraction
-- Credit memo extraction
-- Return and core record extraction
-- CSV import for shop-side data (PO / RO / parts exports)
-
-**Detection engine** — the seven categories from the landing page, unchanged
-- Transaction matching (invoice ↔ PO/RO ↔ statement ↔ credit memo)
-- Missing-credit detection
-- Short-credit detection
-- Duplicate invoice detection
-- Price discrepancy detection
-- Quantity discrepancy detection
-- Unmatched transaction detection
-
-**Output and workflow**
-- Money-at-risk dashboard
-- Vendor follow-up drafting
-- Recovery tracking (claimed → disputed → credited → closed)
-- Audit trail
-
-### Explicitly out of scope — permanently
-
-Work orders · scheduling · dispatch · technician time tracking · customer invoicing ·
-inventory management · digital vehicle inspections · estimating · parts ordering ·
-payments · payroll · general accounting · anything requiring a shop to leave its
-current system.
+**Software built before those answers exist is software built on assumptions.**
 
 ---
 
-## Build order, when the time comes
+## Position — governs every future decision
 
-Sequenced by what removes the most manual effort first, not by what is most interesting.
+> **Marginstead augments Fullbay, ShopView, Karmak, QuickBooks — and WickedFile.
+> It replaces none of them.**
 
-| Phase | Scope | Rationale |
+**WickedFile is a potential data source, not a competitor to displace.** A shop running it has
+already done the detection work; its unresolved flags are Marginstead's input queue. The
+eventual integration direction is *read WickedFile's findings*, not *rebuild them*.
+
+Permanently out of scope: work orders, scheduling, dispatch, technician time, customer
+invoicing, inventory management, DVI, estimating, parts ordering, payments, payroll, general
+accounting, and **detection-only reconciliation features that duplicate WickedFile**.
+
+---
+
+## If built: the product is the recovery workflow
+
+The nine steps from the positioning document, in the order they would be automated — sequenced
+by what removes the most manual effort, not by what is most interesting to build.
+
+| Stage | Scope | Why here |
 |---|---|---|
-| **7.0** | **Nothing.** Manual audits in a spreadsheet. | Learn the real matching rules from real paperwork before encoding any of them |
-| **7.1** | Secure upload + document storage + audit trail | Removes the email-attachment problem, which is the #1 trust barrier in the funnel |
-| **7.2** | Invoice and statement extraction (OCR) | The single biggest manual time sink |
-| **7.3** | CSV import + transaction matching | Turns extraction into comparison |
-| **7.4** | Duplicate + price + quantity detection | Deterministic, unambiguous, easiest to get right |
-| **7.5** | Missing-credit, short-credit, core and return detection | The hardest and most valuable logic — build it last, when the rules are understood |
-| **7.6** | Money-at-risk dashboard | Only once there is real money to display |
-| **7.7** | Vendor follow-up drafting + recovery tracking | Closes the loop from finding to recovered dollars |
-| **7.8** | Read-only integrations, starting with whichever SMS the paying customers actually use | Follow demand. Do not guess. |
+| **0** | **Nothing. Manual cases.** | Where Marginstead is now and stays until Gate 8 |
+| **1** | Secure document intake + per-customer storage + case log | Removes the biggest trust and admin friction. Replaces a cloud folder and a spreadsheet. |
+| **2** | **Claim assembly + evidence packet generation** | The most valuable early automation: turns a finding into a documented claim a vendor will accept |
+| **3** | **Follow-up scheduling + escalation prompts** | The step that fails inside shops, and the step Marginstead sells |
+| **4** | **Promise tracking** — what the vendor said, expected credit date | Turns vague commitments into dated obligations |
+| **5** | **Statement verification** — check the next statement, confirm posting | **The defensible core.** Build it properly. |
+| **6** | Recovery dashboard + complete audit trail | Only once there are real cases to display |
+| **7** | Invoice generation on verified recoveries | Follows the fee model, once the fee model is validated |
+| **8** | Document extraction / OCR for intake | Deliberately last. It is the most expensive to build and the least differentiating — detection is a solved, competitive layer. |
+| **9** | Integrations, starting with whatever paying customers actually use | Follow demand. Never guess. |
 
-**Do not start 7.8 before 7.1–7.7 are earning revenue.** Integrations are the most expensive
-work and the easiest to build for the wrong system.
-
----
-
-## Constraints that must survive contact with the roadmap
-
-1. **Read-only into shop systems, always.** Marginstead must never write to a shop's SMS or
-   accounting system. Read-only is what makes it safe to adopt.
-2. **The shop's data is the shop's.** Explicit retention limits, deletion on request, and
-   never used to train anything shared across customers without written permission.
-3. **Every finding must be traceable to a source document.** A number a shop cannot verify
-   against a page of their own paperwork is worthless — they have to take it to a vendor.
-4. **False positives are worse than false negatives.** A shop that takes three bogus claims
-   to its FleetPride rep loses credibility with the vendor and will never use the product
-   again. Precision over recall, always.
-5. **Never require migration.** The moment onboarding requires leaving Fullbay, the product
-   is dead.
+**Note the inversion from the original plan:** OCR and detection moved from first to nearly
+last. That is the point of the pivot. Marginstead's product is stages 2–5, and nobody else is
+building them.
 
 ---
 
-## Pricing — decide after validation, not before
+## Constraints that must survive contact with a roadmap
 
-Do not commit to a model now. The enterprise recovery-audit market (PRGX, CBIZ, GEP, Paladin,
-JPD) runs almost entirely on **contingency — a percentage of what is actually recovered**,
-and that model exists for a good reason: it removes all risk from the buyer and aligns
-incentives precisely.
+1. **Read-only into shop systems, always.** Never write to a customer's SMS or accounting system.
+2. **The customer's data is the customer's.** Retention limits, deletion on request, never used
+   to train anything shared across customers without written permission. Per `ops/data-handling.md`.
+3. **Every claim traceable to a source document.** A vendor will refuse anything else.
+4. **False positives are worse than false negatives.** A shop that takes three bad claims to its
+   FleetPride rep loses credibility with that vendor and never works with Marginstead again.
+   Precision over recall, permanently.
+5. **A case closes only on verified posting.** Never on a vendor's promise. If the software ever
+   lets a case close without stage-5 verification, it has become the problem it was built to fix.
+6. **Mode A must always be supported.** Some customers will never allow direct vendor contact,
+   and the product must be fully useful to them.
+7. **Never require migration.** Onboarding that requires leaving Fullbay is a dead product.
 
-For a shop that has just seen a free audit produce a real number, contingency is a far easier
-yes than a subscription. WickedFile sells a flat monthly subscription; contingency would be a
-genuine differentiator as well as a lower-friction close.
+---
 
-**The question to ask every shop that receives findings** — and the answer that goes on the
-scoreboard:
+## Pricing
 
-> "If I did this every month across all your vendors, would that be worth paying for?
-> And roughly what would it be worth to you?"
+**20% of money or account credits actually recovered. No recovery, no fee.**
 
-Let their answers set the model. Do not pick one in advance.
+A hypothesis under test, not a fixed rate. Two definitions must be settled in writing before
+the first authorization — both are currently open:
+
+1. How **account credits** (vs. cash refunds) are treated for fee purposes
+2. **"Recovered" means posted and verified**, never promised
+
+Let the first paying customers set the eventual model. Do not commit in advance.

@@ -1,113 +1,110 @@
-# Marginstead — Vendor Profit-Leak Audit Validation
+# Marginstead Recovery
+
+**A managed vendor-credit and parts-money recovery service for heavy-duty repair businesses.**
+
+> **We don't just find money you're owed. We get it back.**
 
 **Objective:** find out whether US heavy-duty repair businesses will **pay** Marginstead to
-identify and recover money lost through vendor invoices, parts returns, core charges, vendor
-credits, duplicate charges, price discrepancies and unreconciled transactions.
+recover money lost through vendor credits, parts returns, cores, warranty credits, duplicate
+charges and short credits.
 
 **Not the objective:** proving the idea is good. If the market rejects it, that gets reported
 plainly and the idea is not forced.
 
 ---
 
+## Current status
+
+**Gate 1 of 8 — 0 of 20 complete.** Nothing sent. **No SaaS development.**
+
+**Immediate goal:** get **one** qualified business to provide records for **one vendor, one
+month**. That is Gate 4, and everything before it exists to produce it.
+
+---
+
 ## Contents
 
-| Phase | File | What it is |
-|---|---|---|
-| 1 | [`research/01-competitor-analysis.md`](research/01-competitor-analysis.md) | Market map + competitor matrix across shop management systems, AP automation, reconciliation tools and enterprise recovery audit |
-| 2 | [`research/02-ideal-customer-profile.md`](research/02-ideal-customer-profile.md) | ICP grounded in published heavy-duty benchmarks, with a point-scored qualification rubric |
-| 3 | [`research/03-prospect-research.md`](research/03-prospect-research.md) · [`data/prospects.csv`](data/prospects.csv) | 150 real US prospects, tiered A/B/C, with source URLs and per-row confidence notes |
-| 4 | [`outreach/04-outreach-strategy.md`](outreach/04-outreach-strategy.md) | Compliance gate, deliverability plan, 3 cold-email variants, follow-up, intake script |
-| 5 | [`landing-page/`](landing-page/) | Deployable single-page site. [Preview](https://claude.ai/code/artifact/5d20f85d-a2bd-4786-8063-ab063ab13c22) |
-| 6 | [`research/06-validation-scoreboard.md`](research/06-validation-scoreboard.md) | The scoreboard, the gates, and the failure conditions written down in advance |
-| 7 | [`research/07-product-spec.md`](research/07-product-spec.md) | **LOCKED.** Product scope to build only after validation passes |
+| File | What it is |
+|---|---|
+| [`research/08-positioning-marginstead-recovery.md`](research/08-positioning-marginstead-recovery.md) | **Start here.** Current positioning, the nine-step recovery workflow, contingency pricing, honest risks |
+| [`research/01-competitor-analysis.md`](research/01-competitor-analysis.md) | Market map + competitor matrix, with the 2026-08-28 WickedFile update at the end |
+| [`research/02-ideal-customer-profile.md`](research/02-ideal-customer-profile.md) | ICP grounded in published heavy-duty benchmarks (unchanged by the pivot) |
+| [`data/tier-a-enrichment-queue.csv`](data/tier-a-enrichment-queue.csv) | **The working list.** 20 prospects, ranked, awaiting contact verification |
+| [`data/prospects.csv`](data/prospects.csv) · [`research/03-prospect-research.md`](research/03-prospect-research.md) | The full 150-prospect list. Tier B/C parked. |
+| [`outreach/05-recovery-outreach.md`](outreach/05-recovery-outreach.md) | **Email #1**, follow-up, intake script, competitor questions, pre-send checklists |
+| [`outreach/04-outreach-strategy.md`](outreach/04-outreach-strategy.md) | Superseded copy; **Part 1 compliance section still governs** |
+| [`ops/data-handling.md`](ops/data-handling.md) | **Blocking.** Secure upload, retention policy, authorization modes |
+| [`landing-page/`](landing-page/) | Deployable page + a full change log. [Preview](https://claude.ai/code/artifact/5d20f85d-a2bd-4786-8063-ab063ab13c22) |
+| [`research/06-validation-scoreboard.md`](research/06-validation-scoreboard.md) | The eight gates, all metrics, failure conditions written in advance |
+| [`research/07-product-spec.md`](research/07-product-spec.md) | **LOCKED.** Not to be built until Gate 8 |
 
 ---
 
-## Where things actually stand
+## Why the positioning changed
 
-**Validation Gate 3: 0 of 4 met.** No outreach has been sent. No product code should be
-written.
+WickedFile is confirmed active in heavy-duty — it publishes heavy-duty content, integrates with
+**Fullbay**, and already does invoice-to-RO reconciliation, vendor statement reconciliation,
+missing-credit detection, pricing-error detection, duplicate detection and core-credit tracking.
+**The detection layer is taken.**
 
-### The three findings that matter most
+But from WickedFile's own description of how it works: it **flags discrepancies and assigns
+resolution tasks to your team** so **you can follow up**. It does not contact vendors. The
+shop's staff still chases every discrepancy.
 
-**1. A direct competitor already exists and is ahead.**
-WickedFile is an AP/reconciliation platform for auto repair that already does most of what
-Marginstead proposed: AI invoice capture, invoice-to-RO matching, vendor statement
-reconciliation, missing credits, duplicates, pricing errors, and explicit core-return
-tracking. **It already integrates with Fullbay.** It was founded by a multi-location shop
-owner after a $180k parts loss.
+Set that against the ICP finding that **54% of heavy-duty shops report being understaffed**,
+with a median of 8 employees and no controller. A tool that ends by assigning a task to a team
+with no spare hours produces a longer list of known-unresolved problems, not recovered money.
 
-This is not fatal, but it changes the plan. WickedFile's centre of gravity is *light-duty
-auto*, and it sells software first — integrate and subscribe before you see value.
-Marginstead's remaining wedges are **heavy-duty specialisation**, **findings before payment**,
-and **reading the vendor's documents rather than the shop's**. Those are real but thinner than
-the original concept assumed.
+**The gap between *identified* and *recovered* is the entire business.** And it is not a novel
+model — enterprise AP recovery audit (PRGX, CBIZ, GEP, Auditec, Paladin) has pursued supplier
+claims on contingency for decades. Those firms won't touch a $3M truck shop. Marginstead
+Recovery is that model at shop scale.
 
-**Act on it:** ask every prospect *"are you using anything today to check parts invoices
-against your ROs?"* If a meaningful share name WickedFile, that is a strong negative signal
-and belongs on the scoreboard immediately.
+**WickedFile is now a potential data source, not a competitor.** A shop running it is *better*
+qualified — its discrepancies are already found and sitting unworked:
 
-**2. The economics of the problem hold up.**
-Parts and materials are **30–40% of revenue** in a heavy-duty shop — the largest single
-expense line. The median shop has **8 employees and 5 technicians** and **54% report being
-understaffed**. A $3M shop is buying roughly $900K–$1.2M of parts a year with nobody whose
-job is checking whether the vendor credited it correctly. Enterprise recovery audit (PRGX,
-CBIZ, GEP) has proven for decades that this leak is real and recoverable — on contingency —
-but only at a scale that excludes a $3M truck shop. That gap is genuine.
-
-**3. There is a live, timely, non-fabricated reason to look at 2025–2026 invoices.**
-**TruckPro merged with FleetPride in October 2025.** Distributor mergers mean account
-renumbering, price-file migration and statement format changes — exactly when duplicate
-invoices and pricing discrepancies slip through. This is real, it is checkable, and it is the
-basis of cold email Variant C.
+```
+Fullbay / ShopView  ->  WickedFile (optional)  ->  MARGINSTEAD RECOVERY
+   what should         detection: flags it,        does the work, until
+   have happened       assigns a task              the money posts
+```
 
 ---
 
-## What blocks the next step
+## Blockers
 
-Two hard blockers, in order:
+| # | Blocker | Gate | Owner action |
+|---|---|---|---|
+| 1 | **No registered business postal address** | 2 | Required in the email footer under CAN-SPAM (enforced per message, up to $53,088 each). Landing page footer also carries a placeholder. |
+| 2 | **0 of 20 verified contact emails / decision makers** | 1 | ~5–8 min per shop. If an address can't be verified, leave it blank and call instead — never construct one. |
+| 3 | **Retention policy not published** | 4 | Text is written; needs a stable URL. The intake email links to it. |
+| 4 | **Secure upload folders not set up** | 4 | Paid business cloud storage, 2FA, one private folder per customer. |
+| 5 | **"Account credit vs. cash" fee definition unsettled** | 6 | If a vendor issues a $3,000 account credit, the shop has value but no cash and owes $600. Decide before quoting anyone. |
+| 6 | **Authorization document not drafted or reviewed** | 6 | Needs a lawyer before anyone signs. |
 
-**1. No verified contact emails.** All 150 prospects have zero email addresses. Page fetching
-was blocked by this environment's network policy, and inventing addresses would have violated
-the brief and destroyed sending reputation on a new domain before the first real send. **Enrich
-the 20 Tier A rows first** — roughly 5–8 minutes each — and let their reply rate decide whether
-the other 130 are worth the ~15 hours.
-
-**2. No physical business mailing address.** Required in the email footer under CAN-SPAM
-(enforced per individual message, up to $53,088 each) and it should match the site. The
-landing page footer currently carries a placeholder.
-
-Neither is a research problem. Both are decisions and small amounts of manual work.
+Blockers 1–2 stop email #1. Blockers 3–4 stop the first record set. Blockers 5–6 stop the first
+recovery.
 
 ---
 
-## The risk to design against
+## The two risks worth watching
 
-The funnel will most likely break at **step 10: record sets received** — not at replies. A
-shop owner intrigued by a free audit still has to email a stranger their invoices, statements
-and pricing. Interest is cheap; trust is not. Build for that: a written privacy commitment, a
-smaller first ask, an NDA on request.
+**Gate 7 is the real test.** Gates 4–6 measure whether shops will engage. Gate 7 measures
+whether vendors actually pay when chased — the one assumption Marginstead cannot control and
+has no evidence for. Nothing before Gate 7 proves the business works.
 
-And the measurement that actually counts is not the free audit. It is the question asked
-*after* findings are delivered:
-
-> "If I did this every month across all your vendors, would that be worth paying for?"
-
-A shop that loves the free audit and will not pay is a **negative** result and must be
-recorded as one.
+**WickedFile can add recovery faster than Marginstead can build software.** They have the data,
+the customers, and a roadmap that already mentions vendor payment execution. The only defence
+is speed — a service can start this week; software cannot.
 
 ---
 
-## Research honesty note
+## Standing rules
 
-All research here was conducted by web search. **Direct page fetching was blocked by this
-environment's network egress policy**, so no vendor pricing page, product page or prospect
-website could be opened directly. Consequences, all handled explicitly rather than papered
-over:
-
-- Every competitor claim carries a confidence tag; unverified pricing is marked
-  **not sales-ready** and must be re-checked before appearing in any pitch.
-- Prospect contact emails and decision-maker names are **empty**, not guessed.
-- Personalization points are real and sourced, or flagged `NEEDS RESEARCH` and not to be sent.
-- Every prospect row carries source URLs and a per-row note on exactly which fields are
-  verified.
+- **No fabricated results.** No customers, testimonials, case studies or dollar figures — and
+  no quoting a competitor's recovery figures as suggestive of Marginstead's.
+- **No claimed integrations.** Marginstead integrates with nothing. It reads documents.
+- **Never invent a contact address.** Blank beats guessed.
+- **A shop that loves the free work and won't pay is a negative result** and is recorded as one.
+- **Precision over volume.** A shop that takes three bad claims to its FleetPride rep loses
+  credibility with that vendor and never works with Marginstead again.

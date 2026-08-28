@@ -1,7 +1,11 @@
 # Phase 1 — Competitor & Market Research
 
 **Prepared:** 2026-08-27
-**For:** Marginstead — free 90-day vendor profit-leak audit for heavy-duty repair businesses
+**For:** Marginstead
+
+> **See the 2026-08-28 update at the end of this document.** WickedFile is confirmed active in
+> heavy-duty. Marginstead has repositioned from detection software to a managed recovery
+> service. Current position: `08-positioning-marginstead-recovery.md`.
 
 ---
 
@@ -243,3 +247,68 @@ documents and the shop's records side by side sees what neither system alone can
 - https://news.basware.com/en/basware-completes-acquisition-of-glantus-to-expand-ai-driven-overpayment-and-fraud-detection-capabilities · https://www.appzen.com/ · https://www.oversight.com/ai-p2p-compliance-control · https://www.vic.ai/accounts-payable/invoice-processing
 - https://www.marginedge.com/vendor-reconciliation
 - https://www.fleetpride.com/ · https://branches.fleetpride.com/ · https://www.cbinsights.com/investor/truckpro
+
+---
+
+# UPDATE — 2026-08-28: WickedFile confirmed in heavy-duty; Marginstead repositions
+
+**This update supersedes the "how Marginstead would differentiate" column for WickedFile in
+§3A above. Read `08-positioning-marginstead-recovery.md` for the current position.**
+
+## What changed
+
+WickedFile is **not** confined to light-duty auto repair. Confirmed:
+
+- It publishes heavy-duty content, including a *"Truck Shop Management Software: 2026"* guide.
+- It integrates with **Fullbay** alongside Tekmetric, Shop-Ware, Mitchell 1, NAPA TRACS,
+  Protractor and RO Writer.
+- It performs invoice-to-RO reconciliation, vendor statement reconciliation, missing-credit
+  detection, pricing-error detection, duplicate detection and **core-credit tracking**.
+- It explicitly positions itself as *not* a shop management system — a layer beside Fullbay,
+  not a replacement for it.
+
+**The detection layer is taken.** The original plan — build a heavy-duty AP reconciliation
+platform — is withdrawn.
+
+## The gap that remains, and it is documented
+
+From WickedFile's own published description of how the product works:
+
+> It works in the background **flagging discrepancies and assigning resolution tasks to your
+> team.** When a core credit is missing it flags it **so you can follow up.** Users log in, run
+> saved filters, and flag returns that weren't credited. Vendor payment execution is on the
+> roadmap; today it uses your existing tools.
+
+**It does not contact vendors. The shop's staff still chases every discrepancy.**
+
+Set against the ICP finding that **54% of heavy-duty shops report being understaffed**, with a
+median of 8 employees and no controller: a tool that ends by assigning a task to a team with no
+spare hours produces a longer list of known-unresolved problems, not recovered money.
+
+## Revised competitive read
+
+| Layer | Who owns it | Marginstead |
+|---|---|---|
+| Shop record | Fullbay, ShopView, Karmak, RTA | Augments. Never replaces. |
+| **Detection** | **WickedFile** | **Concedes. Does not compete.** |
+| **Recovery — claim, chase, escalate, verify posting, close** | **Nobody, at shop scale** | **This is the business.** |
+| Enterprise recovery audit | PRGX, CBIZ, GEP, Auditec, Paladin | Proves the model works on contingency. Won't serve a $3M shop. |
+
+**WickedFile is reclassified from competitor to potential data source and integration.** A shop
+already running it is *better* qualified, not disqualified — its discrepancies are already
+identified and sitting unworked.
+
+The enterprise recovery-audit firms in §3C are now the closest analogue to what Marginstead is:
+they take client data, find leakage, **pursue claims against suppliers**, and take a percentage
+of what is actually recovered. Marginstead Recovery is that model at shop scale.
+
+## The risk this creates
+
+**WickedFile can add recovery workflow faster than Marginstead can build software.** They have
+the data, the customers and a stated roadmap that already includes vendor payment execution.
+The only defence is speed: a service can start this week; software cannot. Get to a verified
+recovery and a paying customer before this appears on anyone's roadmap.
+
+**Sources for this update:** https://www.wickedfile.com/blogs/truck-shop-management-software/ ·
+https://www.wickedfile.com/blogs/best-ai-tools-for-auto-repair/ · https://www.wickedfile.com/ ·
+https://www.capterra.com/p/10011937/WickedFile/ · https://www.fullbay.com/products/integrations/
