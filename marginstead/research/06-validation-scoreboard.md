@@ -17,7 +17,7 @@
 | Gate | Requirement | Target | Actual | Met |
 |---|---|---:|---:|:--:|
 | **0** | **Regulatory classification confirmed by counsel (Mode A)** | — | **counsel not yet engaged** | ☐ **OPEN — blocks Gate 6** |
-| **1** | Fully enriched Tier A prospects | 20 | **0** | ☐ |
+| **1** | **Launch 20 contact-ready** (public contact sourced **and** mailbox-verified) | 20 | **0 verified** | ☐ |
 | **2** | Compliant, highly personalized emails delivered | 20 | **0** | ☐ |
 | **3** | Genuine interested responses | 3 | **0** | ☐ |
 | **4** | Businesses providing one vendor / one month record set | 1 | **0** | ☐ |
@@ -52,10 +52,12 @@ take six months, is a legitimate reason to stop.
 
 | # | Metric | Count | Notes |
 |---|---|---:|---|
-| 1 | Prospects researched | 150 | 32 states. `data/prospects.csv` |
-| 2 | Tier A working queue | **20** | `data/tier-a-enrichment-queue.csv` |
-| 3 | — with verified decision maker | **0** | Gate 1 |
-| 4 | — with verified business email | **0** | Gate 1 |
+| 1 | Prospects researched | 150 | `data/prospects.csv`, also the workbook's "Full 150" sheet |
+| 2 | **Launch 20 working queue** | **20** | `data/Marginstead_Launch20_Curated.csv` |
+| 3 | — **SEND READY** (public contact sourced) | **15** | Sourced, **not yet mailbox-verified** |
+| 4 | — **ENRICH FIRST** (no verified email yet) | **5** | Schroeder · Superior Diesel · Fleet Master · Goody's · All American Sleeper |
+| 4a | — with a named decision maker | **14** | 6 use a business mailbox |
+| 4b | — **mailbox/deliverability verified** | **0** | **This is Gate 1, not "SEND READY"** |
 | 5 | Emails sent | 0 | |
 | 6 | Delivered | 0 | |
 | 7 | Bounced | 0 | **1 bounce out of 20 is a 5% rate — verify every address** |
@@ -65,26 +67,54 @@ take six months, is a legitimate reason to stop.
 | 11 | Record sets requested by prospect | 0 | |
 | 12 | **Record sets received** | **0** | **Gate 4** |
 
+### Claim funnel — Mode A
+
+**A claim is not "sent" because Marginstead generated it.** `CLAIMS ACTUALLY SENT` counts only
+communications the **customer actually transmitted to the vendor**. The gap between approval and
+transmission is a first-class metric, not an operational detail.
+
+| # | Metric | Count | Notes |
+|---|---|---:|---|
+| C1 | **Claims identified** | 0 | Discrepancies Marginstead considers defensible |
+| C2 | **Claims approved by customer** | 0 | Customer said yes to pursuing it |
+| C3 | **Claims actually sent by customer** | **0** | **Transmitted to the vendor. Marginstead generating it does not count.** |
+| C4 | **Claim dispatch rate** | — | `C3 ÷ C2`. **The Mode A health metric.** |
+| C5 | **Median time to claim dispatch** | — | Days from approval (C2) to transmission (C3) |
+| C6 | **Claim responses received** | 0 | Vendor replies the customer forwards |
+| C7 | **Credits promised** | 0 | A promise. Not a recovery. |
+| C8 | **Credits posted** | 0 | On the vendor account. Still not billable. |
+| C9 | **Credits realized** | 0 | Posted **and applied** against a bill the customer would have paid |
+| C10 | **Cash refunds received** | 0 | Money actually reached the customer |
+
+### Value funnel
+
+| # | Metric | Value | Notes |
+|---|---|---:|---|
+| V1 | **Total identified value** | **$0** | Everything found |
+| V2 | **Total claimed value** | **$0** | Only what the customer actually sent (tracks C3) |
+| V3 | **Total posted value** | **$0** | Credits on account + refunds agreed. **Not billable.** |
+| V4 | **Total realized value** | **$0** | Cash received + credits applied. **Gate 7.** |
+| V5 | **Marginstead billable value** | **$0** | 20% of V4 |
+| V6 | **Marginstead revenue collected** | **$0** | Invoiced **and paid**. **Gate 8.** |
+
+**Read V1 → V6 as a leak chart.** Each drop identifies a different failure:
+V1→V2 = customers won't send · V2→V3 = vendors won't engage · V3→V4 = credits sit unapplied ·
+V4→V5 = fee definition · V5→V6 = customers won't pay.
+
 ### Audit and recovery
 
 | # | Metric | Count | Notes |
 |---|---|---:|---|
 | 13 | Audits completed | 0 | |
 | 14 | Audits finding **nothing** | 0 | **A clean month is a real result. Record it.** |
-| 15 | Defensible discrepancies identified | 0 | Gate 5 |
-| 16 | Total potential money identified | **$0** | Verified items only. Never estimate. |
+| 15 | Defensible discrepancies identified | 0 | Gate 5. Feeds C1. |
 | 17 | Recovery authorizations signed | 0 | Gate 6 |
-| 18 | — Mode A (claim packet, shop sends) | 0 | Tracks the vendor-relationship objection |
-| 19 | — Mode B (Marginstead contacts vendor) | 0 | |
-| 20 | Claims submitted to vendors | 0 | |
-| 21 | Vendor promises obtained | 0 | A promise is not a recovery |
-| 22a | Credits verified as **posted** to the vendor account | **$0** | Not yet billable |
-| 22b | **Verified _realized_ recovery** — cash received, or credit posted **and applied** | **$0** | **Gate 7.** The only billable figure. |
+| 18 | — Mode A (customer sends) | 0 | The only mode available |
+| 19 | — Mode B | **n/a** | **Locked under Gate 0** |
 | 23 | Claims refused or unresolved | 0 | Track reasons — this is how the model gets priced |
-| 24 | **Revenue actually received** | **$0** | **Gate 8** |
-| 25 | Median days: claim submitted → credit posted | — | |
-| 26 | **Median days: credit posted → credit applied** | — | **The revenue lag created by the conservative definition. Measure it; do not fix it by billing earlier.** |
-| 27 | Claims where the customer declined to send | 0 | Tests whether Mode A's "you send it" step is a real drop-off point |
+| 25 | Median days: claim sent → credit posted | — | Vendor responsiveness |
+| 26 | **Median days: credit posted → credit applied** | — | **The revenue lag from the conservative fee definition. Measure it; do not fix it by billing earlier.** |
+| 27 | Claims approved but never sent | 0 | The complement of C4. **Mode A's specific failure mode.** |
 
 ### Competitive intelligence — the WickedFile question
 
@@ -203,6 +233,29 @@ Recorded now, before data exists, so a bad result cannot be rationalised later.
 
 **The objective is not to prove the idea is good. It is to discover whether customers will pay
 Marginstead.** If the market rejects it, report that clearly and do not force it.
+
+---
+
+## FUTURE PRODUCT INSIGHT — recorded, not built
+
+**Mode A creates a structural bottleneck: the customer has to send the communication.**
+Marginstead can produce a perfect, fully evidenced claim and nothing happens until a shop owner
+copies it into an email and hits send — the same owner who had no time to chase the credit in the
+first place. That is the exact constraint the service exists to relieve, reappearing one step
+later.
+
+**Metrics C4 (claim dispatch rate) and C5 (median time to dispatch) exist to measure it.**
+
+**If validation shows customers regularly approve claims but fail to send them promptly**, a
+future feature may let a customer review a completed claim inside Marginstead and explicitly
+authorize transmission **from the customer's own connected mailbox** — so the communication still
+originates from the customer, in the customer's name, under the customer's control, with
+Marginstead never becoming the sender.
+
+**Do not build this during validation.** It is recorded here so the evidence is being gathered
+deliberately rather than noticed late. It also carries its own Gate 0 question: whether
+customer-authorized transmission from the customer's own mailbox changes the regulatory picture.
+**Add that to the list of questions for counsel** rather than assuming either answer.
 
 ---
 

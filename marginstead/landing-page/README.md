@@ -55,19 +55,40 @@ has been removed. The page now states the division of labour explicitly.
 | 6 | Step 3 body | "…or **we contact them directly on your behalf.** Your call." | **"We write the claim and put the evidence together; you send it to your vendor under your own name. Your vendor never hears from us."** — Mode B removed entirely |
 | 7 | Step 4 heading | "**We chase it** until it posts" | **"We manage it until it posts"** |
 | 8 | Step 4 body | "We follow up, escalate, track…" | **"We set the follow-up schedule and draft each one for you to send. You forward us what the vendor says…"** |
-| 9 | **New section** | — | **"Who talks to your vendor / You do. Always."** — states plainly that Marginstead does not contact vendors, is **not a collection agency**, does not negotiate or represent, and that recovered money goes straight from vendor to customer and never passes through Marginstead |
+| 9 | **New section** | — | **"Who talks to your vendor / You do. Always."** — see the 2026-08-28 correction below |
 | 10 | Pricing | "20% of what's **actually recovered** … posted or paid — not promised" | **Realized-recovery definition:** cash counts when it reaches you; an account credit counts **only once it posts *and* gets applied** against a bill you'd otherwise have paid. "A credit sitting unused on your account costs you nothing from us." |
 | 11 | Panel footer | "A promised credit isn't a credit until it **shows up on a statement**" | "…until it **posts and gets used**" |
 | 12 | Closing | "you'll have findings back before anything else happens" | **"…before anything goes to your vendor — and when it does, it goes from you."** |
-| 13 | Footer | "independent recovery service" | Adds: **"Not a collection agency. We do not contact vendors on your behalf or hold recovered funds."** |
+| 13 | Footer | "independent recovery service" | Adds an operational disclaimer — see the 2026-08-28 correction below |
 | 14 | Meta / OG tags | Recovery framing | Mode A framing |
 
-**Verified after the edit:** the only remaining occurrences of "collection agency" and "on your
-behalf" are inside the negative disclaimers. No instance of "we chase", "we contact the vendor",
-"we get it back", or any reference to Mode B remains.
+**Verified after the edit:** no instance of "we chase", "we contact the vendor", "we get it back",
+or any reference to Mode B remains.
 
 **Mode A is presented as a feature, not a limitation** — it removes the objection that a stranger
 might contact the shop's FleetPride rep, which was previously the highest-severity funnel risk.
+
+---
+
+## Correction — 2026-08-28: legal conclusion removed
+
+The page previously asserted **"We are not a collection agency"** (body) and **"Not a collection
+agency"** (footer). **Both are removed.** No legal classification of the service has been
+obtained, so Marginstead makes no classification claim in either direction.
+
+**Replaced with operational facts only:**
+
+| Location | Now reads |
+|---|---|
+| "Who talks to your vendor" section | *"**During the current service, Marginstead does not contact your vendors.** We find the issue, build the claim and the evidence behind it, write the follow-ups, and tell you when to send them. **You send vendor communications in your own name.**"* … *"**Marginstead does not negotiate with vendors, receive recovered funds, or take possession of customer money.** Whatever your vendor pays or credits goes directly to you."* |
+| Footer | *"Marginstead is an independent recovery service. We do not contact your vendors, negotiate with them, or take possession of recovered funds. You send vendor communications in your own name."* |
+
+**Verified:** zero occurrences of "collection agency" remain in `_body.html` or `index.html`.
+
+**The standing rule** (`ops/data-handling.md` §6b): on every customer-facing surface, describe
+**what Marginstead does and does not do** — never what it legally is or is not. A factual
+description of conduct is accurate today and needs no sign-off; a legal conclusion needs counsel
+approval and does not have it.
 
 ---
 

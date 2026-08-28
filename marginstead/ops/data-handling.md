@@ -94,8 +94,11 @@ The ask is bounded and named. **Never ask for "your accounting records" or open-
 >
 > **How you send it.** A private folder only you and Marginstead can access. Not email.
 >
-> **Who sees it.** Only Marginstead. We do not share your records with anyone, and we do not
-> contact your vendor about anything until you authorize it in writing.
+> **Who sees it.** Only Marginstead. We do not share your records with anyone.
+>
+> **Who contacts your vendor.** You do. During the current service, Marginstead does not contact
+> your vendors. You send vendor communications in your own name. Marginstead does not negotiate
+> with vendors, receive recovered funds, or take possession of customer money.
 >
 > **How long we keep it.** Your records are deleted **30 days after we deliver your findings**,
 > unless you authorize recovery work — in which case we keep only the specific documents needed
@@ -174,11 +177,40 @@ Draft before Gate 6. **Have a lawyer review it before it is signed by anyone.**
    unapplied credit memo is not a recovery. Worked example in `research/09-gate-0-regulatory.md` §5.
 5. **Funds:** recovered money is paid by the vendor directly to the customer. Marginstead never
    receives or holds customer recoveries, and invoices separately after realization.
-6. **Limits:** Marginstead is not a collection agency; does not contact vendors; does not
-   negotiate as the customer's representative; does not make legal claims, conduct collections
-   activity or litigate; and does not sign anything on the shop's behalf.
+6. **Limits — state operational facts only, never a legal classification.** Approved wording:
+
+   > *"During the current service, Marginstead does not contact your vendors. You send vendor
+   > communications in your own name. Marginstead does not negotiate with vendors, receive
+   > recovered funds, or take possession of customer money."*
+
+   Marginstead also does not make legal claims, does not litigate, and does not sign anything on
+   the shop's behalf.
+
+   **Do not state that Marginstead "is not a collection agency"** — in this agreement, on the
+   landing page, in the privacy policy, or in any marketing material — **unless qualified counsel
+   specifically approves that statement.** No legal classification of the service has been
+   obtained. Describe conduct, not category.
 7. **Revocable:** the customer may withdraw authorization in writing at any time
 8. **Data:** retention and deletion terms per §4
+
+---
+
+## 6b. Language rule — conduct, not classification
+
+Across every customer-facing surface (landing page, privacy/retention policy, customer
+agreement, outreach, marketing), describe **what Marginstead does and does not do**. Never assert
+what Marginstead legally *is* or *is not*.
+
+| ❌ Never say | ✅ Say instead |
+|---|---|
+| "Marginstead is not a collection agency" | "Marginstead does not contact your vendors" |
+| "We're not acting as your agent" | "You send vendor communications in your own name" |
+| "This isn't debt collection" | "Marginstead does not negotiate with vendors" |
+| "We're not regulated as…" | "Marginstead does not receive recovered funds or take possession of customer money" |
+
+No legal classification of the service has been obtained. A factual description of conduct is
+accurate today and needs no counsel sign-off; a legal conclusion needs one and does not currently
+have it. If counsel later approves a classification statement, this rule can be revisited.
 
 ---
 

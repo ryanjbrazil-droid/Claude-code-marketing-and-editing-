@@ -4,10 +4,14 @@
 
 > **Finding it is the easy part. We manage the claim until the credit actually posts.**
 
-> **MODE A ONLY (Gate 0).** Marginstead does not contact vendors, represent customers, or hold
-> recovered funds. We find the issue, build the claim, manage the follow-up process, and verify
-> the credit posts — **the customer sends every communication, in its own name.** Mode B is
-> locked pending legal review. See [`research/09-gate-0-regulatory.md`](research/09-gate-0-regulatory.md).
+> **MODE A ONLY (Gate 0).** During the current service, Marginstead does not contact vendors,
+> negotiate with them, receive recovered funds, or take possession of customer money. We find the
+> issue, build the claim, manage the follow-up process, and verify the credit posts — **the
+> customer sends vendor communications in its own name.** Mode B is locked pending legal review.
+> See [`research/09-gate-0-regulatory.md`](research/09-gate-0-regulatory.md).
+>
+> **No legal classification of the service has been obtained.** Customer-facing materials describe
+> conduct only — never what Marginstead legally is or is not (`ops/data-handling.md` §6b).
 
 **Objective:** find out whether US heavy-duty repair businesses will **pay** Marginstead to
 recover money lost through vendor credits, parts returns, cores, warranty credits, duplicate
@@ -39,7 +43,9 @@ month**. That is Gate 4, and everything before it exists to produce it.
 | [`research/08-positioning-marginstead-recovery.md`](research/08-positioning-marginstead-recovery.md) | Positioning, the nine-step workflow, honest risks |
 | [`research/01-competitor-analysis.md`](research/01-competitor-analysis.md) | Market map + competitor matrix, with the 2026-08-28 WickedFile update at the end |
 | [`research/02-ideal-customer-profile.md`](research/02-ideal-customer-profile.md) | ICP grounded in published heavy-duty benchmarks (unchanged by the pivot) |
-| [`data/tier-a-enrichment-queue.csv`](data/tier-a-enrichment-queue.csv) | **The working list.** 20 prospects, ranked, awaiting contact verification |
+| [`data/Marginstead_Launch20_Curated.csv`](data/Marginstead_Launch20_Curated.csv) | **The working list.** 20 prospects — 15 SEND READY, 5 ENRICH FIRST |
+| [`data/README-launch20.md`](data/README-launch20.md) | Launch 20 register + the per-row verification queue |
+| [`data/Marginstead_Prospect_Master_Ranked.xlsx`](data/Marginstead_Prospect_Master_Ranked.xlsx) | Master pool: Summary · Launch 20 · Backups & Holds · Full 150 |
 | [`data/prospects.csv`](data/prospects.csv) · [`research/03-prospect-research.md`](research/03-prospect-research.md) | The full 150-prospect list. Tier B/C parked. |
 | [`outreach/05-recovery-outreach.md`](outreach/05-recovery-outreach.md) | **Email #1**, follow-up, intake script, competitor questions, pre-send checklists |
 | [`outreach/04-outreach-strategy.md`](outreach/04-outreach-strategy.md) | Superseded copy; **Part 1 compliance section still governs** |
@@ -104,9 +110,10 @@ whether vendors actually pay a well-documented, consistently followed-up claim �
 assumption Marginstead cannot control and has no evidence for. Nothing before Gate 7 proves the
 business works.
 
-**Mode A adds a specific new failure mode:** the customer has to actually send the claim. If
-shops authorize work and then never send anything, the value proposition is weaker than assumed.
-That is now tracked as its own scoreboard metric.
+**Mode A adds a specific new failure mode:** the customer has to actually send the claim. If shops
+authorize work and then never send anything, the value proposition is weaker than assumed. Tracked
+as **claim dispatch rate (C4)** and **median time to dispatch (C5)** on the scoreboard — with a
+recorded, unbuilt future option if the data shows it is a real bottleneck.
 
 **WickedFile can add recovery faster than Marginstead can build software.** They have the data,
 the customers, and a roadmap that already mentions vendor payment execution. The only defence
@@ -124,5 +131,8 @@ is speed — a service can start this week; software cannot.
 - **Precision over volume.** A shop that takes three bad claims to its FleetPride rep loses
   credibility with that vendor and never works with Marginstead again.
 - **Never contact a vendor**, even if a customer asks. Mode B is locked until counsel clears it.
+- **Never assert a legal classification** — including "not a collection agency" — without counsel
+  sign-off. Describe conduct, not category.
+- **A claim is not "sent" until the customer transmits it.** Marginstead generating it doesn't count.
 - **Never hold customer funds.** Recovered money goes vendor → customer directly.
 - **A promise is not a recovery. An unapplied credit is not a recovery.**

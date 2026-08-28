@@ -14,9 +14,16 @@
 
 ## 1. Scope of this campaign
 
-**20 emails. Not 150.**
+**20 emails. Not 150.** The queue is `data/Marginstead_Launch20_Curated.csv` —
+**15 SEND READY, 5 ENRICH FIRST.**
 
-The 130 Tier B/C prospects are parked. The immediate objective is **one** qualified business
+**"SEND READY" means a public contact was sourced. It does not mean send.** Every mailbox must
+pass final deliverability/mailbox verification first; that is Gate 1. See
+`data/README-launch20.md` for the per-row verification queue — six rows have an email domain that
+differs from the company's known website, and one (Precision Truck & Trailer) is a close-domain
+mismatch worth resolving before anything goes out.
+
+The rest of the 150-company pool is parked. The immediate objective is **one** qualified business
 providing records for **one vendor, one month**. Twenty carefully personalized emails to the
 best-qualified shops is a better instrument for that than a volume campaign, and it is the
 only instrument that can be run honestly given the contact-verification blocker.
@@ -267,9 +274,11 @@ a 5% bounce rate.** Verification matters more here than at scale, not less.
 
 | # | Requirement | Status |
 |---|---|---|
-| 1 | 20 verified decision-maker names | ☐ **0 / 20** |
-| 2 | 20 verified public business emails | ☐ **0 / 20** |
-| 3 | Every personalization point real and sourced | ☑ 20 / 20 already sourced |
+| 1 | Named decision makers | ☑ 14 / 20 (6 use a business mailbox) |
+| 2 | Public contact sourced | ☑ 15 / 20 SEND READY · ☐ 5 ENRICH FIRST |
+| 2b | **Mailbox / deliverability verified** | ☐ **0 / 20 — this is the real Gate 1** |
+| 3 | Every personalization point real and sourced | ☑ 20 / 20 |
+| 4 | **Location counts corrected** where the queue's `locations` field and `personalization` disagree (rows 3 and 6) | ☐ |
 
 **If an email cannot be safely verified, leave it blank and call the shop instead.** Do not
 construct an address. Nineteen good sends beat twenty with one guess in them.
@@ -301,4 +310,6 @@ without somewhere for that link to point.
 - **No mention of Mode B.** Locked until Gate 0 clears.
 - **No fake urgency.** No deadline, no limited spots.
 - **No blame on shop staff.** The framing is always *the vendor owes you*.
+- **No legal classification of Marginstead.** Never state or imply what Marginstead legally is or
+  is not. Describe conduct only (`ops/data-handling.md` §6b).
 - **No call request.** Email start to finish unless they want one.

@@ -19,7 +19,9 @@ Marginstead operates in **Mode A only**.
 Marginstead must **NOT**:
 
 1. Contact vendors directly on behalf of customers
-2. Represent itself as a collection agency
+2. Represent itself as a collection agency — **or assert that it is not one.** No legal
+   classification has been obtained, so Marginstead makes no classification claim in either
+   direction. Describe conduct, not category (see `ops/data-handling.md` §6b).
 3. Receive customer recoveries into Marginstead accounts
 4. Threaten legal action or collections
 5. Negotiate disputed obligations as the customer's representative
@@ -189,6 +191,7 @@ that is a finding about the model, not a reason to bill earlier.
 | 2 | Prohibited-activity list published across all materials | ☑ |
 | 3 | Mode B removed from all customer-facing materials | ☑ |
 | 4 | Landing page wording corrected to Mode A | ☑ |
+| 4b | **"Not a collection agency" removed from all customer-facing materials** | ☑ 2026-08-28 |
 | 5 | Outreach copy corrected to Mode A | ☑ |
 | 6 | Vendor-facing voice agent removed from roadmap | ☑ |
 | 7 | Conservative "realized recovery" definition adopted | ☑ |
